@@ -1,60 +1,111 @@
 <!DOCTYPE html>
  
 <html>
-    <head>
+    <hsead>
         <title>Canvas from scratch</title>
         <meta charset="utf-8">
- 
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js" charset="utf-8"></script>
+
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+        <body>
+
         <script>
             $(document).ready(function() {
 var dir = "images/";
 var fileextension = ".jpg";
 
 var filename = [];
-$.ajax({
-    //This will retrieve the contents of the folder if the folder is configured as 'browsable'
-    url: dir,
-    success: function (data) {
-        //Lsit all png file names in the page
-        $(data).find("a:contains(" + fileextension + ")").each(function () {
-            filename.push(this.href.replace(window.location.host, "").replace("http:///", ""));
-// $("body").append($("<img src=" + dir + filename + "></img>"));
-		})
+
+var data = [1, 5, 9, 1, 1,3]
+
+  var w = 1200,
+      h = 800,
+      margin = 25;
+    
+// var drag = d3.behavior.drag()
+//     .on("drag", function() {
+//         var clippy = d3.select('#clip circle');
+//         clippy.attr('cx', +clippy.attr('cx') + d3.event.dx);
+//         clippy.attr('cy', +clippy.attr('cy') + d3.event.dy);
+//     });
+
+  var svg = d3.select("body")
+    .append("svg")
+      .attr("width", w)
+      .attr("height", h)
+var suns = svg.append("g")
+            .attr("id","sky")
+             .selectAll("img").data(data)
+                .enter()
+                .append("svg:image")
+//Define clipping path
+suns.append("clipPath")                  //Make a new clipPath
+    .attr("id", "chart-area")           //Assign an ID
+    .append("rect")                     //Within the clipPath, create a new rect
+    .attr("x", function(d,i){
+        console.log(i)
+        return i*100;
+    })                 //Set rect's position and size…
+    .attr("y", 100)
+    .attr("width", 100)
+    .attr("height", 10);
+
+suns
+            .attr("clip-path", "url(#chart-area)") 
+                .attr("xlink:href", function(d,i){
+                    return "images/sky"+i+".jpg";
+                })
+                .attr("x", function(d,i){
+                    return i*100;
+                })
+                .attr("y", 100)
+                .attr("width", 100)
+                .attr("height", 100);
 
 
-                var canvas = document.getElementById("myCanvas");
-                var ctx = canvas.getContext("2d");
-				var image = new Image();
-				for (i=0; i<filename.length; i++){
-				image.src = dir + filename[i];//"sky.jpg";
-				}
-				$(image).load(function() {
-				    // ctx.drawImage(image, 400, 400);
-				    var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-				    var pixels = imageData.data;
-				    var numPixels = imageData.width * imageData.height;
-				 	for (i=0; i<filename.length; i++){
-				    //we take a square that is 10 by 10 from the top most corner and draw it at 200 by 200
-						ctx.drawImage(image, 0, 140, 10, 10,i*100, 0, 100, 100);
-					}
-				});
-			// }
-            // });
+// $.ajax({
+//     //This will retrieve the contents of the folder if the folder is configured as 'browsable'
+//     url: dir,
+//     success: function (data) {
+//         //Lsit all png file names in the page
+//         $(data).find("a:contains(" + fileextension + ")").each(function () {
+//             filename.push(this.href.replace(window.location.host, "").replace("http:///", ""));
+// // $("body").append($("<img src=" + dir + filename + "></img>"));
+// 		})
 
 
-        // });
-}
-    })
+//                 var canvas = document.getElementById("myCanvas");
+//                 var ctx = canvas.getContext("2d");
+// 				var image = new Image();
+// 				for (i=0; i<filename.length; i++){
+// 				image.src = dir + filename[i];//"sky.jpg";
+// 				}
+// 				$(image).load(function() {
+// 				    // ctx.drawImage(image, 400, 400);
+// 				    var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+// 				    var pixels = imageData.data;
+// 				    var numPixels = imageData.width * imageData.height;
+// 				 	for (i=0; i<filename.length; i++){
+// 				    //we take a square that is 10 by 10 from the top most corner and draw it at 200 by 200
+// 						ctx.drawImage(image, 0, 140, 10, 10,i*100, 0, 100, 100);
+// 					}
+// 				});
+// 			// }
+//             // });
+
+
+//         // });
+// }
+//     })
 });
         </script>
     </head>
- 
-    <body>
-        <canvas id="myCanvas" width="1300" height="800">
+ </body>
+    <!-- <body> -->
+        <!-- <canvas id="myCanvas" width="1300" height="800"> -->
             <!-- Insert fallback content here -->
-        </canvas>
-    </body>
+        <!-- </canvas> -->
+    <!-- </body> -->
 </html>
 
 
