@@ -6,61 +6,108 @@
         <meta charset="utf-8">
  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js" charset="utf-8"></script>
 
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
         <body>
 
         <script>
-            $(document).ready(function() {
-var dir = "images/";
-var fileextension = ".jpg";
 
-var filename = [];
+$(document).ready(function() {
 
-var data = [1, 5, 9, 1, 1,3]
+$.getJSON("https://spreadsheets.google.com/feeds/list/1Ds8TAVMTrV8jFZovhnOWe4OxuehaeXlOAhyrlugI4ss/od6/public/values?alt=json", function(data) {
+    console.log(data.feed.entry.length);
+    var dataLength = data.feed.entry.length;
+  //first row "title" column
+for(i=0; i<dataLength; i++){
+  console.log(data.feed.entry[i]['gsx$caption']['$t'])
+}
+});
+})
 
-  var w = 1200,
-      h = 800,
-      margin = 25;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// var dir = "images/";
+// var fileextension = ".jpg";
+
+// var filename = [];
+
+// var data = [1, 5, 9, 1, 1,3]
+
+//   var w = 1200,
+//       h = 800,
+//       margin = 25;
     
-// var drag = d3.behavior.drag()
-//     .on("drag", function() {
-//         var clippy = d3.select('#clip circle');
-//         clippy.attr('cx', +clippy.attr('cx') + d3.event.dx);
-//         clippy.attr('cy', +clippy.attr('cy') + d3.event.dy);
-//     });
+// // var drag = d3.behavior.drag()
+// //     .on("drag", function() {
+// //         var clippy = d3.select('#clip circle');
+// //         clippy.attr('cx', +clippy.attr('cx') + d3.event.dx);
+// //         clippy.attr('cy', +clippy.attr('cy') + d3.event.dy);
+// //     });
 
-  var svg = d3.select("body")
-    .append("svg")
-      .attr("width", w)
-      .attr("height", h)
-var suns = svg.append("g")
-            .attr("id","sky")
-             .selectAll("img").data(data)
-                .enter()
-                .append("svg:image")
-//Define clipping path
-suns.append("clipPath")                  //Make a new clipPath
-    .attr("id", "chart-area")           //Assign an ID
-    .append("rect")                     //Within the clipPath, create a new rect
-    .attr("x", function(d,i){
-        console.log(i)
-        return i*100;
-    })                 //Set rect's position and size…
-    .attr("y", 100)
-    .attr("width", 100)
-    .attr("height", 10);
+//   var svg = d3.select("body")
+//     .append("svg")
+//       .attr("width", w)
+//       .attr("height", h)
+// var suns = svg.append("g")
+//             .attr("id","sky")
+//              .selectAll("img").data(data)
+//                 .enter()
+//                 .append("svg:image")
+// //Define clipping path
+// suns.append("clipPath")                  //Make a new clipPath
+//     .attr("id", "chart-area")           //Assign an ID
+//     .append("rect")                     //Within the clipPath, create a new rect
+//     .attr("x", function(d,i){
+//         console.log(i)
+//         return i*100;
+//     })                 //Set rect's position and size…
+//     .attr("y", 100)
+//     .attr("width", 100)
+//     .attr("height", 10);
 
-suns
-            .attr("clip-path", "url(#chart-area)") 
-                .attr("xlink:href", function(d,i){
-                    return "images/sky"+i+".jpg";
-                })
-                .attr("x", function(d,i){
-                    return i*100;
-                })
-                .attr("y", 100)
-                .attr("width", 100)
-                .attr("height", 100);
+// suns
+//             .attr("clip-path", "url(#chart-area)") 
+//                 .attr("xlink:href", function(d,i){
+//                     return "images/sky"+i+".jpg";
+//                 })
+//                 .attr("x", function(d,i){
+//                     return i*100;
+//                 })
+//                 .attr("y", 100)
+//                 .attr("width", 100)
+//                 .attr("height", 100);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // $.ajax({
@@ -97,7 +144,7 @@ suns
 //         // });
 // }
 //     })
-});
+// });
         </script>
     </head>
  </body>
