@@ -17,9 +17,9 @@ $.getJSON("https://spreadsheets.google.com/feeds/list/1Ds8TAVMTrV8jFZovhnOWe4Oxu
     console.log(data.feed.entry.length);
     var dataLength = data.feed.entry.length;
   //first row "title" column
-for(i=0; i<dataLength; i++){
-  console.log(data.feed.entry[i]['gsx$caption']['$t'])
-}
+    for(i=0; i<dataLength; i++){
+      console.log(data.feed.entry[i]['gsx$caption']['$t'])
+    }
 });
 })
 
