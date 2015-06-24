@@ -8,29 +8,107 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 </head>
+<style>
+.results img {
+  width:33.3%;
+  float:left;
+  display:block;
+}
+
+</style>
         <body>
             <div class="results"></div> 
         <script>
 var entry = [];
 $(document).ready(function() {
 
+// $.getJSON("https://spreadsheets.google.com/feeds/list/1Ds8TAVMTrV8jFZovhnOWe4OxuehaeXlOAhyrlugI4ss/od6/public/values?alt=json", function(data) {
+//     console.log(data.feed.entry.length);
+//     var dataLength = data.feed.entry.length;
+//   //first row "title" column
+//     for(i=0; i<dataLength; i++){
+//       console.log(data.feed.entry[i]['gsx$imageurl']['$t'])//data.feed.entry[i]['gsx$caption']['$t'])
+//         $('.results').prepend('<img src="'+ data.feed.entry[i]['gsx$imageurl']['$t']+'" alt="'+data.feed.entry[i]['gsx$caption']['$t']+'"/>');
+//     }
+
+//    entry = data.feed.entry;
+//     console.log(entry)
+// });
+// })
+
+
+
+
+
+
+
+
+
 $.getJSON("https://spreadsheets.google.com/feeds/list/1Ds8TAVMTrV8jFZovhnOWe4OxuehaeXlOAhyrlugI4ss/od6/public/values?alt=json", function(data) {
     console.log(data.feed.entry.length);
     var dataLength = data.feed.entry.length;
   //first row "title" column
-    for(i=0; i<dataLength; i++){
-      console.log(data.feed.entry[i]['gsx$imageurl']['$t'])//data.feed.entry[i]['gsx$caption']['$t'])
-        $('.results').prepend('<img src="'+ data.feed.entry[i]['gsx$imageurl']['$t']+'" alt="'+data.feed.entry[i]['gsx$caption']['$t']+'"/>');
-    }
+    // for(i=0; i<dataLength; i++){
+    //   console.log(data.feed.entry[i]['gsx$imageurl']['$t'])//data.feed.entry[i]['gsx$caption']['$t'])
+    //     $('.results').prepend('<img src="'+ data.feed.entry[i]['gsx$imageurl']['$t']+'" alt="'+data.feed.entry[i]['gsx$caption']['$t']+'"/>');
+    // }
 
    entry = data.feed.entry;
-console.log(entry)
-// console.log(entry['gsx$imageurl'])
-//         $(entry).each(function(){
-//         $('.results').prepend('<img src="'+ this.gsx$image.$t+'" alt="'+this.gsx$caption.$t+'"/>');
-//         });
+    console.log(entry)
+
+var dir = "images/";
+var fileextension = ".jpg";
+
+var filename = [];
+
+var numbers = [1, 5, 9, 1, 1,3]
+
+  var w = 1200,
+      h = 800,
+      margin = 25;
+
+  var svg = d3.select("body")
+    .append("svg")
+      .attr("width", w)
+      .attr("height", h)
+var suns = svg.append("g")
+            .attr("id","sky")
+             .selectAll("img").data(numbers)
+                .enter()
+                .append("svg:image")
+//Define clipping path
+suns.append("clipPath")                  //Make a new clipPath
+    .attr("id", "chart-area")           //Assign an ID
+    .append("rect")                     //Within the clipPath, create a new rect
+    .attr("x", function(d,i){
+        console.log(i)
+        return i*100;
+    })                 //Set rect's position and size…
+    .attr("y", 100)
+    .attr("width", 100)
+    .attr("height", 10);
+
+            suns
+            .attr("clip-path", "url(#chart-area)") 
+                .attr("xlink:href", function(d,i){
+                    return data.feed.entry[0]['gsx$imageurl']['$t'];
+                })
+                .attr("x", function(d,i){
+                    return i*100;
+                })
+                .attr("y", 100)
+                .attr("width", 100)
+                .attr("height", 100);
+
 });
 })
+
+
+
+
+
+
+
 
 
 

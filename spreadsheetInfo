@@ -1,0 +1,18 @@
+https://docs.google.com/spreadsheets/d/1Ds8TAVMTrV8jFZovhnOWe4OxuehaeXlOAhyrlugI4ss/pubhtml
+
+1Ds8TAVMTrV8jFZovhnOWe4OxuehaeXlOAhyrlugI4ss
+
+https://spreadsheets.google.com/feeds/list/1Ds8TAVMTrV8jFZovhnOWe4OxuehaeXlOAhyrlugI4ss
+/od6/public/values?alt=json-in-script&callback= 
+
+https://spreadsheets.google.com/feeds/list/1Ds8TAVMTrV8jFZovhnOWe4OxuehaeXlOAhyrlugI4ss
+/od6/public/values?alt=json
+
+
+
+
+$.getJSON("http://cors.io/spreadsheets.google.com/feeds/list/1Ds8TAVMTrV8jFZovhnOWe4OxuehaeXlOAhyrlugI4ss
+/od6/public/values?alt=json", function(data) {
+  //first row "title" column
+  console.log(data.feed.entry[0]['gsx$title']['$t']);
+});
