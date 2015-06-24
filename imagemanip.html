@@ -1,16 +1,17 @@
 <!DOCTYPE html>
  
 <html>
-    <hsead>
-        <title>Canvas from scratch</title>
+    <head>
+        <title>IMAGES</title>
         <meta charset="utf-8">
  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js" charset="utf-8"></script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+</head>
         <body>
-
+            <div class="results"></div> 
         <script>
-
+var entry = [];
 $(document).ready(function() {
 
 $.getJSON("https://spreadsheets.google.com/feeds/list/1Ds8TAVMTrV8jFZovhnOWe4OxuehaeXlOAhyrlugI4ss/od6/public/values?alt=json", function(data) {
@@ -18,8 +19,16 @@ $.getJSON("https://spreadsheets.google.com/feeds/list/1Ds8TAVMTrV8jFZovhnOWe4Oxu
     var dataLength = data.feed.entry.length;
   //first row "title" column
     for(i=0; i<dataLength; i++){
-      console.log(data.feed.entry[i]['gsx$caption']['$t'])
+      console.log(data.feed.entry[i]['gsx$imageurl']['$t'])//data.feed.entry[i]['gsx$caption']['$t'])
+        $('.results').prepend('<img src="'+ data.feed.entry[i]['gsx$imageurl']['$t']+'" alt="'+data.feed.entry[i]['gsx$caption']['$t']+'"/>');
     }
+
+   entry = data.feed.entry;
+console.log(entry)
+// console.log(entry['gsx$imageurl'])
+//         $(entry).each(function(){
+//         $('.results').prepend('<img src="'+ this.gsx$image.$t+'" alt="'+this.gsx$caption.$t+'"/>');
+//         });
 });
 })
 
@@ -146,7 +155,6 @@ $.getJSON("https://spreadsheets.google.com/feeds/list/1Ds8TAVMTrV8jFZovhnOWe4Oxu
 //     })
 // });
         </script>
-    </head>
  </body>
     <!-- <body> -->
         <!-- <canvas id="myCanvas" width="1300" height="800"> -->
