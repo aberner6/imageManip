@@ -41,27 +41,46 @@ $(document).ready(function() {
 
 
 
+// buttons//https://docs.google.com/spreadsheets/d/1iWrQh4Pc1G7DkyTCJGy2QLSI4sqnCRtjMbxOMh1b2tQ/pubhtml
+//insta// https://docs.google.com/spreadsheets/d/1N3WwbYtqSnsFMAKI73gwBy8gwb2llrCtD0CitOiky4/pubhtml
+// https://docs.google.com/spreadsheets/d/1N3WwbYtqSnsFMAKI73gwBy8gwb2l-lrCtD0CitOiky4/pubhtml
+
+
+//buttons json
+// https://spreadsheets.google.com/feeds/list/1iWrQh4Pc1G7DkyTCJGy2QLSI4sqnCRtjMbxOMh1b2tQ/od6/public/values?alt=json
+// https://docs.google.com/spreadsheets/d/1iWrQh4Pc1G7DkyTCJGy2QLSI4sqnCRtjMbxOMh1b2tQ/pubhtml
+$.getJSON("https://spreadsheets.google.com/feeds/list/1iWrQh4Pc1G7DkyTCJGy2QLSI4sqnCRtjMbxOMh1b2tQ/od6/public/values?alt=json", function(data) {
+    console.log(data.feed);
+
+})
+// })
 
 
 
-$.getJSON("https://spreadsheets.google.com/feeds/list/1Ds8TAVMTrV8jFZovhnOWe4OxuehaeXlOAhyrlugI4ss/od6/public/values?alt=json", function(data) {
-    console.log(data.feed.entry.length);
-    var dataLength = data.feed.entry.length;
-  //first row "title" column
-    // for(i=0; i<dataLength; i++){
-    //   console.log(data.feed.entry[i]['gsx$imageurl']['$t'])//data.feed.entry[i]['gsx$caption']['$t'])
-    //     $('.results').prepend('<img src="'+ data.feed.entry[i]['gsx$imageurl']['$t']+'" alt="'+data.feed.entry[i]['gsx$caption']['$t']+'"/>');
-    // }
+// https://docs.google.com/spreadsheets/d/1XX6jJc4uu4PsNp7JvQ4dZ8K9cIFnheQbqOe4QQsfZdE/pubhtml
+// https://docs.google.com/spreadsheets/d/1XX6jJc4uu4PsNp7JvQ4dZ8K9cIFnheQbqOe4QQsfZdE/pubhtml
+$.getJSON("https://spreadsheets.google.com/feeds/list/1XX6jJc4uu4PsNp7JvQ4dZ8K9cIFnheQbqOe4QQsfZdE/od6/public/values?alt=json", function(data) {
+    console.log(data.feed.entry.length)
+                    for(j=0; j<data.feed.entry.length; j++){
+                        console.log(data.feed.entry[j]['gsx$imageurl']['$t']);
+                    }
+
+//     var dataLength = data.feed.entry.length;
+//   //first row "title" column
+//     // for(i=0; i<dataLength; i++){
+//     //   console.log(data.feed.entry[i]['gsx$imageurl']['$t'])//data.feed.entry[i]['gsx$caption']['$t'])
+//     //     $('.results').prepend('<img src="'+ data.feed.entry[i]['gsx$imageurl']['$t']+'" alt="'+data.feed.entry[i]['gsx$caption']['$t']+'"/>');
+//     // }
 
    entry = data.feed.entry;
-    console.log(entry)
+    console.log(entry.length+"length")
 
-var dir = "images/";
-var fileextension = ".jpg";
+// var dir = "images/";
+// var fileextension = ".jpg";
 
-var filename = [];
+// var filename = [];
 
-var numbers = [1, 5, 9, 1, 1,3]
+// var numbers = [1, 5, 9, 1, 1,3]
 
   var w = 1200,
       h = 800,
@@ -73,7 +92,7 @@ var numbers = [1, 5, 9, 1, 1,3]
       .attr("height", h)
 var suns = svg.append("g")
             .attr("id","sky")
-             .selectAll("img").data(numbers)
+             .selectAll("img").data(data.feed.entry)
                 .enter()
                 .append("svg:image")
 //Define clipping path
@@ -86,12 +105,15 @@ suns.append("clipPath")                  //Make a new clipPath
     })                 //Set rect's position and size…
     .attr("y", 100)
     .attr("width", 100)
-    .attr("height", 10);
+    .attr("height", 100);
 
             suns
             .attr("clip-path", "url(#chart-area)") 
                 .attr("xlink:href", function(d,i){
-                    return data.feed.entry[0]['gsx$imageurl']['$t'];
+                    // for(j=0; j<data.feed.entry.length; j++){
+                        // console.log(j);
+                        return data.feed.entry[i]['gsx$imageurl']['$t'];
+                    // }
                 })
                 .attr("x", function(d,i){
                     return i*100;
