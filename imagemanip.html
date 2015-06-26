@@ -55,7 +55,7 @@ if(but1.length>1){
     maxdate = parseDate(but1[totalButton1-1].timeIs);
 var x = d3.time.scale()
     .domain([mindate, maxdate])
-    .range([0, w]);
+    .range([10, w-10]);
 
                 var but1Circ = svg.append("g")
                     .selectAll("circle").data(but1)
