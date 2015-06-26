@@ -21,29 +21,89 @@
 <body>
     <div class="results"></div>
     <script>
-        $(document).ready(function() {
-
+    var totalButton1 = 0;
+    var but1=[];
+    var totalButton2 = 0;
+    var totalButton3 = 0;
+    var totalButton4 = 0;
+    var totalButton5 = 0;
           var w = 1200,
               h = 800,
               margin = 25;
                 var svg = d3.select("body")
                     .append("svg")
                     .attr("width", w)
-                    .attr("height", h)
+                    .attr("height", h);
+var parseDate = d3.time.format('%B %d, %Y %I:%M%p').parse;
+
+
+var mindate, maxdate;
+        $(document).ready(function() {
 
             $.getJSON("https://spreadsheets.google.com/feeds/list/1iWrQh4Pc1G7DkyTCJGy2QLSI4sqnCRtjMbxOMh1b2tQ/od6/public/values?alt=json", function(data) {
-                var button = svg.append("g")
-                    .selectAll("circle").data(data.feed.entry)
+                // var parseDate = d3.time.format('%B %d, %Y %I:%M%p').parse;
+
+                for(i=0; i<data.feed.entry.length; i++){
+                         if(data.feed.entry[i]['gsx$button']['$t']=="button1"){
+                            totalButton1++;
+                            but1.push({"total":totalButton1, "timeIs":data.feed.entry[i]['gsx$timestamp']['$t'].replace(" at",'')})
+
+                        }
+                    }
+if(but1.length>1){
+    mindate = parseDate(but1[0].timeIs);
+    maxdate = parseDate(but1[totalButton1-1].timeIs);
+var x = d3.time.scale()
+    .domain([mindate, maxdate])
+    .range([0, w]);
+
+                var but1Circ = svg.append("g")
+                    .selectAll("circle").data(but1)
                     .enter()
                     .append("svg:circle")
-
-                button
-                    .attr("cx", function(d, i) {
-                        if(data.feed.entry[i]['gsx$button']['$t']=="button1"){
-                            console.log("yes")
-                        }
-                        console.log(data.feed.entry[i]['gsx$button']['$t']);
+                    .attr("class", "button1")
+                    .attr("cx", function(d,i){
+                        // console.log(d.timeIs);
+                        return x(parseDate(d.timeIs));//scale based on d.time
                     })
+                    .attr("cy", 50)
+                    .attr("r", 10)
+                    .attr("fill","aquamarine")
+                    .attr("opacity",.5)
+                }
+                // var button = svg.append("g")
+                //     .selectAll("circle").data(data.feed.entry)
+                //     .enter()
+                //     .append("svg:circle")
+                //     .attr("class", function(d,i){
+                //          if(data.feed.entry[i]['gsx$button']['$t']=="button1"){
+                //             totalButton1++;
+                //             but1.push({"total":totalButton1, "time":data.feed.entry[i]['gsx$timestamp']['$t']})
+                //             return "buttonCirc1";                       
+                //         }
+                //         if(data.feed.entry[i]['gsx$button']['$t']=="button2"){
+                //             totalButton2++;
+                //             return "buttonCirc2";                       
+                //         }
+                //         if(data.feed.entry[i]['gsx$button']['$t']=="button3"){
+                //             totalButton3++;
+                //             return "buttonCirc3";
+                //         }
+                //         if(data.feed.entry[i]['gsx$button']['$t']=="button4"){
+                //             totalButton4++;
+                //             return "buttonCirc4";
+                //         }
+                //         if(data.feed.entry[i]['gsx$button']['$t']=="button5"){
+                //             totalButton5++;
+                //             return "buttonCirc5";
+                //         }
+                //     })
+
+                // button
+                //     .attr("cx", function(d, i) {
+
+                //     })
+
                 })
                 // })
 
