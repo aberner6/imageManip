@@ -234,6 +234,16 @@ var parseDateBT = d3.time.format('%a %B %e %I:%M:%S').parse;
 var maxActivity = 100;
 var minActivity = 0;
 var distData = [];
+var names = [];
+var uniqueNames = [];
+var zeroBT = [];
+var oneBT = [];
+var twoBT = [];
+var threeBT = [];
+var fourBT = [];
+var fiveBT = [];
+var sixBT = [];
+
 function doBT(){
 $.getJSON("https://spreadsheets.google.com/feeds/list/1CK2L-NwoswZ9l4-MU4tbu-bwt3eI1Oot_bbXkuFNl8c/od6/public/values?alt=json", function(data) {
 // $.getJSON("https://spreadsheets.google.com/feeds/list/1fx3ebJuZCrpjfqxg8GwPauwpjqs43Y6fEmmtTPEUfzE/od6/public/values?alt=json", function(data) {
@@ -257,16 +267,20 @@ $.getJSON("https://spreadsheets.google.com/feeds/list/1CK2L-NwoswZ9l4-MU4tbu-bwt
             "timeIs": data.feed.entry[j]['gsx$timestamp']['$t'],//.replace(" at", '')
             "dist": data.feed.entry[j]['gsx$dist']['$t']
         })
+        names.push(data.feed.entry[j]['gsx$device']['$t']);
         if(parseInt(data.feed.entry[j]['gsx$dist']['$t'])<0){
             distData.push((parseInt(data.feed.entry[j]['gsx$dist']['$t']))*-1);
         }
+    $.each(names, function(i, el){
+        if($.inArray(el, uniqueNames) === -1){
+         uniqueNames.push(el);  
+        }
+    });
     }
     if(storeBT.length>0){
                     mindateBT = parseDateBT(storeBT[0].timeIs);
                     maxdateBT = parseDateBT(storeBT[storeBT.length-1].timeIs)//Date.now(); //parseDate(thisTime[data.feed.entry.length - 1]);
-                    
                                   
-
                     minActivity = d3.min(d3.values(distData)); 
                     maxActivity = d3.max(d3.values(distData)); 
                     
@@ -278,10 +292,18 @@ $.getJSON("https://spreadsheets.google.com/feeds/list/1CK2L-NwoswZ9l4-MU4tbu-bwt
                         .domain([mindateBT, maxdateBT])
                         .range([100, w - 100]);
                     // Fri May 22 11:34:30
-
+    // for(i=0; i<storeBT.length; i++){
+    //     for(j=0; j<uniqueNames.length; j++){
+    //         if(storeBT[i].device==uniqueNames[j]){
+    //             allBT[j]=(storeBT[i]);
+    //         }
+    //     }        
+    // }
                     // var minActivity = -65;
         }
     if(mindateBT){
+        var color = d3.scale.category20();
+
                     var btDist = svg.append("g").attr("class","BT")
                         .selectAll("circle").data(storeBT)
                         .enter()
@@ -296,14 +318,108 @@ $.getJSON("https://spreadsheets.google.com/feeds/list/1CK2L-NwoswZ9l4-MU4tbu-bwt
                             if(isNaN(d.dist)){
                                 return h*2;
                             }else{
-                                // console.log(maxActivity)
                                 return yScaleBT(parseInt(d.dist)*-1);
-                                //(centerline)+(parseInt(d.dist));
                             }
                         })
-                        .attr("r", 3)
-                        .attr("fill", "pink")
-                        .attr("opacity", .5)
+                        .attr("r", 2)
+                        .attr("fill", function(d,i){
+                            for(j=0; j<uniqueNames.length; j++){
+                                if(d.device==uniqueNames[j]){
+                                    // allBT[j] = d;
+                                    return color(j);
+                                    // return "rgb(0, 0, " + (j * 100) + ")";
+                                }
+                            }
+                        })
+                        .attr("opacity", .5);
+
+
+
+//This is the accessor function we talked about above
+ var lineFunction = d3.svg.line()
+                    .x(function(d) { 
+                        return xScaleBT(parseDateBT(d.timeIs)); 
+                    })
+                    .y(function(d) { 
+                            if(isNaN(d.dist)){
+                                return h*2;
+                            }else{
+                                return yScaleBT(parseInt(d.dist)*-1);
+                            }
+                        // return d.y; 
+                    })
+                    .interpolate("linear");
+    for(i=0; i<storeBT.length; i++){
+        // for(j=0; j<uniqueNames.length; j++){
+            if(storeBT[i].device==uniqueNames[0]){
+                zeroBT.push(storeBT[i]);
+            }
+            if(storeBT[i].device==uniqueNames[1]){
+                oneBT.push(storeBT[i]);
+            }
+            if(storeBT[i].device==uniqueNames[2]){
+                twoBT.push(storeBT[i]);
+            }
+            if(storeBT[i].device==uniqueNames[3]){
+                threeBT.push(storeBT[i]);
+            }
+            if(storeBT[i].device==uniqueNames[4]){
+                fourBT.push(storeBT[i]);
+            }
+            if(storeBT[i].device==uniqueNames[5]){
+                fiveBT.push(storeBT[i]);
+            }
+            if(storeBT[i].device==uniqueNames[6]){
+                sixBT.push(storeBT[i]);
+            }
+            // if(storeBT[i].device==uniqueNames[7]){
+            //     oneBT.push(storeBT[i]);
+            // }
+        // }
+        } 
+        var strokePath = .5;
+//The line SVG Path we draw
+var lineGraph = svg.append("path")
+                    .attr("d", lineFunction(zeroBT))
+                    .attr("stroke", color(0))
+                    .attr("stroke-width", strokePath)
+                    .attr("fill", "none");
+//The line SVG Path we draw
+var lineGraph = svg.append("path")
+                    .attr("d", lineFunction(oneBT))
+                    .attr("stroke", color(1))
+                    .attr("stroke-width", strokePath)
+                    .attr("fill", "none");
+//The line SVG Path we draw
+var lineGraph = svg.append("path")
+                    .attr("d", lineFunction(twoBT))
+                    .attr("stroke", color(2))
+                    .attr("stroke-width", strokePath)
+                    .attr("fill", "none");
+//The line SVG Path we draw
+var lineGraph = svg.append("path")
+                    .attr("d", lineFunction(threeBT))
+                    .attr("stroke", color(3))
+                    .attr("stroke-width", strokePath)
+                    .attr("fill", "none");
+//The line SVG Path we draw
+var lineGraph = svg.append("path")
+                    .attr("d", lineFunction(fourBT))
+                    .attr("stroke", color(4))
+                    .attr("stroke-width", strokePath)
+                    .attr("fill", "none");
+//The line SVG Path we draw
+var lineGraph = svg.append("path")
+                    .attr("d", lineFunction(fiveBT))
+                    .attr("stroke", color(5))
+                    .attr("stroke-width", strokePath)
+                    .attr("fill", "none");
+//The line SVG Path we draw
+var lineGraph = svg.append("path")
+                    .attr("d", lineFunction(sixBT))
+                    .attr("stroke", color(6))
+                    .attr("stroke-width", strokePath)
+                    .attr("fill", "none");                    
         }   
     })
 }
