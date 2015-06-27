@@ -57,6 +57,7 @@ var storeThis = [];
         var parseDate = d3.time.format('%B %d, %Y %I:%M%p').parse;
         var mindate, maxdate, xScale;
         var xAxis = d3.svg.axis();
+        var yAxis = d3.svg.axis();
 
 var centerline = h/1.5-padding;
 
@@ -105,16 +106,17 @@ var parseDateBT = d3.time.format('%a %B %e %I:%M:%S').parse;
                         .enter()
                         .append("svg:image")
                         //Define clipping path
-                    suns.append("clipPath") //Make a new clipPath
-                        .attr("id", "chart-area") //Assign an ID
-                        .append("rect") //Within the clipPath, create a new rect
-                        .attr("x", function(d, i) {
-                            console.log(i)
-                            return i * 100;
-                        }) //Set rect's position and size…
-                        .attr("y", 100)
-                        .attr("width", 10)
-                        .attr("height", 10);
+                    // suns.append("clipPath") //Make a new clipPath
+                    //     .attr("id", "chart-area") //Assign an ID
+                    //     .append("rect") //Within the clipPath, create a new rect
+                    //     .attr("x", function(d, i) {
+                    //         console.log(i)
+                    //         return i * 100;
+                    //     }) //Set rect's position and size…
+                    //     .attr("y", 100)
+                    //     .attr("width", 10)
+                    //     .attr("height", 10)
+
 
                     var imgLine = svg.append("g")
                         .selectAll("line").data(data.feed.entry)
@@ -143,7 +145,21 @@ var parseDateBT = d3.time.format('%a %B %e %I:%M:%S').parse;
                         })
                         .attr("y", h/2 + 200)
                         .attr("width", 50)
-                        .attr("height", 50);
+                        .attr("height", 50)
+                        .on("mouseover", function(d){
+                            d3.select(this)
+                            .transition()
+                        .attr("y", h/2)                            
+                            .attr("width",200)
+                            .attr("height",200)
+                        })
+                        .on("mouseout", function(d){
+                            d3.select(this)
+                            .transition()
+                        .attr("y", h/2 + 200)
+                            .attr("width",50)
+                            .attr("height",50)
+                        })
                 }
                 doButton();
             });
@@ -243,6 +259,9 @@ var threeBT = [];
 var fourBT = [];
 var fiveBT = [];
 var sixBT = [];
+var sevenBT = [];
+
+var specialBT = [];
 
 function doBT(){
 $.getJSON("https://spreadsheets.google.com/feeds/list/1CK2L-NwoswZ9l4-MU4tbu-bwt3eI1Oot_bbXkuFNl8c/od6/public/values?alt=json", function(data) {
@@ -290,6 +309,14 @@ $.getJSON("https://spreadsheets.google.com/feeds/list/1CK2L-NwoswZ9l4-MU4tbu-bwt
                     yScaleBT = d3.scale.linear()
                      .domain([minActivity, maxActivity])
                      .range([centerline, centerline/2]) 
+                    yAxis
+                        .scale(yScaleBT)
+                        .orient("left")
+                        .ticks(4);
+                    svg.append("g")
+                        .attr("class", "axis") //Assign "axis" class
+                        .attr("transform", "translate(100," + (0) + ")")
+                        .call(yAxis);
 
                     xScaleBT = d3.time.scale()
                         .domain([mindateBT, maxdateBT])
@@ -306,6 +333,18 @@ $.getJSON("https://spreadsheets.google.com/feeds/list/1CK2L-NwoswZ9l4-MU4tbu-bwt
         }
     if(mindateBT){
         var color = d3.scale.category20();
+var rect = svg.append("g").attr("class","BTRect")
+                // .selectAll("rect")
+                .append("svg:rect")
+                .attr("class", "btRect")
+                .attr("x",xScaleBT(mindateBT))
+                .attr("y",yScaleBT(65))
+                .attr("width", xScaleBT(maxdateBT)-xScaleBT(mindateBT))
+                .attr("height", yScaleBT(60)-yScaleBT(70))
+                .attr("fill","grey")
+                .attr("opacity",.1)
+
+
 
                     var btDist = svg.append("g").attr("class","BT")
                         .selectAll("circle").data(storeBT)
@@ -352,7 +391,11 @@ $.getJSON("https://spreadsheets.google.com/feeds/list/1CK2L-NwoswZ9l4-MU4tbu-bwt
                         // return d.y; 
                     })
                     .interpolate("linear");
+
     for(i=0; i<storeBT.length; i++){
+        if(storeBT[i].dist< -65){
+            specialBT.push(storeBT[i])
+        }
         // for(j=0; j<uniqueNames.length; j++){
             if(storeBT[i].device==uniqueNames[0]){
                 zeroBT.push(storeBT[i]);
@@ -374,6 +417,9 @@ $.getJSON("https://spreadsheets.google.com/feeds/list/1CK2L-NwoswZ9l4-MU4tbu-bwt
             }
             if(storeBT[i].device==uniqueNames[6]){
                 sixBT.push(storeBT[i]);
+            }
+            if(storeBT[i].device==uniqueNames[7]){
+                sevenBT.push(storeBT[i]);
             }
             // if(storeBT[i].device==uniqueNames[7]){
             //     oneBT.push(storeBT[i]);
@@ -423,6 +469,12 @@ var lineGraph = svg.append("path")
                     .attr("stroke", color(6))
                     .attr("stroke-width", strokePath)
                     .attr("fill", "none");                    
+ //The line SVG Path we draw
+var lineGraph = svg.append("path")
+                    .attr("d", lineFunction(sevenBT))
+                    .attr("stroke", color(7))
+                    .attr("stroke-width", strokePath)
+                    .attr("fill", "none"); 
         }   
     })
 }
