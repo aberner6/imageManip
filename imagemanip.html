@@ -58,7 +58,7 @@ var storeThis = [];
         var mindate, maxdate, xScale;
         var xAxis = d3.svg.axis();
 
-var centerline = h/2-padding;
+var centerline = h/1.5-padding;
 
 var mindateBT, maxdateBT, xScaleBT, yScaleBT;
 var parseDateBT = d3.time.format('%a %B %e %I:%M:%S').parse;
@@ -262,11 +262,14 @@ $.getJSON("https://spreadsheets.google.com/feeds/list/1CK2L-NwoswZ9l4-MU4tbu-bwt
     // storeThis.push(data.feed.entry)
     // console.log(d);
     for (j = 0; j < data.feed.entry.length; j++) {
-        storeBT.push({
-            "device": data.feed.entry[j]['gsx$device']['$t'],
-            "timeIs": data.feed.entry[j]['gsx$timestamp']['$t'],//.replace(" at", '')
-            "dist": data.feed.entry[j]['gsx$dist']['$t']
-        })
+        if(parseInt(data.feed.entry[j]['gsx$dist']['$t'])<0){
+
+            storeBT.push({
+                "device": data.feed.entry[j]['gsx$device']['$t'],
+                "timeIs": data.feed.entry[j]['gsx$timestamp']['$t'],//.replace(" at", '')
+                "dist": data.feed.entry[j]['gsx$dist']['$t']
+            })
+        }else{}
         names.push(data.feed.entry[j]['gsx$device']['$t']);
         if(parseInt(data.feed.entry[j]['gsx$dist']['$t'])<0){
             distData.push((parseInt(data.feed.entry[j]['gsx$dist']['$t']))*-1);
@@ -286,7 +289,7 @@ $.getJSON("https://spreadsheets.google.com/feeds/list/1CK2L-NwoswZ9l4-MU4tbu-bwt
                     
                     yScaleBT = d3.scale.linear()
                      .domain([minActivity, maxActivity])
-                     .range([centerline, centerline*2]) 
+                     .range([centerline, centerline/2]) 
 
                     xScaleBT = d3.time.scale()
                         .domain([mindateBT, maxdateBT])
