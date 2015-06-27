@@ -12,151 +12,358 @@
 </head>
 <style>
     .results img {
-        width: 33.3%;
+        width: 10%;
         float: left;
         display: block;
+    }
+    
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: black;
+        shape-rendering: crispEdges;
+    }
+    
+    .axis text {
+        font-family: sans-serif;
+        font-size: 11px;
     }
 </style>
 
 <body>
     <div class="results"></div>
     <script>
-    var totalButton1 = 0;
-    var but1=[];
-    var totalButton2 = 0;
-    var totalButton3 = 0;
-    var totalButton4 = 0;
-    var totalButton5 = 0;
-          var w = 1200,
-              h = 800,
-              margin = 25;
-                var svg = d3.select("body")
-                    .append("svg")
-                    .attr("width", w)
-                    .attr("height", h);
-var parseDate = d3.time.format('%B %d, %Y %I:%M%p').parse;
+        var totalButton1 = 0;
+        var but1 = [];
+        var uniques = [];
+var storeBT = [];
+var storeThis = [];
 
 
-var mindate, maxdate;
+
+
+        var totalButton2 = 0;
+        var totalButton3 = 0;
+        var totalButton4 = 0;
+        var totalButton5 = 0;
+        var w = screen.width,
+            h = screen.height,
+            margin = 25;
+        var padding = 200;
+        var svg = d3.select("body")
+            .append("svg")
+            .attr("width", w)
+            .attr("height", h);
+        var parseDate = d3.time.format('%B %d, %Y %I:%M%p').parse;
+        var mindate, maxdate, xScale;
+        var xAxis = d3.svg.axis();
+
+var centerline = h/2-padding;
+
+var mindateBT, maxdateBT, xScaleBT, yScaleBT;
+var parseDateBT = d3.time.format('%a %B %e %I:%M:%S').parse;
+                    // Fri May 22 11:34:30
+            doBT();
+
         $(document).ready(function() {
-
-            $.getJSON("https://spreadsheets.google.com/feeds/list/1iWrQh4Pc1G7DkyTCJGy2QLSI4sqnCRtjMbxOMh1b2tQ/od6/public/values?alt=json", function(data) {
-                // var parseDate = d3.time.format('%B %d, %Y %I:%M%p').parse;
-
-                for(i=0; i<data.feed.entry.length; i++){
-                         if(data.feed.entry[i]['gsx$button']['$t']=="button1"){
-                            totalButton1++;
-                            but1.push({"total":totalButton1, "timeIs":data.feed.entry[i]['gsx$timestamp']['$t'].replace(" at",'')})
-
-                        }
-                    }
-if(but1.length>1){
-    mindate = parseDate(but1[0].timeIs);
-    maxdate = parseDate(but1[totalButton1-1].timeIs);
-var x = d3.time.scale()
-    .domain([mindate, maxdate])
-    .range([10, w-10]);
-
-                var but1Circ = svg.append("g")
-                    .selectAll("circle").data(but1)
-                    .enter()
-                    .append("svg:circle")
-                    .attr("class", "button1")
-                    .attr("cx", function(d,i){
-                        // console.log(d.timeIs);
-                        return x(parseDate(d.timeIs));//scale based on d.time
-                    })
-                    .attr("cy", 50)
-                    .attr("r", 10)
-                    .attr("fill","aquamarine")
-                    .attr("opacity",.5)
-                }
-                // var button = svg.append("g")
-                //     .selectAll("circle").data(data.feed.entry)
-                //     .enter()
-                //     .append("svg:circle")
-                //     .attr("class", function(d,i){
-                //          if(data.feed.entry[i]['gsx$button']['$t']=="button1"){
-                //             totalButton1++;
-                //             but1.push({"total":totalButton1, "time":data.feed.entry[i]['gsx$timestamp']['$t']})
-                //             return "buttonCirc1";                       
-                //         }
-                //         if(data.feed.entry[i]['gsx$button']['$t']=="button2"){
-                //             totalButton2++;
-                //             return "buttonCirc2";                       
-                //         }
-                //         if(data.feed.entry[i]['gsx$button']['$t']=="button3"){
-                //             totalButton3++;
-                //             return "buttonCirc3";
-                //         }
-                //         if(data.feed.entry[i]['gsx$button']['$t']=="button4"){
-                //             totalButton4++;
-                //             return "buttonCirc4";
-                //         }
-                //         if(data.feed.entry[i]['gsx$button']['$t']=="button5"){
-                //             totalButton5++;
-                //             return "buttonCirc5";
-                //         }
-                //     })
-
-                // button
-                //     .attr("cx", function(d, i) {
-
-                //     })
-
-                })
-                // })
-
-
-
+            var thisTime = [];
             // https://docs.google.com/spreadsheets/d/1XX6jJc4uu4PsNp7JvQ4dZ8K9cIFnheQbqOe4QQsfZdE/pubhtml
             // https://docs.google.com/spreadsheets/d/1XX6jJc4uu4PsNp7JvQ4dZ8K9cIFnheQbqOe4QQsfZdE/pubhtml
             $.getJSON("https://spreadsheets.google.com/feeds/list/1XX6jJc4uu4PsNp7JvQ4dZ8K9cIFnheQbqOe4QQsfZdE/od6/public/values?alt=json", function(data) {
                 console.log(data.feed.entry.length)
                 for (j = 0; j < data.feed.entry.length; j++) {
-                    console.log(data.feed.entry[j]['gsx$imageurl']['$t']);
+                    thisTime.push(data.feed.entry[j]['gsx$date']['$t'].replace(" at", ''));
+                    // console.log(data.feed.entry[j]['gsx$imageurl']['$t']);
+                    // console.log(data.feed.entry[j]);
                 }
+
 
                 entry = data.feed.entry;
                 console.log(entry.length + "length")
-                // var svg = d3.select("body")
-                //     .append("svg")
-                //     .attr("width", w)
-                //     .attr("height", h)
-                var suns = svg.append("g")
-                    .attr("id", "sky")
-                    .selectAll("img").data(data.feed.entry)
-                    .enter()
-                    .append("svg:image")
-                    //Define clipping path
-                suns.append("clipPath") //Make a new clipPath
-                    .attr("id", "chart-area") //Assign an ID
-                    .append("rect") //Within the clipPath, create a new rect
-                    .attr("x", function(d, i) {
-                        console.log(i)
-                        return i * 100;
-                    }) //Set rect's position and size…
-                    .attr("y", 100)
-                    .attr("width", 100)
-                    .attr("height", 100);
 
-                suns
-                    .attr("clip-path", "url(#chart-area)")
-                    .attr("xlink:href", function(d, i) {
-                        // for(j=0; j<data.feed.entry.length; j++){
-                        // console.log(j);
-                        return data.feed.entry[i]['gsx$imageurl']['$t'];
-                        // }
-                    })
-                    .attr("x", function(d, i) {
-                        return i * 100;
-                    })
-                    .attr("y", 100)
-                    .attr("width", 100)
-                    .attr("height", 100);
+                if (thisTime.length > 1) {
+                    mindate = parseDate(thisTime[0]);
+                    maxdate = Date.now(); //parseDate(thisTime[data.feed.entry.length - 1]);
+                    xScale = d3.time.scale()
+                        .domain([mindate, maxdate])
+                        .range([100, w - 100]);
 
+                    xAxis
+                        .scale(xScale)
+                        .orient("bottom")
+                        .ticks(10);
+                    svg.append("g")
+                        .attr("class", "axis") //Assign "axis" class
+                        .attr("transform", "translate(0," + (centerline) + ")")
+                        .call(xAxis);
+
+
+                    console.log(thisTime);
+                    var suns = svg.append("g")
+                        .attr("id", "sky")
+                        .selectAll("img").data(data.feed.entry)
+                        .enter()
+                        .append("svg:image")
+                        //Define clipping path
+                    suns.append("clipPath") //Make a new clipPath
+                        .attr("id", "chart-area") //Assign an ID
+                        .append("rect") //Within the clipPath, create a new rect
+                        .attr("x", function(d, i) {
+                            console.log(i)
+                            return i * 100;
+                        }) //Set rect's position and size…
+                        .attr("y", 100)
+                        .attr("width", 10)
+                        .attr("height", 10);
+
+                    var imgLine = svg.append("g")
+                        .selectAll("line").data(data.feed.entry)
+                        .enter()
+                        .append("svg:line")
+                        .attr("class", "imgLine")
+                        .attr("x1", function(d, i) {
+                            return xScale(parseDate(thisTime[i])); //scale based on d.time
+                        })
+                        .attr("x2", function(d, i) {
+                            return xScale(parseDate(thisTime[i])); //scale based on d.time
+                        })
+                        .attr("y1", centerline)
+                        .attr("y2", h/2 + 200)
+                        .attr("stroke", "grey")
+                        .attr("stroke-weight", 1)
+                        .attr("stroke-dasharray", "1 2 2 2")
+
+                    suns
+                        .attr("clip-path", "url(#chart-area)")
+                        .attr("xlink:href", function(d, i) {
+                            return data.feed.entry[i]['gsx$imageurl']['$t'];
+                        })
+                        .attr("x", function(d, i) {
+                            return xScale(parseDate(thisTime[i])); //scale based on d.time
+                        })
+                        .attr("y", h/2 + 200)
+                        .attr("width", 50)
+                        .attr("height", 50);
+                }
+                doButton();
             });
         })
+
+
+
+
+        function doButton() {
+
+            $.getJSON("https://spreadsheets.google.com/feeds/list/1iWrQh4Pc1G7DkyTCJGy2QLSI4sqnCRtjMbxOMh1b2tQ/od6/public/values?alt=json", function(data) {
+                // var parseDate = d3.time.format('%B %d, %Y %I:%M%p').parse;
+
+                for (i = 0; i < data.feed.entry.length; i++) {
+                    if (data.feed.entry[i]['gsx$button']['$t'] == "button1") {
+                        // totalButton1++;
+                        but1.push({
+                            "buttonIs": data.feed.entry[i]['gsx$button']['$t'],
+                            "timeIs": data.feed.entry[i]['gsx$timestamp']['$t'].replace(" at", '')
+                        })
+
+                    }
+                }
+                if (but1.length > 1) {
+                    // console.log(unique(but1));
+                    unique(but1);
+
+                    function unique(obj) {
+                        var stringify = {};
+                        for (var i = 0; i < obj.length; i++) {
+                            var keys = Object.keys(obj[i]);
+                            keys.sort(function(a, b) {
+                                return a - b
+                            });
+                            var str = '';
+                            for (var j = 0; j < keys.length; j++) {
+                                str += JSON.stringify(keys[j]);
+                                str += JSON.stringify(obj[i][keys[j]]);
+                            }
+                            if (!stringify.hasOwnProperty(str)) {
+                                uniques.push(obj[i]);
+                                stringify[str] = true;
+                            }
+                        }
+                        return uniques;
+                    }
+                }
+
+                if (uniques.length > 1) {
+
+                    // mindate = parseDate(uniques[0].timeIs);
+                    // maxdate = parseDate(uniques[totalButton1 - 1].timeIs);
+                    // x = d3.time.scale()
+                    //     .domain([mindate, maxdate])
+                    //     .range([10, w - 10]);
+
+                    var but1Circ = svg.append("g")
+                        .selectAll("circle").data(uniques)
+                        .enter()
+                        .append("svg:circle")
+                        .attr("class", "button1")
+                        .attr("cx", function(d, i) {
+                            return xScale(parseDate(d.timeIs)); //scale based on d.time
+                        })
+                        .attr("cy", padding/2)
+                        .attr("r", 10)
+                        .attr("fill", "aquamarine")
+                        .attr("opacity", .5)
+                    var but1Line = svg.append("g")
+                        .selectAll("line").data(uniques)
+                        .enter()
+                        .append("svg:line")
+                        .attr("class", "button1")
+                        .attr("x1", function(d, i) {
+                            return xScale(parseDate(d.timeIs)); //scale based on d.time
+                        })
+                        .attr("x2", function(d, i) {
+                            return xScale(parseDate(d.timeIs)); //scale based on d.time
+                        })
+                        .attr("y1", centerline)
+                        .attr("y2", padding/2)
+                        .attr("stroke", "grey")
+                        .attr("stroke-weight", 1)
+                        .attr("stroke-dasharray", "1 2 2 2");
+                }
+            })
+        }
+var maxActivity = 100;
+var minActivity = 0;
+var distData = [];
+function doBT(){
+$.getJSON("https://spreadsheets.google.com/feeds/list/1CK2L-NwoswZ9l4-MU4tbu-bwt3eI1Oot_bbXkuFNl8c/od6/public/values?alt=json", function(data) {
+// $.getJSON("https://spreadsheets.google.com/feeds/list/1fx3ebJuZCrpjfqxg8GwPauwpjqs43Y6fEmmtTPEUfzE/od6/public/values?alt=json", function(data) {
+
+// d3.tsv("22may.txt", function(data){
+    // for(i=0; i<data.length; i++){
+    //     console.log(data[i]);
+    // }
+
+                // for (j = 0; j < data.feed.entry.length; j++) {
+                //     thisTime.push(data.feed.entry[j]['gsx$date']['$t'].replace(" at", ''));
+                //     // console.log(data.feed.entry[j]['gsx$imageurl']['$t']);
+                //     // console.log(data.feed.entry[j]);
+                // }
+
+    // storeThis.push(data.feed.entry)
+    // console.log(d);
+    for (j = 0; j < data.feed.entry.length; j++) {
+        storeBT.push({
+            "device": data.feed.entry[j]['gsx$device']['$t'],
+            "timeIs": data.feed.entry[j]['gsx$timestamp']['$t'],//.replace(" at", '')
+            "dist": data.feed.entry[j]['gsx$dist']['$t']
+        })
+        if(parseInt(data.feed.entry[j]['gsx$dist']['$t'])<0){
+            distData.push((parseInt(data.feed.entry[j]['gsx$dist']['$t']))*-1);
+        }
+    }
+    if(storeBT.length>0){
+                    mindateBT = parseDateBT(storeBT[0].timeIs);
+                    maxdateBT = parseDateBT(storeBT[storeBT.length-1].timeIs)//Date.now(); //parseDate(thisTime[data.feed.entry.length - 1]);
+                    
+                                  
+
+                    minActivity = d3.min(d3.values(distData)); 
+                    maxActivity = d3.max(d3.values(distData)); 
+                    
+                    yScaleBT = d3.scale.linear()
+                     .domain([minActivity, maxActivity])
+                     .range([centerline, centerline*2]) 
+
+                    xScaleBT = d3.time.scale()
+                        .domain([mindateBT, maxdateBT])
+                        .range([100, w - 100]);
+                    // Fri May 22 11:34:30
+
+                    // var minActivity = -65;
+        }
+    if(mindateBT){
+                    var btDist = svg.append("g").attr("class","BT")
+                        .selectAll("circle").data(storeBT)
+                        .enter()
+                        .append("svg:circle")
+                        .attr("class", "btDist")
+                        .attr("cx", function(d, i) {
+                            // return 100
+                            return xScaleBT(parseDateBT(d.timeIs)); //scale based on d.time
+                        })
+                        .attr("cy", function(d,i){
+                            // return 100
+                            if(isNaN(d.dist)){
+                                return h*2;
+                            }else{
+                                // console.log(maxActivity)
+                                return yScaleBT(parseInt(d.dist)*-1);
+                                //(centerline)+(parseInt(d.dist));
+                            }
+                        })
+                        .attr("r", 3)
+                        .attr("fill", "pink")
+                        .attr("opacity", .5)
+        }   
+    })
+}
+//activity logs
+// https://docs.google.com/spreadsheets/d/1fx3ebJuZCrpjfqxg8GwPauwpjqs43Y6fEmmtTPEUfzE/pubhtml
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // })
+
+
+
+
+        // var button = svg.append("g")
+        //     .selectAll("circle").data(data.feed.entry)
+        //     .enter()
+        //     .append("svg:circle")
+        //     .attr("class", function(d,i){
+        //          if(data.feed.entry[i]['gsx$button']['$t']=="button1"){
+        //             totalButton1++;
+        //             but1.push({"total":totalButton1, "time":data.feed.entry[i]['gsx$timestamp']['$t']})
+        //             return "buttonCirc1";                       
+        //         }
+        //         if(data.feed.entry[i]['gsx$button']['$t']=="button2"){
+        //             totalButton2++;
+        //             return "buttonCirc2";                       
+        //         }
+        //         if(data.feed.entry[i]['gsx$button']['$t']=="button3"){
+        //             totalButton3++;
+        //             return "buttonCirc3";
+        //         }
+        //         if(data.feed.entry[i]['gsx$button']['$t']=="button4"){
+        //             totalButton4++;
+        //             return "buttonCirc4";
+        //         }
+        //         if(data.feed.entry[i]['gsx$button']['$t']=="button5"){
+        //             totalButton5++;
+        //             return "buttonCirc5";
+        //         }
+        //     })
+
+        // button
+        //     .attr("cx", function(d, i) {
+
+        //     })
 
 
 
@@ -254,35 +461,31 @@ var x = d3.time.scale()
 
 
 
+        // $.getJSON("https://spreadsheets.google.com/feeds/list/1Ds8TAVMTrV8jFZovhnOWe4OxuehaeXlOAhyrlugI4ss/od6/public/values?alt=json", function(data) {
+        //     console.log(data.feed.entry.length);
+        //     var dataLength = data.feed.entry.length;
+        //   //first row "title" column
+        //     for(i=0; i<dataLength; i++){
+        //       console.log(data.feed.entry[i]['gsx$imageurl']['$t'])//data.feed.entry[i]['gsx$caption']['$t'])
+        //         $('.results').prepend('<img src="'+ data.feed.entry[i]['gsx$imageurl']['$t']+'" alt="'+data.feed.entry[i]['gsx$caption']['$t']+'"/>');
+        //     }
+
+        //    entry = data.feed.entry;
+        //     console.log(entry)
+        // });
+        // })
 
 
 
 
-            // $.getJSON("https://spreadsheets.google.com/feeds/list/1Ds8TAVMTrV8jFZovhnOWe4OxuehaeXlOAhyrlugI4ss/od6/public/values?alt=json", function(data) {
-            //     console.log(data.feed.entry.length);
-            //     var dataLength = data.feed.entry.length;
-            //   //first row "title" column
-            //     for(i=0; i<dataLength; i++){
-            //       console.log(data.feed.entry[i]['gsx$imageurl']['$t'])//data.feed.entry[i]['gsx$caption']['$t'])
-            //         $('.results').prepend('<img src="'+ data.feed.entry[i]['gsx$imageurl']['$t']+'" alt="'+data.feed.entry[i]['gsx$caption']['$t']+'"/>');
-            //     }
-
-            //    entry = data.feed.entry;
-            //     console.log(entry)
-            // });
-            // })
+        // buttons//https://docs.google.com/spreadsheets/d/1iWrQh4Pc1G7DkyTCJGy2QLSI4sqnCRtjMbxOMh1b2tQ/pubhtml
+        //insta// https://docs.google.com/spreadsheets/d/1N3WwbYtqSnsFMAKI73gwBy8gwb2llrCtD0CitOiky4/pubhtml
+        // https://docs.google.com/spreadsheets/d/1N3WwbYtqSnsFMAKI73gwBy8gwb2l-lrCtD0CitOiky4/pubhtml
 
 
-
-
-            // buttons//https://docs.google.com/spreadsheets/d/1iWrQh4Pc1G7DkyTCJGy2QLSI4sqnCRtjMbxOMh1b2tQ/pubhtml
-            //insta// https://docs.google.com/spreadsheets/d/1N3WwbYtqSnsFMAKI73gwBy8gwb2llrCtD0CitOiky4/pubhtml
-            // https://docs.google.com/spreadsheets/d/1N3WwbYtqSnsFMAKI73gwBy8gwb2l-lrCtD0CitOiky4/pubhtml
-
-
-            //buttons json
-            // https://spreadsheets.google.com/feeds/list/1iWrQh4Pc1G7DkyTCJGy2QLSI4sqnCRtjMbxOMh1b2tQ/od6/public/values?alt=json
-            // https://docs.google.com/spreadsheets/d/1iWrQh4Pc1G7DkyTCJGy2QLSI4sqnCRtjMbxOMh1b2tQ/pubhtml
+        //buttons json
+        // https://spreadsheets.google.com/feeds/list/1iWrQh4Pc1G7DkyTCJGy2QLSI4sqnCRtjMbxOMh1b2tQ/od6/public/values?alt=json
+        // https://docs.google.com/spreadsheets/d/1iWrQh4Pc1G7DkyTCJGy2QLSI4sqnCRtjMbxOMh1b2tQ/pubhtml
     </script>
 </body>
 <!-- <body> -->
