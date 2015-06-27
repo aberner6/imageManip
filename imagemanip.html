@@ -40,7 +40,7 @@ var storeBT = [];
 var storeThis = [];
 
 
-
+var dur = 2000;
 
         var totalButton2 = 0;
         var totalButton3 = 0;
@@ -59,7 +59,7 @@ var storeThis = [];
         var xAxis = d3.svg.axis();
         var yAxis = d3.svg.axis();
 
-var centerline = h/1.5-padding;
+var centerline = h/2;
 
 var mindateBT, maxdateBT, xScaleBT, yScaleBT;
 var parseDateBT = d3.time.format('%a %B %e %I:%M:%S').parse;
@@ -116,7 +116,7 @@ var parseDateBT = d3.time.format('%a %B %e %I:%M:%S').parse;
                     //     .attr("y", 100)
                     //     .attr("width", 10)
                     //     .attr("height", 10)
-
+var extraPad = 1;
 
                     var imgLine = svg.append("g")
                         .selectAll("line").data(data.feed.entry)
@@ -124,16 +124,19 @@ var parseDateBT = d3.time.format('%a %B %e %I:%M:%S').parse;
                         .append("svg:line")
                         .attr("class", "imgLine")
                         .attr("x1", function(d, i) {
-                            return xScale(parseDate(thisTime[i])); //scale based on d.time
+                            return xScale(parseDate(thisTime[i]))*extraPad; //scale based on d.time
                         })
                         .attr("x2", function(d, i) {
-                            return xScale(parseDate(thisTime[i])); //scale based on d.time
+                            return xScale(parseDate(thisTime[i]))*extraPad; //scale based on d.time
                         })
                         .attr("y1", centerline)
-                        .attr("y2", h/2 + 200)
+                        .attr("y2", centerline)
                         .attr("stroke", "grey")
                         .attr("stroke-weight", 1)
-                        .attr("stroke-dasharray", "1 2 2 2")
+                        .attr("stroke-dasharray", "1 1 1 1")
+                        .transition()
+                        .duration(dur)
+                        .attr("y", h/2+200)
 
                     suns
                         .attr("clip-path", "url(#chart-area)")
@@ -141,14 +144,18 @@ var parseDateBT = d3.time.format('%a %B %e %I:%M:%S').parse;
                             return data.feed.entry[i]['gsx$imageurl']['$t'];
                         })
                         .attr("x", function(d, i) {
-                            return xScale(parseDate(thisTime[i])); //scale based on d.time
+                            return xScale(parseDate(thisTime[i]))*extraPad; //scale based on d.time
                         })
-                        .attr("y", h/2 + 200)
+                        .attr("y", centerline)
                         .attr("width", 50)
                         .attr("height", 50)
+                        .transition()
+                        .duration(dur)
+                        .attr("y", h/2 + 200)
                         .on("mouseover", function(d){
                             d3.select(this)
                             .transition()
+                            .duration(dur/2)
                         .attr("y", h/2)                            
                             .attr("width",200)
                             .attr("height",200)
@@ -156,6 +163,7 @@ var parseDateBT = d3.time.format('%a %B %e %I:%M:%S').parse;
                         .on("mouseout", function(d){
                             d3.select(this)
                             .transition()
+                            .delay(dur/1.2)
                         .attr("y", h/2 + 200)
                             .attr("width",50)
                             .attr("height",50)
@@ -221,13 +229,17 @@ var parseDateBT = d3.time.format('%a %B %e %I:%M:%S').parse;
                         .enter()
                         .append("svg:circle")
                         .attr("class", "button1")
+                        .attr("cy",centerline)
                         .attr("cx", function(d, i) {
                             return xScale(parseDate(d.timeIs)); //scale based on d.time
                         })
-                        .attr("cy", padding/2)
                         .attr("r", 10)
                         .attr("fill", "aquamarine")
                         .attr("opacity", .5)
+                        .transition()
+                        .duration(dur)                       
+                        .attr("cy", padding/3)
+
                     var but1Line = svg.append("g")
                         .selectAll("line").data(uniques)
                         .enter()
@@ -240,10 +252,14 @@ var parseDateBT = d3.time.format('%a %B %e %I:%M:%S').parse;
                             return xScale(parseDate(d.timeIs)); //scale based on d.time
                         })
                         .attr("y1", centerline)
-                        .attr("y2", padding/2)
+                        .attr("y2", centerline)
                         .attr("stroke", "grey")
                         .attr("stroke-weight", 1)
-                        .attr("stroke-dasharray", "1 2 2 2");
+                        .attr("stroke-dasharray", "1 1 1 1")
+                        // .attr("stroke-dasharray", "1 2 2 2")
+                        .transition()
+                        .duration(dur)
+                        .attr("y2", padding/3)
                 }
             })
         }
@@ -339,10 +355,14 @@ var rect = svg.append("g").attr("class","BTRect")
                 .attr("class", "btRect")
                 .attr("x",xScaleBT(mindateBT))
                 .attr("y",yScaleBT(65))
-                .attr("width", xScaleBT(maxdateBT)-xScaleBT(mindateBT))
+                .attr("width",0)
                 .attr("height", yScaleBT(60)-yScaleBT(70))
                 .attr("fill","grey")
                 .attr("opacity",.1)
+                .transition()
+                .delay(dur)
+                .duration(dur)
+                .attr("width", xScaleBT(maxdateBT)-xScaleBT(mindateBT))                
 
 
 
