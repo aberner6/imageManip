@@ -72,6 +72,12 @@ var parseDateBT = d3.time.format('%a %B %e %I:%M:%S').parse;
             // https://docs.google.com/spreadsheets/d/1XX6jJc4uu4PsNp7JvQ4dZ8K9cIFnheQbqOe4QQsfZdE/pubhtml
             $.getJSON("https://spreadsheets.google.com/feeds/list/1XX6jJc4uu4PsNp7JvQ4dZ8K9cIFnheQbqOe4QQsfZdE/od6/public/values?alt=json", function(data) {
                 console.log(data.feed.entry.length)
+
+// ['a', 'b', 'c'].forEach(function(d, i, arr) {
+//     console.log(d, i, arr)
+//     })
+//returns 
+
                 for (j = 0; j < data.feed.entry.length; j++) {
                     thisTime.push(data.feed.entry[j]['gsx$date']['$t'].replace(" at", ''));
                     // console.log(data.feed.entry[j]['gsx$imageurl']['$t']);
@@ -390,34 +396,34 @@ var rect = svg.append("g").attr("class","BTRect")
 
 
 
-                    var btDist = svg.append("g").attr("class","BT")
-                        .selectAll("circle").data(storeBT)
-                        .enter()
-                        .append("svg:circle")
-                        .attr("class", "btDist")
-                        .attr("cx", function(d, i) {
-                            // return 100
-                            return xScaleBT(parseDateBT(d.timeIs)); //scale based on d.time
-                        })
-                        .attr("cy", function(d,i){
-                            // return 100
-                            if(isNaN(d.dist)){
-                                return h*2;
-                            }else{
-                                return yScaleBT(parseInt(d.dist)*-1);
-                            }
-                        })
-                        .attr("r", 2)
-                        .attr("fill", function(d,i){
-                            for(j=0; j<uniqueNames.length; j++){
-                                if(d.device==uniqueNames[j]){
-                                    // allBT[j] = d;
-                                    return color(j);
-                                    // return "rgb(0, 0, " + (j * 100) + ")";
-                                }
-                            }
-                        })
-                        .attr("opacity", .5);
+                    // var btDist = svg.append("g").attr("class","BT")
+                    //     .selectAll("circle").data(storeBT)
+                    //     .enter()
+                    //     .append("svg:circle")
+                    //     .attr("class", "btDist")
+                    //     .attr("cx", function(d, i) {
+                    //         // return 100
+                    //         return xScaleBT(parseDateBT(d.timeIs)); //scale based on d.time
+                    //     })
+                    //     .attr("cy", function(d,i){
+                    //         // return 100
+                    //         if(isNaN(d.dist)){
+                    //             return h*2;
+                    //         }else{
+                    //             return yScaleBT(parseInt(d.dist)*-1);
+                    //         }
+                    //     })
+                    //     .attr("r", 2)
+                    //     .attr("fill", function(d,i){
+                    //         for(j=0; j<uniqueNames.length; j++){
+                    //             if(d.device==uniqueNames[j]){
+                    //                 // allBT[j] = d;
+                    //                 return color(j);
+                    //                 // return "rgb(0, 0, " + (j * 100) + ")";
+                    //             }
+                    //         }
+                    //     })
+                    //     .attr("opacity", .5);
 
 
 
@@ -434,7 +440,7 @@ var rect = svg.append("g").attr("class","BTRect")
                             }
                         // return d.y; 
                     })
-                    .interpolate("linear");
+                    .interpolate("basis");
 
     for(i=0; i<storeBT.length; i++){
         if(storeBT[i].dist< -65){
