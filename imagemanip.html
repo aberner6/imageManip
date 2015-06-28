@@ -136,7 +136,7 @@ var extraPad = 1;
                         .attr("stroke-dasharray", "1 1 1 1")
                         .transition()
                         .duration(dur)
-                        .attr("y", h/2+200)
+                        .attr("y2", h/2+200)
 
                     suns
                         .attr("clip-path", "url(#chart-area)")
@@ -151,12 +151,13 @@ var extraPad = 1;
                         .attr("height", 50)
                         .transition()
                         .duration(dur)
-                        .attr("y", h/2 + 200)
+                        .attr("y", h/2 + 200);
+                    suns
                         .on("mouseover", function(d){
                             d3.select(this)
                             .transition()
                             .duration(dur/2)
-                        .attr("y", h/2)                            
+                            .attr("y", h/2)                            
                             .attr("width",200)
                             .attr("height",200)
                         })
@@ -164,7 +165,8 @@ var extraPad = 1;
                             d3.select(this)
                             .transition()
                             .delay(dur/1.2)
-                        .attr("y", h/2 + 200)
+                            .duration(dur/4)
+                            .attr("y", h/2 + 200)
                             .attr("width",50)
                             .attr("height",50)
                         })
