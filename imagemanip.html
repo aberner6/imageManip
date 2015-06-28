@@ -28,9 +28,18 @@
         font-family: sans-serif;
         font-size: 11px;
     }
+#check{
+/*    display:none;
+    position:fixed;
+    left: 100px;
+    top:100px;*/
+}
 </style>
 
 <body>
+    <div id="check">
+        <img src="check.png" width="20" height="20">
+    </div>
     <div class="results"></div>
     <script>
         var totalButton1 = 0;
@@ -38,6 +47,8 @@
         var uniques = [];
 var storeBT = [];
 var storeThis = [];
+
+var dashArray = "1 5 1 1";
 
 
 var dur = 2000;
@@ -139,7 +150,7 @@ var clicked = false;
                         .attr("y2", centerline)
                         .attr("stroke", "grey")
                         .attr("stroke-weight", 1)
-                        .attr("stroke-dasharray", "1 1 1 1")
+                        .attr("stroke-dasharray", dashArray)
                         .transition()
                         .duration(dur)
                         .attr("y2", h/2+200)
@@ -211,6 +222,8 @@ console.log(data.feed.entry[0])
 
                     }
                 }
+
+
                 if (but1.length > 1) {
                     // console.log(unique(but1));
                     unique(but1);
@@ -244,17 +257,83 @@ console.log(data.feed.entry[0])
                     //     .domain([mindate, maxdate])
                     //     .range([10, w - 10]);
 
-                    var but1Circ = svg.append("g")
-                        .selectAll("circle").data(uniques)
+                    // var but1Circ = svg.append("g")
+                    //     .selectAll("circle").data(uniques)
+                    //     .enter()
+                    //     .append("svg:circle")
+                    //     .attr("class", "button1")
+                    //     .attr("cy",centerline)
+                    //     .attr("cx", function(d, i) {
+                    //         return xScale(parseDate(d.timeIs)); //scale based on d.time
+                    //     })
+                    //     .attr("r", 10)
+                    //     .attr("fill", function(d,i){
+                    //         // if(d.buttonIs=="button1"){
+                    //         //     return "blue";
+                    //         // }
+                    //         // if(d.buttonIs=="button4"){
+                    //         //     return "red";
+                    //         // }
+                    //         // if(d.buttonIs=="button3"){
+                    //         //     return "grey";
+                    //         // }
+                    //         "none"
+                    //     })
+                    //     // .attr("opacity", .5)
+                    //     .transition()
+                    //     .duration(dur)                       
+                    //     .attr("cy", padding/3)
+
+
+var radius = 10;
+var strokeWeight = 2;
+
+var winCircle  = svg.selectAll("win")
+    .data(uniques)
+    .enter().append("circle")
+    .attr("class","win")
+    .attr("cx", function(d, i) {
+        // if(d.buttonIs=="button1"){
+                                // return "blue";
+                            // }
+        return xScale(parseDate(d.timeIs)); //scale based on d.time
+        // }
+    })    
+    .attr("cy", padding/3)
+    .attr("r", radius)
+    .attr("fill", "none")
+    .attr("stroke-dasharray", "4,4")
+    .attr("stroke", "white")
+    .attr("stroke-width", strokeWeight)
+    .attr("opacity",1);
+
+
+var checks = svg.selectAll("img").data(uniques)
                         .enter()
-                        .append("svg:circle")
-                        .attr("class", "button1")
-                        .attr("cy",centerline)
-                        .attr("cx", function(d, i) {
-                            return xScale(parseDate(d.timeIs)); //scale based on d.time
-                        })
-                        .attr("r", 10)
-                        .attr("fill", function(d,i){
+                        .append("svg:image")
+    checks
+        .attr("xlink:href", "check.png")
+        // .attr("id", "checks")
+        .attr("x", function(d, i) {
+            if(d.buttonIs=="button1"){
+            return xScale(parseDate(d.timeIs)); //scale based on d.time
+            }
+            else{
+                return -w*2;
+            }
+        })   
+        .attr("opacity",0) 
+        .attr("y", padding/3)
+        .attr("width", 10)
+        .attr("height", 10)
+
+d3.selectAll(".win")
+    .transition()
+    .delay(dur*2)
+    .duration(1000)
+    .attr("r", radius/2)
+    .attr("stroke-width", radius*2)
+    .attr("stroke", function(d,i){
                             if(d.buttonIs=="button1"){
                                 return "blue";
                             }
@@ -264,11 +343,25 @@ console.log(data.feed.entry[0])
                             if(d.buttonIs=="button3"){
                                 return "grey";
                             }
-                        })
-                        .attr("opacity", .5)
-                        .transition()
-                        .duration(dur)                       
-                        .attr("cy", padding/3)
+    })
+    .each("end", function(){
+        d3.selectAll(".win")
+            .transition()
+            .duration(2000)
+            .attr("r", radius) 
+            .attr("stroke-width", strokeWeight) 
+            .each("end", function(){
+                checks.attr("opacity",1)
+                // $("#check").show();
+
+                // d3.selectAll(".win")
+                    // .transition()
+                    // .duration(3000)      
+                    // .attr("opacity",0);   
+            })
+    })
+
+
 
                     var but1Line = svg.append("g")
                         .selectAll("line").data(uniques)
@@ -285,7 +378,7 @@ console.log(data.feed.entry[0])
                         .attr("y2", centerline)
                         .attr("stroke", "grey")
                         .attr("stroke-weight", 1)
-                        .attr("stroke-dasharray", "1 1 1 1")
+                        .attr("stroke-dasharray", dashArray)
                         // .attr("stroke-dasharray", "1 2 2 2")
                         .transition()
                         .duration(dur)
@@ -308,6 +401,11 @@ var sixBT = [];
 var sevenBT = [];
 
 var specialBT = [];
+
+
+
+
+
 
 function doBT(){
 $.getJSON("https://spreadsheets.google.com/feeds/list/1CK2L-NwoswZ9l4-MU4tbu-bwt3eI1Oot_bbXkuFNl8c/od6/public/values?alt=json", function(data) {
@@ -379,20 +477,20 @@ $.getJSON("https://spreadsheets.google.com/feeds/list/1CK2L-NwoswZ9l4-MU4tbu-bwt
         }
     if(mindateBT){
         var color = d3.scale.category20();
-var rect = svg.append("g").attr("class","BTRect")
-                // .selectAll("rect")
-                .append("svg:rect")
-                .attr("class", "btRect")
-                .attr("x",xScaleBT(mindateBT))
-                .attr("y",yScaleBT(65))
-                .attr("width",0)
-                .attr("height", yScaleBT(60)-yScaleBT(70))
-                .attr("fill","grey")
-                .attr("opacity",.1)
-                .transition()
-                .delay(dur)
-                .duration(dur)
-                .attr("width", xScaleBT(maxdateBT)-xScaleBT(mindateBT))                
+// var rect = svg.append("g").attr("class","BTRect")
+//                 // .selectAll("rect")
+//                 .append("svg:rect")
+//                 .attr("class", "btRect")
+//                 .attr("x",xScaleBT(mindateBT))
+//                 .attr("y",yScaleBT(65))
+//                 .attr("width",0)
+//                 .attr("height", yScaleBT(60)-yScaleBT(70))
+//                 .attr("fill","grey")
+//                 .attr("opacity",.1)
+//                 .transition()
+//                 .delay(dur)
+//                 .duration(dur)
+//                 .attr("width", xScaleBT(maxdateBT)-xScaleBT(mindateBT))                
 
 
 
@@ -476,6 +574,36 @@ var rect = svg.append("g").attr("class","BTRect")
             // }
         // }
         } 
+
+
+                    // .x(function(d) { 
+                    //     return xScaleBT(parseDateBT(d.timeIs)); 
+                    // })
+                    // .y(function(d) { 
+                    //     return yScaleBT(parseInt(d.dist)*-1);
+                    // })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         var strokePath = .5;
 //The line SVG Path we draw
 var lineGraph = svg.append("path")
