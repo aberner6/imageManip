@@ -117,7 +117,7 @@ var parseDateBT = d3.time.format('%a %B %e %I:%M:%S').parse;
                     //     .attr("width", 10)
                     //     .attr("height", 10)
 var extraPad = 1;
-
+var clicked = false;
                     var imgLine = svg.append("g")
                         .selectAll("line").data(data.feed.entry)
                         .enter()
@@ -153,23 +153,36 @@ var extraPad = 1;
                         .duration(dur)
                         .attr("y", h/2 + 200);
                     suns
-                        .on("mouseover", function(d){
-                            d3.select(this)
-                            .transition()
-                            .duration(dur/2)
-                            .attr("y", h/2)                            
-                            .attr("width",200)
-                            .attr("height",200)
+                        .on("click", function(d){
+                            if(clicked == false){
+                                d3.select(this)
+                                .transition()
+                                .duration(dur/2)
+                                .attr("y", h/2)                         
+                                .attr("width",200)
+                                .attr("height",200)
+                                clicked = true;
+                            }
+                            if(clicked){
+                                d3.select(this)
+                                .transition()
+                                .delay(dur*2)
+                                .duration(dur/4)
+                                .attr("y", h/2 + 200)
+                                .attr("width",50)
+                                .attr("height",50)
+                                clicked = false;
+                            }                            
                         })
-                        .on("mouseout", function(d){
-                            d3.select(this)
-                            .transition()
-                            .delay(dur/1.2)
-                            .duration(dur/4)
-                            .attr("y", h/2 + 200)
-                            .attr("width",50)
-                            .attr("height",50)
-                        })
+                        // .on("drag", function(d){
+                        //     d3.select(this)
+                        //     .transition()
+                        //     .delay(dur/1.2)
+                        //     .duration(dur/4)
+                        //     .attr("y", h/2 + 200)
+                        //     .attr("width",50)
+                        //     .attr("height",50)
+                        // })
                 }
                 doButton();
             });
@@ -182,10 +195,9 @@ var extraPad = 1;
 
             $.getJSON("https://spreadsheets.google.com/feeds/list/1iWrQh4Pc1G7DkyTCJGy2QLSI4sqnCRtjMbxOMh1b2tQ/od6/public/values?alt=json", function(data) {
                 // var parseDate = d3.time.format('%B %d, %Y %I:%M%p').parse;
-
+console.log(data.feed.entry[0])
                 for (i = 0; i < data.feed.entry.length; i++) {
-                    if (data.feed.entry[i]['gsx$button']['$t'] == "button1") {
-                        // totalButton1++;
+                    if (data.feed.entry[i]['gsx$device']['$t'] == "wombat_wombat") {
                         but1.push({
                             "buttonIs": data.feed.entry[i]['gsx$button']['$t'],
                             "timeIs": data.feed.entry[i]['gsx$timestamp']['$t'].replace(" at", '')
@@ -236,7 +248,17 @@ var extraPad = 1;
                             return xScale(parseDate(d.timeIs)); //scale based on d.time
                         })
                         .attr("r", 10)
-                        .attr("fill", "aquamarine")
+                        .attr("fill", function(d,i){
+                            if(d.buttonIs=="button1"){
+                                return "blue";
+                            }
+                            if(d.buttonIs=="button4"){
+                                return "red";
+                            }
+                            if(d.buttonIs=="button3"){
+                                return "grey";
+                            }
+                        })
                         .attr("opacity", .5)
                         .transition()
                         .duration(dur)                       
