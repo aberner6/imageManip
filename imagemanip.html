@@ -6,6 +6,7 @@
 <head>
     <title>IMAGES</title>
     <meta charset="utf-8">
+    <script src="colorbrewer.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js" charset="utf-8"></script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
@@ -29,10 +30,10 @@
         font-size: 11px;
     }
 #check{
-/*    display:none;
-    position:fixed;
-    left: 100px;
-    top:100px;*/
+    display:none;
+    /*position:fixed;*/
+    /*left: 100px;*/
+    /*top:100px;*/
 }
 </style>
 
@@ -73,12 +74,12 @@ var dur = 2000;
 var centerline = h/2;
 
 var mindateBT, maxdateBT, xScaleBT, yScaleBT;
-var parseDateBT = d3.time.format('%a %B %e %I:%M:%S').parse;
+var parseDateBT = d3.time.format('%a %B %e %H:%M:%S').parse;
                     // Fri May 22 11:34:30
             doBT();
+            var thisTime = [];
 
         $(document).ready(function() {
-            var thisTime = [];
             // https://docs.google.com/spreadsheets/d/1XX6jJc4uu4PsNp7JvQ4dZ8K9cIFnheQbqOe4QQsfZdE/pubhtml
             // https://docs.google.com/spreadsheets/d/1XX6jJc4uu4PsNp7JvQ4dZ8K9cIFnheQbqOe4QQsfZdE/pubhtml
             $.getJSON("https://spreadsheets.google.com/feeds/list/1XX6jJc4uu4PsNp7JvQ4dZ8K9cIFnheQbqOe4QQsfZdE/od6/public/values?alt=json", function(data) {
@@ -101,15 +102,39 @@ var parseDateBT = d3.time.format('%a %B %e %I:%M:%S').parse;
 
                 if (thisTime.length > 1) {
                     mindate = parseDate(thisTime[0]);
-                    maxdate = Date.now(); //parseDate(thisTime[data.feed.entry.length - 1]);
+                    maxD = Date.now(); //parseDate(thisTime[data.feed.entry.length - 1]);
+maxdate = calcTime("copenhagen",2);
+function calcTime(city, offset) {
+
+    // create Date object for current location
+    d = new Date();
+
+    // convert to msec
+    // add local time zone offset
+    // get UTC time in msec
+    utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+
+    // create new Date object for different city
+    // using supplied offset
+    nd = new Date(utc + (3600000*offset));
+    console.log(nd);
+    return nd;
+    // return time as a string
+    // return "The local time in " + city + " is " + nd.toLocaleString();
+
+}
                     xScale = d3.time.scale()
                         .domain([mindate, maxdate])
                         .range([100, w - 100]);
 
+                    // xScaleBT = d3.time.scale()
+                    //     .domain([mindateBT, maxdateBT])
+                    //     .range([100, w - 100]);
+
                     xAxis
                         .scale(xScale)
                         .orient("bottom")
-                        .ticks(10);
+                        .ticks(20);
                     svg.append("g")
                         .attr("class", "axis") //Assign "axis" class
                         .attr("transform", "translate(0," + (centerline) + ")")
@@ -212,7 +237,7 @@ var clicked = false;
 
             $.getJSON("https://spreadsheets.google.com/feeds/list/1iWrQh4Pc1G7DkyTCJGy2QLSI4sqnCRtjMbxOMh1b2tQ/od6/public/values?alt=json", function(data) {
                 // var parseDate = d3.time.format('%B %d, %Y %I:%M%p').parse;
-console.log(data.feed.entry[0])
+console.log(data.feed.entry[data.feed.entry.length-1])
                 for (i = 0; i < data.feed.entry.length; i++) {
                     if (data.feed.entry[i]['gsx$device']['$t'] == "wombat_wombat") {
                         but1.push({
@@ -291,21 +316,37 @@ var strokeWeight = 2;
 var winCircle  = svg.selectAll("win")
     .data(uniques)
     .enter().append("circle")
-    .attr("class","win")
+    .attr("class",function(d,i){
+        return d.buttonIs;
+    })
     .attr("cx", function(d, i) {
         // if(d.buttonIs=="button1"){
                                 // return "blue";
                             // }
+    // console.log(xScale(parseDate(d.timeIs)))
         return xScale(parseDate(d.timeIs)); //scale based on d.time
         // }
-    })    
-    .attr("cy", padding/3)
+    })
     .attr("r", radius)
     .attr("fill", "none")
-    .attr("stroke-dasharray", "4,4")
-    .attr("stroke", "white")
-    .attr("stroke-width", strokeWeight)
-    .attr("opacity",1);
+    // .attr("stroke-dasharray", "4,4")
+    .attr("stroke", function(d,i){
+                            if(d.buttonIs=="button1"){
+                                return "blue";
+                            }
+                            if(d.buttonIs=="button2"){
+                                return "grey";
+                            }
+                            if(d.buttonIs=="button3"){
+                                return "red";
+                            }
+    })
+        .attr("stroke-width", strokeWeight)
+    .attr("opacity",.5)
+    .attr("cy",centerline)    
+    .transition()
+    .duration(dur)
+    .attr("cy", padding/3)
 
 
 var checks = svg.selectAll("img").data(uniques)
@@ -327,23 +368,13 @@ var checks = svg.selectAll("img").data(uniques)
         .attr("width", 10)
         .attr("height", 10)
 
-d3.selectAll(".win")
+d3.selectAll(".button1")
     .transition()
-    .delay(dur*2)
+    .delay(dur*1.2)
     .duration(1000)
     .attr("r", radius/2)
+    .attr("stroke-dasharray", "4,4")
     .attr("stroke-width", radius*2)
-    .attr("stroke", function(d,i){
-                            if(d.buttonIs=="button1"){
-                                return "blue";
-                            }
-                            if(d.buttonIs=="button4"){
-                                return "red";
-                            }
-                            if(d.buttonIs=="button3"){
-                                return "grey";
-                            }
-    })
     .each("end", function(){
         d3.selectAll(".win")
             .transition()
@@ -444,8 +475,8 @@ $.getJSON("https://spreadsheets.google.com/feeds/list/1CK2L-NwoswZ9l4-MU4tbu-bwt
     });
     }
     if(storeBT.length>0){
-                    mindateBT = parseDateBT(storeBT[0].timeIs);
-                    maxdateBT = parseDateBT(storeBT[storeBT.length-1].timeIs)//Date.now(); //parseDate(thisTime[data.feed.entry.length - 1]);
+        mindateBT = parseDateBT(storeBT[0].timeIs);
+        maxdateBT = parseDateBT(storeBT[storeBT.length-1].timeIs)//Date.now(); //parseDate(thisTime[data.feed.entry.length - 1]);
                                   
                     minActivity = d3.min(d3.values(distData)); 
                     maxActivity = d3.max(d3.values(distData)); 
@@ -457,10 +488,10 @@ $.getJSON("https://spreadsheets.google.com/feeds/list/1CK2L-NwoswZ9l4-MU4tbu-bwt
                         .scale(yScaleBT)
                         .orient("left")
                         .ticks(4);
-                    svg.append("g")
-                        .attr("class", "axis") //Assign "axis" class
-                        .attr("transform", "translate(100," + (0) + ")")
-                        .call(yAxis);
+                    // svg.append("g")
+                    //     .attr("class", "axis") //Assign "axis" class
+                    //     .attr("transform", "translate(100," + (0) + ")")
+                    //     .call(yAxis);
 
                     xScaleBT = d3.time.scale()
                         .domain([mindateBT, maxdateBT])
@@ -476,7 +507,7 @@ $.getJSON("https://spreadsheets.google.com/feeds/list/1CK2L-NwoswZ9l4-MU4tbu-bwt
                     // var minActivity = -65;
         }
     if(mindateBT){
-        var color = d3.scale.category20();
+        var color = d3.scale.category10();
 // var rect = svg.append("g").attr("class","BTRect")
 //                 // .selectAll("rect")
 //                 .append("svg:rect")
@@ -540,10 +571,27 @@ $.getJSON("https://spreadsheets.google.com/feeds/list/1CK2L-NwoswZ9l4-MU4tbu-bwt
                     })
                     .interpolate("basis");
 
+        // if(parseInt(d.dist)*-1<10&&parseInt(d.dist)*-1>=0){
+ var lineFunction2 = d3.svg.line()
+                    .x(function(d) { 
+                        return xScaleBT(parseDateBT(d.timeIs)); 
+                    })
+                    .y(function(d) { 
+                            if(parseInt(d.dist)*-1<60&&parseInt(d.dist)*-1>50){
+                                return centerline/2//yScaleBT(parseInt(d.dist)*-1);
+                            }
+                            else{
+                                // return h*2;
+                            }
+                        // return d.y; 
+                    })
+                    .interpolate("linear");
+
+
     for(i=0; i<storeBT.length; i++){
-        if(storeBT[i].dist< -65){
-            specialBT.push(storeBT[i])
-        }
+        // if(storeBT[i].dist< -65){
+        //     specialBT.push(storeBT[i])
+        // }
         // for(j=0; j<uniqueNames.length; j++){
             if(storeBT[i].device==uniqueNames[0]){
                 zeroBT.push(storeBT[i]);
@@ -575,7 +623,27 @@ $.getJSON("https://spreadsheets.google.com/feeds/list/1CK2L-NwoswZ9l4-MU4tbu-bwt
         // }
         } 
 
-
+// for(i=0; i<oneBT.length; i++){
+//     if(parseInt(oneBT[i].dist)>-70){
+//         var thisIndex = i;
+//         var firstyes = oneBT[thisIndex].timeIs;
+//         specialBT.push({
+//                 "device": oneBT[i].device,
+//                 "timeIt": firstyes,//.replace(" at", '')
+//                 "dist": oneBT[i].dist,
+//                 "onoff":1
+//             })
+//     }else{
+//         var thisIndex = i;
+//         var firstno = oneBT[thisIndex].timeIs;
+//         specialBT.push({
+//                 "device": oneBT[i].device,
+//                 "timeIt": firstno,//.replace(" at", '')
+//                 "dist": oneBT[i].dist,
+//                 "onoff":0
+//             })       
+//     }
+// }
                     // .x(function(d) { 
                     //     return xScaleBT(parseDateBT(d.timeIs)); 
                     // })
@@ -596,6 +664,90 @@ $.getJSON("https://spreadsheets.google.com/feeds/list/1CK2L-NwoswZ9l4-MU4tbu-bwt
 
 
 
+//for one bluetooth device
+//if the distance is between a certain thing
+//draw a mark?
+// "keep drawing"
+
+// var blRect = svg.append("g").attr("class","bt1")
+//     .selectAll("rect").data(oneBT)
+//     .enter()
+//     .append("svg:rect")
+//     .attr("class", "bt1")
+//     .attr("x", function(d, i) {
+//             return xScaleBT(parseDateBT(d.timeIs)); //scale based on d.time
+//     })
+//     .attr("y", centerline/2)
+//     .attr("width",3)
+//     .attr("height",5)
+//     .attr("fill", function(d){
+//         if(parseInt(d.dist)>-10){
+//             return "blue";
+//         }else{
+//             return "none";
+//         }
+//     })
+//     .attr("opacity", function(d){
+//         if(parseInt(d.dist)>-70){
+//             return .5;
+//         }else{
+//             return 0;
+//         }
+//     })
+var hHere = 10;
+var multiplier = 10; 
+var oColor = d3.scale.ordinal()
+    .domain([uniqueNames])
+    .range(colorbrewer.BuGn[9]);
+
+var blRect = svg.append("g").attr("class","bt1")
+    .selectAll("rect").data(storeBT)
+    .enter()
+    .append("svg:rect")
+    .attr("class", "bt1")
+    .attr("x", function(d, i) {
+            return xScaleBT(parseDateBT(d.timeIs)); //scale based on d.time
+    })
+    .attr("y", function(d,i){
+        if(parseInt(d.dist)>-70){
+            for(j=0; j<uniqueNames.length; j++){
+                if(d.device==uniqueNames[j]){
+                    return centerline-j*multiplier*1.5;
+                }
+            }
+        }else{
+            for(j=0; j<uniqueNames.length; j++){
+                if(d.device==uniqueNames[j]){
+                    return centerline/1.5-j*multiplier*1.5;
+                }
+            }            
+        }
+    })
+    .attr("width",10)
+    .attr("height",hHere)
+    .attr("fill", function(d){
+            for(j=0; j<uniqueNames.length; j++){
+                if(d.device==uniqueNames[j]){
+                    // console.log(j)
+                    return oColor(uniqueNames[j]);
+                }
+            }
+    })
+    .attr("opacity", function(d){
+        // if(parseInt(d.dist)>-70){
+            return 1;
+        // }
+        // else{
+            // return 0;
+        // }
+    })
+
+
+
+
+
+
+
 
 
 
@@ -605,54 +757,54 @@ $.getJSON("https://spreadsheets.google.com/feeds/list/1CK2L-NwoswZ9l4-MU4tbu-bwt
 
 
         var strokePath = .5;
+// //The line SVG Path we draw
+// var lineGraph = svg.append("path")
+//                     .attr("d", lineFunction(zeroBT))
+//                     .attr("stroke", color(0))
+//                     .attr("stroke-width", strokePath)
+//                     .attr("fill", "none");
 //The line SVG Path we draw
-var lineGraph = svg.append("path")
-                    .attr("d", lineFunction(zeroBT))
-                    .attr("stroke", color(0))
-                    .attr("stroke-width", strokePath)
-                    .attr("fill", "none");
-//The line SVG Path we draw
-var lineGraph = svg.append("path")
-                    .attr("d", lineFunction(oneBT))
-                    .attr("stroke", color(1))
-                    .attr("stroke-width", strokePath)
-                    .attr("fill", "none");
-//The line SVG Path we draw
-var lineGraph = svg.append("path")
-                    .attr("d", lineFunction(twoBT))
-                    .attr("stroke", color(2))
-                    .attr("stroke-width", strokePath)
-                    .attr("fill", "none");
-//The line SVG Path we draw
-var lineGraph = svg.append("path")
-                    .attr("d", lineFunction(threeBT))
-                    .attr("stroke", color(3))
-                    .attr("stroke-width", strokePath)
-                    .attr("fill", "none");
-//The line SVG Path we draw
-var lineGraph = svg.append("path")
-                    .attr("d", lineFunction(fourBT))
-                    .attr("stroke", color(4))
-                    .attr("stroke-width", strokePath)
-                    .attr("fill", "none");
-//The line SVG Path we draw
-var lineGraph = svg.append("path")
-                    .attr("d", lineFunction(fiveBT))
-                    .attr("stroke", color(5))
-                    .attr("stroke-width", strokePath)
-                    .attr("fill", "none");
-//The line SVG Path we draw
-var lineGraph = svg.append("path")
-                    .attr("d", lineFunction(sixBT))
-                    .attr("stroke", color(6))
-                    .attr("stroke-width", strokePath)
-                    .attr("fill", "none");                    
- //The line SVG Path we draw
-var lineGraph = svg.append("path")
-                    .attr("d", lineFunction(sevenBT))
-                    .attr("stroke", color(7))
-                    .attr("stroke-width", strokePath)
-                    .attr("fill", "none"); 
+// var lineGraph = svg.append("path")
+//                     .attr("d", lineFunction(oneBT))
+//                     .attr("stroke", color(1))
+//                     .attr("stroke-width", strokePath*8)
+//                     .attr("fill", "none");
+// //The line SVG Path we draw
+// var lineGraph = svg.append("path")
+//                     .attr("d", lineFunction(twoBT))
+//                     .attr("stroke", color(2))
+//                     .attr("stroke-width", strokePath)
+//                     .attr("fill", "none");
+// //The line SVG Path we draw
+// var lineGraph = svg.append("path")
+//                     .attr("d", lineFunction(threeBT))
+//                     .attr("stroke", color(3))
+//                     .attr("stroke-width", strokePath)
+//                     .attr("fill", "none");
+// //The line SVG Path we draw
+// var lineGraph = svg.append("path")
+//                     .attr("d", lineFunction(fourBT))
+//                     .attr("stroke", color(4))
+//                     .attr("stroke-width", strokePath)
+//                     .attr("fill", "none");
+// //The line SVG Path we draw
+// var lineGraph = svg.append("path")
+//                     .attr("d", lineFunction(fiveBT))
+//                     .attr("stroke", color(5))
+//                     .attr("stroke-width", strokePath)
+//                     .attr("fill", "none");
+// //The line SVG Path we draw
+// var lineGraph = svg.append("path")
+//                     .attr("d", lineFunction(sixBT))
+//                     .attr("stroke", color(6))
+//                     .attr("stroke-width", strokePath)
+//                     .attr("fill", "none");                    
+//  //The line SVG Path we draw
+// var lineGraph = svg.append("path")
+//                     .attr("d", lineFunction(sevenBT))
+//                     .attr("stroke", color(7))
+//                     .attr("stroke-width", strokePath)
+//                     .attr("fill", "none"); 
         }   
     })
 }
