@@ -39,6 +39,12 @@
 </style>
 
 <body>
+<<<<<<< HEAD
+=======
+    <div id="check">
+        <img src="check.png" width="20" height="20">
+    </div>
+>>>>>>> d9fc34a16a4129bdfc73aead4c45b8a4a13ec757
     <div class="results"></div>
     <script>
         var totalButton1 = 0;
@@ -74,12 +80,20 @@
         var mindateBT, maxdateBT, xScaleBT, yScaleBT;
         var parseDateBT = d3.time.format('%a %B %e %H:%M:%S').parse;
         // Fri May 22 11:34:30
+<<<<<<< HEAD
+=======
+        doBT();
+>>>>>>> d9fc34a16a4129bdfc73aead4c45b8a4a13ec757
         var thisTime = [];
 var thisHour = [];
         $(document).ready(function() {
             // https://docs.google.com/spreadsheets/d/1XX6jJc4uu4PsNp7JvQ4dZ8K9cIFnheQbqOe4QQsfZdE/pubhtml
             // https://docs.google.com/spreadsheets/d/1XX6jJc4uu4PsNp7JvQ4dZ8K9cIFnheQbqOe4QQsfZdE/pubhtml
+<<<<<<< HEAD
             $.getJSON("https://spreadsheets.google.com/feeds/list/1JHKJm232Adv1GwDNIz5VLyBfg12d6CNl3GrCfs6y-tU/od6/public/values?alt=json", function(data) {
+=======
+            $.getJSON("https://spreadsheets.google.com/feeds/list/1XX6jJc4uu4PsNp7JvQ4dZ8K9cIFnheQbqOe4QQsfZdE/od6/public/values?alt=json", function(data) {
+>>>>>>> d9fc34a16a4129bdfc73aead4c45b8a4a13ec757
                 console.log(data.feed.entry.length)
 
                 // ['a', 'b', 'c'].forEach(function(d, i, arr) {
@@ -99,8 +113,12 @@ thisHour.push(parseDate(thisTime[j]).getHours())
                 console.log(entry.length + "length")
 
                 if (thisTime.length > 1) {
+<<<<<<< HEAD
                     mindate = new Date("Tue Jun 30 2015 8:00:00 GMT-0400 (EDT)");//parseDate(thisTime[0]);
 //parseDate(thisTime[0]);
+=======
+                    mindate = parseDate(thisTime[0]);
+>>>>>>> d9fc34a16a4129bdfc73aead4c45b8a4a13ec757
                     maxD = Date.now(); //parseDate(thisTime[data.feed.entry.length - 1]);
                     maxdate = calcTime("copenhagen", 2);
 
@@ -134,7 +152,11 @@ thisHour.push(parseDate(thisTime[j]).getHours())
                     xAxis
                         .scale(xScale)
                         .orient("bottom")
+<<<<<<< HEAD
                         .ticks(10);
+=======
+                        .ticks(20);
+>>>>>>> d9fc34a16a4129bdfc73aead4c45b8a4a13ec757
                     svg.append("g")
                         .attr("class", "axis") //Assign "axis" class
                         .attr("transform", "translate(0," + (centerline) + ")")
@@ -208,7 +230,11 @@ var scaleIt = d3.scale.linear()
                                 d3.select(this)
                                     .transition()
                                     .duration(dur / 2)
+<<<<<<< HEAD
                                     .attr("y", centerline+20)
+=======
+                                    .attr("y", h / 2)
+>>>>>>> d9fc34a16a4129bdfc73aead4c45b8a4a13ec757
                                     .attr("width", 200)
                                     .attr("height", 200)
                                 clicked = true;
@@ -385,23 +411,35 @@ var scaleIt = d3.scale.linear()
                     //     .attr("cy", padding / 3)
 
 
+<<<<<<< HEAD
                        
 
 
 
+=======
+>>>>>>> d9fc34a16a4129bdfc73aead4c45b8a4a13ec757
                     var checks = svg.selectAll("img").data(uniques)
                         .enter()
                         .append("svg:image")
                     checks
                         .attr("xlink:href", function(d,i){
+<<<<<<< HEAD
                             if(d.buttonIs == "button1"){ //cloud
                                 return "idea.png";
+=======
+                            if(d.buttonIs == "button1"){
+                                return "star.png";
+>>>>>>> d9fc34a16a4129bdfc73aead4c45b8a4a13ec757
                             }
                             if(d.buttonIs == "button3"){
                                 return "thunder.png";
                             }
                             if(d.buttonIs == "button2"){
+<<<<<<< HEAD
                                 return "star.png";
+=======
+                                return "idea.png";
+>>>>>>> d9fc34a16a4129bdfc73aead4c45b8a4a13ec757
                             }
                         })
                         // .attr("id", "checks")
@@ -430,7 +468,31 @@ var scaleIt = d3.scale.linear()
                             if(d.buttonIs == "button2"){
                                 return margin*4;
                             }
+<<<<<<< HEAD
                         }) 
+=======
+                        })                        
+                    // d3.selectAll(".button1")
+                    //     .transition()
+                    //     .delay(dur * 1.2)
+                    //     .duration(1000)
+                    //     .attr("r", radius / 2)
+                    //     .attr("stroke-dasharray", "4,4")
+                    //     .attr("stroke-width", radius * 2)
+                    //     .each("end", function() {
+                    //         d3.selectAll(".win")
+                    //             .transition()
+                    //             .duration(2000)
+                    //             .attr("r", radius)
+                    //             .attr("stroke-width", strokeWeight)
+                    //             .each("end", function() {
+                    //                 checks.attr("opacity", 1)
+                    //             })
+                    //     })
+
+
+
+>>>>>>> d9fc34a16a4129bdfc73aead4c45b8a4a13ec757
                     var but1Line = svg.append("g")
                         .selectAll("line").data(uniques)
                         .enter()
@@ -439,22 +501,35 @@ var scaleIt = d3.scale.linear()
                             return d.buttonIs;
                         })
                         .attr("x1", function(d, i) {
+<<<<<<< HEAD
                             return xScale(parseDate(d.timeIs))+10; //scale based on d.time
                         })
                         .attr("x2", function(d, i) {
                             return xScale(parseDate(d.timeIs))+10; //scale based on d.time
+=======
+                            return xScale(parseDate(d.timeIs)); //scale based on d.time
+                        })
+                        .attr("x2", function(d, i) {
+                            return xScale(parseDate(d.timeIs)); //scale based on d.time
+>>>>>>> d9fc34a16a4129bdfc73aead4c45b8a4a13ec757
                         })
                         .attr("y1", centerline)
                         .attr("y2", centerline)
                         .attr("stroke", "grey")
+<<<<<<< HEAD
                         .attr("stroke-weight", .5)
                         .attr("opacity", .2)
                         // .attr("stroke-dasharray", dashArray)
+=======
+                        .attr("stroke-weight", 1)
+                        .attr("stroke-dasharray", dashArray)
+>>>>>>> d9fc34a16a4129bdfc73aead4c45b8a4a13ec757
                         // .attr("stroke-dasharray", "1 2 2 2")
                         .transition()
                         .duration(dur)
                         .attr("y2", function(d,i){
                             if(d.buttonIs == "button1"){
+<<<<<<< HEAD
                                 return margin*2+10;
                             }
                             if(d.buttonIs == "button3"){
@@ -462,10 +537,20 @@ var scaleIt = d3.scale.linear()
                             }
                             if(d.buttonIs == "button2"){
                                 return margin*4+10;
+=======
+                                return margin*2;
+                            }
+                            if(d.buttonIs == "button3"){
+                                return margin*3;
+                            }
+                            if(d.buttonIs == "button2"){
+                                return margin*4;
+>>>>>>> d9fc34a16a4129bdfc73aead4c45b8a4a13ec757
                             }
                             else{
                                 return centerline;
                             }
+<<<<<<< HEAD
                         });
                                 doBT();
                 }
@@ -473,6 +558,13 @@ var scaleIt = d3.scale.linear()
         }
         var oColor;
         var maxTime;
+=======
+                        })
+
+                }
+            })
+        }
+>>>>>>> d9fc34a16a4129bdfc73aead4c45b8a4a13ec757
         var maxActivity = 100;
         var minActivity = 0;
         var distData = [];
@@ -489,6 +581,7 @@ var scaleIt = d3.scale.linear()
 
         var specialBT = [];
 
+<<<<<<< HEAD
 var totalK = [];
 
 var specialStore = [];
@@ -501,6 +594,28 @@ var trackTotal = [];
 // "https://dl.dropboxusercontent.com/u/97059/fitbit/fitbit.json"
             $.getJSON("https://spreadsheets.google.com/feeds/list/1CK2L-NwoswZ9l4-MU4tbu-bwt3eI1Oot_bbXkuFNl8c/od6/public/values?alt=json", function(data) {
 
+=======
+
+
+
+        function doBT() {
+            $.getJSON("https://spreadsheets.google.com/feeds/list/1CK2L-NwoswZ9l4-MU4tbu-bwt3eI1Oot_bbXkuFNl8c/od6/public/values?alt=json", function(data) {
+                // $.getJSON("https://spreadsheets.google.com/feeds/list/1fx3ebJuZCrpjfqxg8GwPauwpjqs43Y6fEmmtTPEUfzE/od6/public/values?alt=json", function(data) {
+
+                // d3.tsv("22may.txt", function(data){
+                // for(i=0; i<data.length; i++){
+                //     console.log(data[i]);
+                // }
+
+                // for (j = 0; j < data.feed.entry.length; j++) {
+                //     thisTime.push(data.feed.entry[j]['gsx$date']['$t'].replace(" at", ''));
+                //     // console.log(data.feed.entry[j]['gsx$imageurl']['$t']);
+                //     // console.log(data.feed.entry[j]);
+                // }
+
+                // storeThis.push(data.feed.entry)
+                // console.log(d);
+>>>>>>> d9fc34a16a4129bdfc73aead4c45b8a4a13ec757
                 for (j = 0; j < data.feed.entry.length; j++) {
                     if (parseInt(data.feed.entry[j]['gsx$dist']['$t']) < 0) {
 
@@ -521,10 +636,13 @@ var trackTotal = [];
                     });
                 }
                 if (storeBT.length > 0) {
+<<<<<<< HEAD
                     oColor = d3.scale.ordinal()
                         .domain([uniqueNames])
                         .range(colorbrewer.BuGn[9]);
 
+=======
+>>>>>>> d9fc34a16a4129bdfc73aead4c45b8a4a13ec757
                     mindateBT = parseDateBT(storeBT[0].timeIs);
                     maxdateBT = parseDateBT(storeBT[storeBT.length - 1].timeIs) //Date.now(); //parseDate(thisTime[data.feed.entry.length - 1]);
 
@@ -546,6 +664,7 @@ var trackTotal = [];
                     xScaleBT = d3.time.scale()
                         .domain([mindateBT, maxdateBT])
                         .range([100, w - 100]);
+<<<<<<< HEAD
                 }
                 if (mindateBT) {
 
@@ -553,11 +672,206 @@ var trackTotal = [];
                     var quant = 0;
                     var multiplier = 10;
 
+=======
+                    // Fri May 22 11:34:30
+                    // for(i=0; i<storeBT.length; i++){
+                    //     for(j=0; j<uniqueNames.length; j++){
+                    //         if(storeBT[i].device==uniqueNames[j]){
+                    //             allBT[j]=(storeBT[i]);
+                    //         }
+                    //     }        
+                    // }
+                    // var minActivity = -65;
+                }
+                if (mindateBT) {
+                    var color = d3.scale.category10();
+                    // var rect = svg.append("g").attr("class","BTRect")
+                    //                 // .selectAll("rect")
+                    //                 .append("svg:rect")
+                    //                 .attr("class", "btRect")
+                    //                 .attr("x",xScaleBT(mindateBT))
+                    //                 .attr("y",yScaleBT(65))
+                    //                 .attr("width",0)
+                    //                 .attr("height", yScaleBT(60)-yScaleBT(70))
+                    //                 .attr("fill","grey")
+                    //                 .attr("opacity",.1)
+                    //                 .transition()
+                    //                 .delay(dur)
+                    //                 .duration(dur)
+                    //                 .attr("width", xScaleBT(maxdateBT)-xScaleBT(mindateBT))                
+
+
+
+                    // var btDist = svg.append("g").attr("class","BT")
+                    //     .selectAll("circle").data(storeBT)
+                    //     .enter()
+                    //     .append("svg:circle")
+                    //     .attr("class", "btDist")
+                    //     .attr("cx", function(d, i) {
+                    //         // return 100
+                    //         return xScaleBT(parseDateBT(d.timeIs)); //scale based on d.time
+                    //     })
+                    //     .attr("cy", function(d,i){
+                    //         // return 100
+                    //         if(isNaN(d.dist)){
+                    //             return h*2;
+                    //         }else{
+                    //             return yScaleBT(parseInt(d.dist)*-1);
+                    //         }
+                    //     })
+                    //     .attr("r", 2)
+                    //     .attr("fill", function(d,i){
+                    //         for(j=0; j<uniqueNames.length; j++){
+                    //             if(d.device==uniqueNames[j]){
+                    //                 // allBT[j] = d;
+                    //                 return color(j);
+                    //                 // return "rgb(0, 0, " + (j * 100) + ")";
+                    //             }
+                    //         }
+                    //     })
+                    //     .attr("opacity", .5);
+
+
+
+                    //This is the accessor function we talked about above
+                    var lineFunction = d3.svg.line()
+                        .x(function(d) {
+                            return xScaleBT(parseDateBT(d.timeIs));
+                        })
+                        .y(function(d) {
+                            if (isNaN(d.dist)) {
+                                return h * 2;
+                            } else {
+                                return yScaleBT(parseInt(d.dist) * -1);
+                            }
+                            // return d.y; 
+                        })
+                        .interpolate("basis");
+
+                    // if(parseInt(d.dist)*-1<10&&parseInt(d.dist)*-1>=0){
+                    var lineFunction2 = d3.svg.line()
+                        .x(function(d) {
+                            return xScaleBT(parseDateBT(d.timeIs));
+                        })
+                        .y(function(d) {
+                            if (parseInt(d.dist) * -1 < 60 && parseInt(d.dist) * -1 > 50) {
+                                return centerline / 2 //yScaleBT(parseInt(d.dist)*-1);
+                            } else {
+                                // return h*2;
+                            }
+                            // return d.y; 
+                        })
+                        .interpolate("linear");
+
+
+                    for (i = 0; i < storeBT.length; i++) {
+                        // if(storeBT[i].dist< -65){
+                        //     specialBT.push(storeBT[i])
+                        // }
+                        // for(j=0; j<uniqueNames.length; j++){
+                        if (storeBT[i].device == uniqueNames[0]) {
+                            zeroBT.push(storeBT[i]);
+                        }
+                        if (storeBT[i].device == uniqueNames[1]) {
+                            oneBT.push(storeBT[i]);
+                        }
+                        if (storeBT[i].device == uniqueNames[2]) {
+                            twoBT.push(storeBT[i]);
+                        }
+                        if (storeBT[i].device == uniqueNames[3]) {
+                            threeBT.push(storeBT[i]);
+                        }
+                        if (storeBT[i].device == uniqueNames[4]) {
+                            fourBT.push(storeBT[i]);
+                        }
+                        if (storeBT[i].device == uniqueNames[5]) {
+                            fiveBT.push(storeBT[i]);
+                        }
+                        if (storeBT[i].device == uniqueNames[6]) {
+                            sixBT.push(storeBT[i]);
+                        }
+                        if (storeBT[i].device == uniqueNames[7]) {
+                            sevenBT.push(storeBT[i]);
+                        }
+                        // if(storeBT[i].device==uniqueNames[7]){
+                        //     oneBT.push(storeBT[i]);
+                        // }
+                        // }
+                    }
+
+                    // for(i=0; i<oneBT.length; i++){
+                    //     if(parseInt(oneBT[i].dist)>-70){
+                    //         var thisIndex = i;
+                    //         var firstyes = oneBT[thisIndex].timeIs;
+                    //         specialBT.push({
+                    //                 "device": oneBT[i].device,
+                    //                 "timeIt": firstyes,//.replace(" at", '')
+                    //                 "dist": oneBT[i].dist,
+                    //                 "onoff":1
+                    //             })
+                    //     }else{
+                    //         var thisIndex = i;
+                    //         var firstno = oneBT[thisIndex].timeIs;
+                    //         specialBT.push({
+                    //                 "device": oneBT[i].device,
+                    //                 "timeIt": firstno,//.replace(" at", '')
+                    //                 "dist": oneBT[i].dist,
+                    //                 "onoff":0
+                    //             })       
+                    //     }
+                    // }
+                    // .x(function(d) { 
+                    //     return xScaleBT(parseDateBT(d.timeIs)); 
+                    // })
+                    // .y(function(d) { 
+                    //     return yScaleBT(parseInt(d.dist)*-1);
+                    // })
+
+
+
+
+                    //for one bluetooth device
+                    //if the distance is between a certain thing
+                    //draw a mark?
+                    // "keep drawing"
+
+                    // var blRect = svg.append("g").attr("class","bt1")
+                    //     .selectAll("rect").data(oneBT)
+                    //     .enter()
+                    //     .append("svg:rect")
+                    //     .attr("class", "bt1")
+                    //     .attr("x", function(d, i) {
+                    //             return xScaleBT(parseDateBT(d.timeIs)); //scale based on d.time
+                    //     })
+                    //     .attr("y", centerline/2)
+                    //     .attr("width",3)
+                    //     .attr("height",5)
+                    //     .attr("fill", function(d){
+                    //         if(parseInt(d.dist)>-10){
+                    //             return "blue";
+                    //         }else{
+                    //             return "none";
+                    //         }
+                    //     })
+                    //     .attr("opacity", function(d){
+                    //         if(parseInt(d.dist)>-70){
+                    //             return .5;
+                    //         }else{
+                    //             return 0;
+                    //         }
+                    //     })
+                    var hHere = 10;
+                    var multiplier = 10;
+                    var oColor = d3.scale.ordinal()
+                        .domain([uniqueNames])
+                        .range(colorbrewer.BuGn[9]);
+>>>>>>> d9fc34a16a4129bdfc73aead4c45b8a4a13ec757
 
                     var blRect = svg.append("g").attr("class", "bt1")
                         .selectAll("rect").data(storeBT)
                         .enter()
                         .append("svg:rect")
+<<<<<<< HEAD
                         .attr("class", function(d,i){
     // if (parseInt(d.dist) > -50) {
     //     for (j = 0; j < uniqueNames.length; j++) {
@@ -584,17 +898,42 @@ var trackTotal = [];
                 }
             }
         }
+=======
+                        .attr("class", "bt1")
+                        .attr("x", function(d, i) {
+                            return xScaleBT(parseDateBT(d.timeIs)); //scale based on d.time
+                        })
+                        .attr("y", function(d, i) {
+                            if (parseInt(d.dist) > -50) {
+                                for (j = 0; j < uniqueNames.length; j++) {
+                                    if (d.device == uniqueNames[j]) {
+                                        return centerline - j * multiplier * 1.5;
+                                    }
+                                }
+                            } else {
+                                for (j = 0; j < uniqueNames.length; j++) {
+                                    if (d.device == uniqueNames[j]) {
+                                        return centerline / 1.5 - j * multiplier * 1.5;
+                                    }
+                                }
+                            }
+>>>>>>> d9fc34a16a4129bdfc73aead4c45b8a4a13ec757
                         })
                         .attr("width", 5)
                         .attr("height", hHere)
                         .attr("fill", function(d) {
                             for (j = 0; j < uniqueNames.length; j++) {
                                 if (d.device == uniqueNames[j]) {
+<<<<<<< HEAD
+=======
+                                    // console.log(j)
+>>>>>>> d9fc34a16a4129bdfc73aead4c45b8a4a13ec757
                                     return oColor(uniqueNames[j]);
                                 }
                             }
                         })
                         .attr("opacity", function(d) {
+<<<<<<< HEAD
                             return 1;
                         })
 
@@ -620,6 +959,62 @@ if(uniqueKDone){
 // makeText(); 
 
 
+=======
+                            // if(parseInt(d.dist)>-70){
+                            return 1;
+                            // }
+                            // else{
+                            // return 0;
+                            // }
+                        })
+
+
+
+
+                    var strokePath = .5;
+                    // //The line SVG Path we draw
+                    // var lineGraph = svg.append("path")
+                    //                     .attr("d", lineFunction(zeroBT))
+                    //                     .attr("stroke", color(0))
+                    //                     .attr("stroke-width", strokePath)
+                    //                     .attr("fill", "none");
+                    //The line SVG Path we draw
+                    // var lineGraph = svg.append("path")
+                    //                     .attr("d", lineFunction(oneBT))
+                    //                     .attr("stroke", color(1))
+                    //                     .attr("stroke-width", strokePath*8)
+                    //                     .attr("fill", "none");
+                    // //The line SVG Path we draw
+                    // var lineGraph = svg.append("path")
+                    //                     .attr("d", lineFunction(twoBT))
+                    //                     .attr("stroke", color(2))
+                    //                     .attr("stroke-width", strokePath)
+                    //                     .attr("fill", "none");
+                    // //The line SVG Path we draw
+                    // var lineGraph = svg.append("path")
+                    //                     .attr("d", lineFunction(threeBT))
+                    //                     .attr("stroke", color(3))
+                    //                     .attr("stroke-width", strokePath)
+                    //                     .attr("fill", "none");
+                    // //The line SVG Path we draw
+                    // var lineGraph = svg.append("path")
+                    //                     .attr("d", lineFunction(fourBT))
+                    //                     .attr("stroke", color(4))
+                    //                     .attr("stroke-width", strokePath)
+                    //                     .attr("fill", "none");
+                    // //The line SVG Path we draw
+                    // var lineGraph = svg.append("path")
+                    //                     .attr("d", lineFunction(fiveBT))
+                    //                     .attr("stroke", color(5))
+                    //                     .attr("stroke-width", strokePath)
+                    //                     .attr("fill", "none");
+                    // //The line SVG Path we draw
+                    // var lineGraph = svg.append("path")
+                    //                     .attr("d", lineFunction(sixBT))
+                    //                     .attr("stroke", color(6))
+                    //                     .attr("stroke-width", strokePath)
+                    //                     .attr("fill", "none");                    
+>>>>>>> d9fc34a16a4129bdfc73aead4c45b8a4a13ec757
                     //  //The line SVG Path we draw
                     // var lineGraph = svg.append("path")
                     //                     .attr("d", lineFunction(sevenBT))
@@ -629,6 +1024,7 @@ if(uniqueKDone){
                 }
             })
         }
+<<<<<<< HEAD
 
 
 
@@ -651,6 +1047,24 @@ var sumText = svg.selectAll("summary")
         return (d)+" Time in Workshop"; 
     })
 }
+=======
+        //activity logs
+        // https://docs.google.com/spreadsheets/d/1fx3ebJuZCrpjfqxg8GwPauwpjqs43Y6fEmmtTPEUfzE/pubhtml
+
+
+
+
+        // })
+
+
+
+
+        // var button = svg.append("g")
+        //     .selectAll("circle").data(data.feed.entry)
+        //     .enter()
+        //     .append("svg:circle")
+        //     .attr("class", function(d,i){
+>>>>>>> d9fc34a16a4129bdfc73aead4c45b8a4a13ec757
         //          if(data.feed.entry[i]['gsx$button']['$t']=="button1"){
         //             totalButton1++;
         //             but1.push({"total":totalButton1, "time":data.feed.entry[i]['gsx$timestamp']['$t']})
@@ -674,10 +1088,109 @@ var sumText = svg.selectAll("summary")
         //         }
         //     })
 
+<<<<<<< HEAD
+=======
+        // button
+        //     .attr("cx", function(d, i) {
+
+        //     })
+>>>>>>> d9fc34a16a4129bdfc73aead4c45b8a4a13ec757
 
 
 
 
+<<<<<<< HEAD
+=======
+        // var dir = "images/";
+        // var fileextension = ".jpg";
+
+        // var filename = [];
+
+        // var data = [1, 5, 9, 1, 1,3]
+
+        //   var w = 1200,
+        //       h = 800,
+        //       margin = 25;
+
+        // // var drag = d3.behavior.drag()
+        // //     .on("drag", function() {
+        // //         var clippy = d3.select('#clip circle');
+        // //         clippy.attr('cx', +clippy.attr('cx') + d3.event.dx);
+        // //         clippy.attr('cy', +clippy.attr('cy') + d3.event.dy);
+        // //     });
+
+        //   var svg = d3.select("body")
+        //     .append("svg")
+        //       .attr("width", w)
+        //       .attr("height", h)
+        // var suns = svg.append("g")
+        //             .attr("id","sky")
+        //              .selectAll("img").data(data)
+        //                 .enter()
+        //                 .append("svg:image")
+        // //Define clipping path
+        // suns.append("clipPath")                  //Make a new clipPath
+        //     .attr("id", "chart-area")           //Assign an ID
+        //     .append("rect")                     //Within the clipPath, create a new rect
+        //     .attr("x", function(d,i){
+        //         console.log(i)
+        //         return i*100;
+        //     })                 //Set rect's position and size…
+        //     .attr("y", 100)
+        //     .attr("width", 100)
+        //     .attr("height", 10);
+
+        // suns
+        //             .attr("clip-path", "url(#chart-area)") 
+        //                 .attr("xlink:href", function(d,i){
+        //                     return "images/sky"+i+".jpg";
+        //                 })
+        //                 .attr("x", function(d,i){
+        //                     return i*100;
+        //                 })
+        //                 .attr("y", 100)
+        //                 .attr("width", 100)
+        //                 .attr("height", 100);
+
+
+
+
+        // $.ajax({
+        //     //This will retrieve the contents of the folder if the folder is configured as 'browsable'
+        //     url: dir,
+        //     success: function (data) {
+        //         //Lsit all png file names in the page
+        //         $(data).find("a:contains(" + fileextension + ")").each(function () {
+        //             filename.push(this.href.replace(window.location.host, "").replace("http:///", ""));
+        // // $("body").append($("<img src=" + dir + filename + "></img>"));
+        //      })
+
+
+        //                 var canvas = document.getElementById("myCanvas");
+        //                 var ctx = canvas.getContext("2d");
+        //              var image = new Image();
+        //              for (i=0; i<filename.length; i++){
+        //              image.src = dir + filename[i];//"sky.jpg";
+        //              }
+        //              $(image).load(function() {
+        //                  // ctx.drawImage(image, 400, 400);
+        //                  var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        //                  var pixels = imageData.data;
+        //                  var numPixels = imageData.width * imageData.height;
+        //                  for (i=0; i<filename.length; i++){
+        //                  //we take a square that is 10 by 10 from the top most corner and draw it at 200 by 200
+        //                      ctx.drawImage(image, 0, 140, 10, 10,i*100, 0, 100, 100);
+        //                  }
+        //              });
+        //          // }
+        //             // });
+
+
+        //         // });
+        // }
+        //     })
+        // });
+>>>>>>> d9fc34a16a4129bdfc73aead4c45b8a4a13ec757
 
 
 
@@ -699,6 +1212,17 @@ var sumText = svg.selectAll("summary")
 
 
 
+<<<<<<< HEAD
+=======
+        // buttons//https://docs.google.com/spreadsheets/d/1iWrQh4Pc1G7DkyTCJGy2QLSI4sqnCRtjMbxOMh1b2tQ/pubhtml
+        //insta// https://docs.google.com/spreadsheets/d/1N3WwbYtqSnsFMAKI73gwBy8gwb2llrCtD0CitOiky4/pubhtml
+        // https://docs.google.com/spreadsheets/d/1N3WwbYtqSnsFMAKI73gwBy8gwb2l-lrCtD0CitOiky4/pubhtml
+
+
+        //buttons json
+        // https://spreadsheets.google.com/feeds/list/1iWrQh4Pc1G7DkyTCJGy2QLSI4sqnCRtjMbxOMh1b2tQ/od6/public/values?alt=json
+        // https://docs.google.com/spreadsheets/d/1iWrQh4Pc1G7DkyTCJGy2QLSI4sqnCRtjMbxOMh1b2tQ/pubhtml
+>>>>>>> d9fc34a16a4129bdfc73aead4c45b8a4a13ec757
     </script>
 </body>
 <!-- <body> -->

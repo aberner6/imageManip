@@ -1,0 +1,46 @@
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Pelars@CIID</title>
+    <meta charset="utf-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js" charset="utf-8"></script>
+<!-- <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="kahm23ahpveliao"></script> -->
+    <!-- // <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> -->
+</head>
+<body>
+	</body>
+
+<script>
+
+var di = [];
+// https://www.dropbox.com/s/gglrqlyzwgkixal/BT3.log.parsed.tab?dl=0
+d3.tsv("https://dl.dropboxusercontent.com/s/gglrqlyzwgkixal/BT3.log.parsed.tab?dl=1", function(error, data) {
+
+	di.push(data[data.length-2]);
+	console.log(data.length);
+})
+</script>
+</html>
+
+<!-- *Dropbox, D3.js, File, Folder, Public, Load, JSON, JSONP, CORS, Access-Control-Allow-Origin, Error*
+
+If you try to load a public JSON-file from Dropbox, you will probably get this error message:
+
+>XMLHttpRequest cannot load https://www.dropbox.com/s/123456789/data.json?dl=0. No 'Access-Control-Allow-Origin' header is present on the requested resource. Origin 'http://localhost:8000' is therefore not allowed access.
+
+To load the file successfully, you have to change the end `dl=0` to `dl=1` and replace `www.dropbox.com` with `dl.dropboxusercontent.com`, so the URL should look like this: `https://dl.dropboxusercontent.com/s/123456789/data.json?dl=1`.
+
+Now you can call:
+
+`````
+var dropbox_url = "https://dl.dropboxusercontent.com/s/123456789/data.json?dl=1";
+
+d3.json(dropbox_url, function(error, data){
+  console.log("Successfully loaded file from Dropbox!");
+  console.log(data);
+});
+````
+ -->

@@ -1,0 +1,302 @@
+<html>
+<head>
+    <title>Spark Login Example</title>
+</head>
+<body>
+    <script src="d3.min.js" charset="utf-8"></script>
+<script src="http://cdn.jsdelivr.net/sparkjs/0.4.2/spark.min.js"></script>
+
+    <script src="jquery.min.js"></script>
+    <script>
+// var sparkData = [];
+// var thisToken;
+//     var token = 'cd1e06fe5c9ee77f8f2b49b164c4d6ac799b8560';
+//     spark.on('login', function() {
+//         //Get your devices events
+//         spark.getEventStream(false, 'mine', function(data) {
+//         sparkData=((data));
+//         thisToken = sparkData['coreid']
+//         });
+//     });
+//     spark.login({ accessToken: token });
+
+
+
+
+
+       var totalButton1 = 0;
+        // var but1 = [];
+        var uniques = [];
+        var storeBT = [];
+        // var storeBT = [];
+// var entry = []
+        var storeThis = [];
+
+        var dashArray = "1 5 1 1";
+
+
+        var dur = 100;
+
+        var w = window.innerWidth;
+        var h = window.innerHeight - 40;
+        margin = 25;
+        var padding = 200;
+        var svg = d3.select("body")
+            .append("svg")
+            .attr("width", w)
+            .attr("height", h);
+        var parseDate = d3.time.format('%B %d, %Y %I:%M%p').parse;
+var parseDateBut = d3.time.format("%Y-%m-%dT%H:%M:%S.%LZ").parse;
+// undefined        
+        var mindate, maxdate, xScale;
+        var xAxis = d3.svg.axis();
+        var yAxis = d3.svg.axis();
+var agreedDate = new Date(Date.now());
+var agreedFirstDate = new Date("Mon Jul 27 2015 15:00:00 GMT-0400 (CET)");
+        var centerline = h / 2;
+
+        var mindateBT, maxdateBT, xScaleBT, yScaleBT;
+        // Wed Jul 1 10:14:21 2015
+        var parseDateBT = d3.time.format('%a %b %e %H:%M:%S %Y').parse;
+        // Fri May 22 11:34:30
+        var thisTime = [];
+        var thisHour = [];
+
+        var howMany = [];
+        var countIt = 0;
+
+        var totalPhotos = [];
+        var iconTime = [];
+
+var thisT = [];
+
+                    var now = new Date; // now
+                    now.setHours(1); // set hours to 0
+                    now.setMinutes(0); // set minutes to 0
+                    now.setSeconds(0); // set seconds to 0// divide by 1000, truncate milliseconds
+//USUAL WAY
+                    // mindate = now;
+//STATIC WAY
+                    mindate = agreedFirstDate; //now;
+
+                    // maxD = new Date("Fri Jul 03 2015 08:00:00 GMT-0400 (EDT)")//now;
+                    // maxD = Date.now(); //parseDate(thisTime[data.feed.entry.length - 1]);
+                    maxdate = calcTime("copenhagen", 2);
+
+
+                    xScale = d3.time.scale()
+                        .domain([mindate, maxdate])
+                        .range([100, w - 100]);
+
+
+
+                    function calcTime(city, offset) {
+
+                        // create Date object for current location
+                        d = agreedDate;
+
+                        // convert to msec
+                        // add local time zone offset
+                        // get UTC time in msec
+                        utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+
+                        // create new Date object for different city
+                        // using supplied offset
+                        nd = new Date(utc + (3600000 * offset));
+                        console.log(nd);
+                        return nd;
+                        // return time as a string
+                        // return "The local time in " + city + " is " + nd.toLocaleString();
+
+                    }                    
+var entry = [];
+var entry1 = [];
+
+// var buttonEntry = [];
+var but1 = [];
+var entryb1 = [];
+var de;
+var sparkData = [];
+var sparkDeviceID;
+doButton();
+function doButton() {
+
+var entryDone = false;
+
+                if (uniques.length > 1) {
+                    var radius = 10;
+                    var strokeWeight = 2;
+
+                    var checks = svg.selectAll("img")
+                    .data(uniques)
+                        .enter()
+                        .append("svg:image")
+                        .attr("class","butImg")
+                    checks
+                        .attr("xlink:href", function(d, i) {
+                            iconTime.push(d.timeIs);
+                            if (d.buttonIs == "53ff6c066667574853382567") { //cloud
+                                return "idea.png";
+                            }
+                        })
+                        .attr("x", function(d, i) {
+                                    return xScale(d.timeIs); //scale based on d.time
+                        })
+                    .attr("opacity", 0)
+                        .attr("y", centerline)
+                        .attr("width", 20)
+                        .attr("height", 20)
+                        .transition()
+                        .duration(dur)
+                        .attr("opacity", 1)
+                        .attr("y", function(d, i) {
+                            if (d.buttonIs == "53ff6c066667574853382567") {
+                                return margin * 2;
+                            }
+                        })
+                }
+
+
+            //On click, update with new data            
+d3.select("svg")
+    .on("click", function() {
+console.log("what")
+
+
+
+// var sparkData = [];
+// var thisToken;
+    var token = 'cd1e06fe5c9ee77f8f2b49b164c4d6ac799b8560';
+    spark.on('login', function() {
+        //Get your devices events
+        spark.getEventStream(false, 'mine', function(data) {
+        sparkData=((data));
+        thisToken = sparkData['coreid']
+                    if (data['coreid']=="53ff6c066667574853382567"){ //group 1
+                        // console.log("yes")
+                        // console.log(sparkData)
+                        entryb1.push({
+                            "buttonIs": data['coreid'],
+                            "timeIs": parseDateBut(data['published_at'])
+                        })
+ if(entryb1.length>0){
+    // console.log("YS")
+                for (k = 0; k < entryb1.length-1; k++) {
+                    if(entryb1[k].timeIs>=mindate&&entryb1[k].timeIs<=maxdate){
+                        but1 = entryb1;
+                    }
+                }
+            }
+                    }
+        });
+    });
+    spark.login({ accessToken: token });
+
+
+
+
+                if (but1.length > 1) {
+                    console.log("HELLO");
+                    unique(but1);
+
+                    function unique(obj) {
+                        var stringify = {};
+                        for (var i = 0; i < obj.length; i++) {
+                            var keys = Object.keys(obj[i]);
+                            keys.sort(function(a, b) {
+                                return a - b
+                            });
+                            var str = '';
+                            for (var j = 0; j < keys.length; j++) {
+                                str += JSON.stringify(keys[j]);
+                                str += JSON.stringify(obj[i][keys[j]]);
+                            }
+                            if (!stringify.hasOwnProperty(str)) {
+                                uniques.push(obj[i]);
+                                stringify[str] = true;
+                            }
+                        }
+                        return uniques;
+                    }
+                }
+
+
+
+                    //Select…
+                    var checks = svg.selectAll(".butImg")            //Select all bars
+                        .data(uniques);                         //Re-bind data to existing bars, return the 'update' selection
+                                                                //'bars' is now the update selection
+                    
+                    //Enter…
+                    checks                               //References the enter selection (a subset of the update selection)
+                        .enter()
+                        .append("svg:image")
+                        .attr("class","butImg")
+                    checks
+                        .attr("xlink:href", function(d, i) {
+                            if (d.buttonIs == "53ff6c066667574853382567") { //cloud
+                                return "idea.png";
+                            }
+                        })
+                        .attr("x", function(d, i) {
+                                    return xScale(d.timeIs); //scale based on d.time
+                        })
+                    // .attr("opacity", 0)
+                        // .attr("y", centerline)
+                        .attr("width", 20)
+                        .attr("height", 20)
+                        // .transition()
+                        // .duration(dur)
+                        // .attr("opacity", 1)
+                        .attr("y", function(d, i) {
+                            if (d.buttonIs == "53ff6c066667574853382567") {
+                                return margin * 2;
+                            }
+                        })
+
+                    //Update…
+                    checks.transition()                           //Initiate a transition on all elements in the update selection (all rects)
+                        .duration(500)
+                        .attr("x", function(d, i) {
+                                    return xScale(d.timeIs); //scale based on d.time
+                        })
+    });
+}
+
+                    // var but1Line = svg.append("g")
+                    //     .selectAll("line").data(uniques)
+                    //     .enter()
+                    //     .append("svg:line")
+                    //     .attr("class", function(d) {
+                    //         return d.buttonIs;
+                    //     })
+                    //     .attr("x1", function(d, i) {
+                    //         return xScale(d.timeIs) + 10; //scale based on d.time
+                    //     })
+                    //     .attr("x2", function(d, i) {
+                    //         return xScale(d.timeIs) + 10; //scale based on d.time
+                    //     })
+                    //     .attr("y1", centerline)
+                    //     .attr("y2", centerline)
+                    //     .attr("stroke", "grey")
+                    //     .attr("stroke-weight", .5)
+                    //     .attr("opacity", .2)
+                    //     .transition()
+                    //     .duration(dur)
+                    //     .attr("y2", function(d, i) {
+                    //         if (d.buttonIs == "53ff6c066667574853382567") {
+                    //             return margin * 2 + 10;
+                    //         }
+                    //     });
+//eventually calibrate time here for xscale and xaxis
+// entryb1[k].timeIs
+                    //Update scale domains
+                    // xScale.domain(d3.range(dataset.length));    //Recalibrate the x scale domain, given the new length of dataset
+// svg.select(".axis")
+//     .transition()
+//     .duration(1000)
+//     .call(xAxis);
+
+</script>
+</body>
+</html>
