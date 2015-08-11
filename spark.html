@@ -23,6 +23,18 @@
         //     });
         //     spark.login({ accessToken: token });
 
+// $.getJSON("https://spreadsheets.google.com/feeds/list/1__sCc3oOidj_Y4_8s7kKyW_R2Ho3Kd9vdTn30soWMww/default/public/values?alt=json", function(data) {
+//     console.log(data.feed.entry);
+
+//     // ['IMAGE']);
+//     // =IMAGE(
+// })
+
+
+
+
+
+
 
 
 
@@ -53,8 +65,12 @@
         var mindate, maxdate, xScale;
         var xAxis = d3.svg.axis();
         var yAxis = d3.svg.axis();
-        var agreedDate = new Date(Date.now());
-        var agreedFirstDate = new Date("Mon Jul 27 2015 15:15:00 GMT-0400 (EDT)");
+        var agreedDate;// = new Date(Date.now());
+        var now = new Date(Date.now()); // now
+                    now.setHours(1); // set hours to 0
+                    now.setMinutes(0); // set minutes to 0
+                    now.setSeconds(0); // set seconds to 0// divide by 1000, truncate milliseconds
+        var agreedFirstDate = now;//new Date("Mon Jul 27 2015 15:15:00 GMT-0400 (EDT)");
         var centerline = h / 2;
 
         var mindateBT, maxdateBT, xScaleBT, yScaleBT;
@@ -73,8 +89,8 @@
         var thisT = [];
 
         var now = new Date; // now
-        now.setHours(1); // set hours to 0
-        now.setMinutes(0); // set minutes to 0
+        now.setHours(15); // set hours to 0
+        now.setMinutes(40); // set minutes to 0
         now.setSeconds(0); // set seconds to 0// divide by 1000, truncate milliseconds
         //USUAL WAY
         // mindate = now;
@@ -92,10 +108,30 @@
 
 
 
+        function unique(obj) {
+        uniques = [];
+            var stringify = {};
+            for (var i = 0; i < obj.length; i++) {
+                var keys = Object.keys(obj[i]);
+                keys.sort(function(a, b) {
+                    return a - b
+                });
+                var str = '';
+                for (var j = 0; j < keys.length; j++) {
+                    str += JSON.stringify(keys[j]);
+                    str += JSON.stringify(obj[i][keys[j]]);
+                }
+                if (!stringify.hasOwnProperty(str)) {
+                    uniques.push(obj[i]);
+                    stringify[str] = true;
+                }
+            }
+            return uniques;
+        }
         function calcTime(city, offset) {
 
             // create Date object for current location
-            d = agreedDate;
+        d = new Date(Date.now());
 
             // convert to msec
             // add local time zone offset
@@ -134,6 +170,9 @@
                         spark.getEventStream(false, 'mine', function(data) {
                             sparkData = ((data));
                             thisToken = sparkData['coreid']
+                            //CIID BUTTON
+                            // if (data['coreid'] == "330029000647343232363230") { //group 1
+//DIONISIO'S HOME
                             if (data['coreid'] == "53ff6c066667574853382567") { //group 1
                                 // console.log("yes")
                                 console.log(sparkData)
@@ -143,11 +182,13 @@
                                 })
                                 if (entryb1.length > 0) {
                                     // console.log("YS")
-                                    for (k = 2; k < entryb1.length - 1; k++) {
-                                        if (entryb1[k].timeIs >= mindate && entryb1[k].timeIs <= maxdate && (entryb1[k].timeIs.getTime() != entryb1[k-1].timeIs.getTime())) {
                                             but1 = entryb1;
-                                        }
-                                    }
+
+                                    // for (k = 2; k < entryb1.length - 1; k++) {
+                                    //     if (entryb1[k].timeIs >= mindate && entryb1[k].timeIs <= maxdate && (entryb1[k].timeIs.getTime() != entryb1[k-1].timeIs.getTime())) {
+                                    //         but1 = entryb1;
+                                    //     }
+                                    // }
                                 }
                             }
                         });
@@ -162,35 +203,15 @@
                     if (but1.length > 1) {
                         console.log("HELLO");
                         unique(but1);
-
-                        function unique(obj) {
-                        uniques = [];
-                            var stringify = {};
-                            for (var i = 0; i < obj.length; i++) {
-                                var keys = Object.keys(obj[i]);
-                                keys.sort(function(a, b) {
-                                    return a - b
-                                });
-                                var str = '';
-                                for (var j = 0; j < keys.length; j++) {
-                                    str += JSON.stringify(keys[j]);
-                                    str += JSON.stringify(obj[i][keys[j]]);
-                                }
-                                if (!stringify.hasOwnProperty(str)) {
-                                    uniques.push(obj[i]);
-                                    stringify[str] = true;
-                                }
-                            }
-                            return uniques;
-                        }
                     }
+entry[0] = "http://pelars.netne.net/images/9_06_283_8347.jpg"
 
             if (uniques.length > 1) {
                 var radius = 10;
                 var strokeWeight = 2;
 
                 // var checks = 
-                svg.selectAll("image")
+                svg.selectAll("image.butImg")
                     .data(uniques)
                     .enter()
                     .append("image")
@@ -199,6 +220,7 @@
                     .attr("xlink:href", function(d, i) {
                         iconTime.push(d.timeIs);
                         if (d.buttonIs == "53ff6c066667574853382567") { //cloud
+                            console.log(d.buttonIs)
                             return "idea.png";
                         }
                     })
@@ -212,13 +234,56 @@
                             return margin * 2;
                         }
                     })
+                    svg.selectAll("image.sky")
+                    .data(entry)
+                    .enter()
+                    .append("image")
+                        .attr("class", "sky")
+                        .attr("xlink:href", function(d, i) {
+                            return entry[0];
+                        })
+                        .attr("x", function(d, i) {
+                            return 100;
+                        })
+                        .attr("y", 100)
+                        .attr("width", 50)
+                        .attr("height", 50)
+
             }
 
 
             //On click, update with new data            
             d3.select("svg")
                 .on("click", function() {
-                    console.log("what")
+                    // console.log("what")
+
+////FROM DATABASE THEORETICALLY
+//         var suns = svg.append("g")
+//             .attr("class", "sky")
+//             .selectAll("img").data(entry)
+//             .enter()
+//             .append("svg:image")
+// entry[0] = "http://pelars.netne.net/images/9_06_283_8347.jpg"
+//         suns
+//             .attr("clip-path", "url(#chart-area)")
+//             .attr("xlink:href", function(d, i) {
+//                 return entry[0];
+//             })
+//             .attr("x", function(d, i) {
+//                 return 100;
+//             })
+//             .attr("y", 100)
+//             .attr("width", 50)
+//             .attr("height", 50)
+
+
+
+
+
+
+
+
+
 
 
                     // var sparkData = [];
@@ -229,13 +294,17 @@
                         spark.getEventStream(false, 'mine', function(data) {
                             sparkData = ((data));
                             thisToken = sparkData['coreid']
-                            if (data['coreid'] == "53ff6c066667574853382567") { //group 1
+                            if (data['coreid'] == "330029000647343232363230") { //group 1
                                 // console.log("yes")
                                 // console.log(sparkData)
                                 entryb1.push({
                                     "buttonIs": data['coreid'],
                                     "timeIs": parseDateBut(data['published_at'])
                                 })
+                    mindate = now; //entryb1[0].timeIs;
+                    maxdate = entryb1[entryb1.length-1].timeIs;                              
+        xScale
+            .domain([mindate, maxdate])
                                 if (entryb1.length > 0) {
                                     // console.log("YS")
                                     for (k = 0; k < entryb1.length - 1; k++) {
@@ -257,32 +326,12 @@
                     if (but1.length > 1) {
                         console.log("HELLO");
                         unique(but1);
-
-                        function unique(obj) {
-                            var stringify = {};
-                            for (var i = 0; i < obj.length; i++) {
-                                var keys = Object.keys(obj[i]);
-                                keys.sort(function(a, b) {
-                                    return a - b
-                                });
-                                var str = '';
-                                for (var j = 0; j < keys.length; j++) {
-                                    str += JSON.stringify(keys[j]);
-                                    str += JSON.stringify(obj[i][keys[j]]);
-                                }
-                                if (!stringify.hasOwnProperty(str)) {
-                                    uniques.push(obj[i]);
-                                    stringify[str] = true;
-                                }
-                            }
-                            return uniques;
-                        }
                     }
 
 
 
                     //Select…
-                    var checks = svg.selectAll("image") //Select all bars
+                    var checks = svg.selectAll("image.butImg") //Select all bars
                         .data(uniques); //Re-bind data to existing bars, return the 'update' selection
                     //Enter…
                     checks //References the enter selection (a subset of the update selection)
@@ -292,6 +341,7 @@
                         // checks
                         .attr("xlink:href", function(d, i) {
                             if (d.buttonIs == "53ff6c066667574853382567") { //cloud
+                                console.log("this button")
                                 return "idea.png";
                             }
                         })
@@ -310,49 +360,36 @@
                                 return margin * 2;
                             }
                         })
+        var shots = svg.selectAll("image.sky")
+                    .data(entry);
+                shots
+                    .enter()
+                    .append("image")
+                        // .attr("class", "sky")
+                        .attr("xlink:href", function(d, i) {
+                            return entry[0];
+                        })
+                        .attr("x", function(d, i) {
+                            return 100;
+                        })
+                        .attr("y", 100)
+                        .attr("width", 50)
+                        .attr("height", 50)
+
+shots.transition()
+.duration(500)
+.attr("x", function(d,i){
+    return 100;
+})
 
                     //Update…
-                    checks.transition() //Initiate a transition on all elements in the update selection (all rects)
+                    checks.transition() //Initiate a transition on all elements in the update selection (all rects
                         .duration(500)
                         .attr("x", function(d, i) {
                             return xScale(d.timeIs); //scale based on d.time
                         })
                 });
         }
-
-        // var but1Line = svg.append("g")
-        //     .selectAll("line").data(uniques)
-        //     .enter()
-        //     .append("svg:line")
-        //     .attr("class", function(d) {
-        //         return d.buttonIs;
-        //     })
-        //     .attr("x1", function(d, i) {
-        //         return xScale(d.timeIs) + 10; //scale based on d.time
-        //     })
-        //     .attr("x2", function(d, i) {
-        //         return xScale(d.timeIs) + 10; //scale based on d.time
-        //     })
-        //     .attr("y1", centerline)
-        //     .attr("y2", centerline)
-        //     .attr("stroke", "grey")
-        //     .attr("stroke-weight", .5)
-        //     .attr("opacity", .2)
-        //     .transition()
-        //     .duration(dur)
-        //     .attr("y2", function(d, i) {
-        //         if (d.buttonIs == "53ff6c066667574853382567") {
-        //             return margin * 2 + 10;
-        //         }
-        //     });
-        //eventually calibrate time here for xscale and xaxis
-        // entryb1[k].timeIs
-        //Update scale domains
-        // xScale.domain(d3.range(dataset.length));    //Recalibrate the x scale domain, given the new length of dataset
-        // svg.select(".axis")
-        //     .transition()
-        //     .duration(1000)
-        //     .call(xAxis);
     </script>
 </body>
 
