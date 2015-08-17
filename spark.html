@@ -6,11 +6,20 @@
 </head>
 
 <body>
+<!-- jQuery library (served from Google) -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<!-- bxSlider Javascript file -->
+<script src="jquery.bxslider.min.js"></script>
+<!-- bxSlider CSS file -->
+<link href="jquery.bxslider.css" rel="stylesheet" />
+
+
     <script src="d3.min.js" charset="utf-8"></script>
     <script src="http://cdn.jsdelivr.net/sparkjs/0.4.2/spark.min.js"></script>
 
     <script src="jquery.min.js"></script>
     <script>
+
         // var sparkData = [];
         // var thisToken;
         //     var token = 'cd1e06fe5c9ee77f8f2b49b164c4d6ac799b8560';
@@ -42,12 +51,11 @@
         // var but1 = [];
         var storeBT = [];
         // var storeBT = [];
-        // var entry = []
+        var entry = [];
         var storeThis = [];
         var uniques = [];
 
         var dashArray = "1 5 1 1";
-
 
         var dur = 100;
 
@@ -89,8 +97,8 @@
         var thisT = [];
 
         var now = new Date; // now
-        now.setHours(15); // set hours to 0
-        now.setMinutes(40); // set minutes to 0
+        now.setHours(7); // set hours to 0
+        now.setMinutes(0); // set minutes to 0
         now.setSeconds(0); // set seconds to 0// divide by 1000, truncate milliseconds
         //USUAL WAY
         // mindate = now;
@@ -105,7 +113,6 @@
         xScale = d3.time.scale()
             .domain([mindate, maxdate])
             .range([100, w - 100]);
-
 
 
         function unique(obj) {
@@ -161,6 +168,10 @@
         doButton();
 
         function doButton() {
+entry[0] = "http://pelars.netne.net/images/9_06_283_8347.jpg";
+
+entry[1] = "http://pelars.netne.net/images/330029000647343232363230.button2.overview.17:57:25_11-08-2015.jpg";
+
 
                     // var sparkData = [];
                     // var thisToken;
@@ -168,12 +179,13 @@
                     spark.on('login', function() {
                         //Get your devices events
                         spark.getEventStream(false, 'mine', function(data) {
+                            console.log(data);
                             sparkData = ((data));
                             thisToken = sparkData['coreid']
                             //CIID BUTTON
-                            // if (data['coreid'] == "330029000647343232363230") { //group 1
+                            if (data['coreid'] == "330029000647343232363230") { //group 1
 //DIONISIO'S HOME
-                            if (data['coreid'] == "53ff6c066667574853382567") { //group 1
+                            // if (data['coreid'] == "53ff6c066667574853382567") { //group 1
                                 // console.log("yes")
                                 console.log(sparkData)
                                 entryb1.push({
@@ -204,7 +216,6 @@
                         console.log("HELLO");
                         unique(but1);
                     }
-entry[0] = "http://pelars.netne.net/images/9_06_283_8347.jpg"
 
             if (uniques.length > 1) {
                 var radius = 10;
@@ -240,52 +251,25 @@ entry[0] = "http://pelars.netne.net/images/9_06_283_8347.jpg"
                     .append("image")
                         .attr("class", "sky")
                         .attr("xlink:href", function(d, i) {
-                            return entry[0];
+                            return d;
                         })
                         .attr("x", function(d, i) {
-                            return 100;
+                            return 100*i;
                         })
                         .attr("y", 100)
                         .attr("width", 50)
                         .attr("height", 50)
-
+// $(document).ready(function(){
+//   $('image.sky').bxSlider();
+//   slider = $('image.sky').bxSlider();
+// slider.startAuto();
+// });
             }
 
 
             //On click, update with new data            
             d3.select("svg")
                 .on("click", function() {
-                    // console.log("what")
-
-////FROM DATABASE THEORETICALLY
-//         var suns = svg.append("g")
-//             .attr("class", "sky")
-//             .selectAll("img").data(entry)
-//             .enter()
-//             .append("svg:image")
-// entry[0] = "http://pelars.netne.net/images/9_06_283_8347.jpg"
-//         suns
-//             .attr("clip-path", "url(#chart-area)")
-//             .attr("xlink:href", function(d, i) {
-//                 return entry[0];
-//             })
-//             .attr("x", function(d, i) {
-//                 return 100;
-//             })
-//             .attr("y", 100)
-//             .attr("width", 50)
-//             .attr("height", 50)
-
-
-
-
-
-
-
-
-
-
-
                     // var sparkData = [];
                     // var thisToken;
                     var token = 'cd1e06fe5c9ee77f8f2b49b164c4d6ac799b8560';
@@ -365,12 +349,12 @@ entry[0] = "http://pelars.netne.net/images/9_06_283_8347.jpg"
                 shots
                     .enter()
                     .append("image")
-                        // .attr("class", "sky")
+                        .attr("class", "sky")
                         .attr("xlink:href", function(d, i) {
-                            return entry[0];
+                            return d;
                         })
                         .attr("x", function(d, i) {
-                            return 100;
+                            return 100*i;
                         })
                         .attr("y", 100)
                         .attr("width", 50)
@@ -379,7 +363,7 @@ entry[0] = "http://pelars.netne.net/images/9_06_283_8347.jpg"
 shots.transition()
 .duration(500)
 .attr("x", function(d,i){
-    return 100;
+    return 200*i;
 })
 
                     //Update…
@@ -390,6 +374,8 @@ shots.transition()
                         })
                 });
         }
+
+
     </script>
 </body>
 

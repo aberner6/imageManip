@@ -1,0 +1,318 @@
+
+<html>
+
+<head>
+    <title>Prep</title>
+</head>
+<style>
+/*	image.over{
+		display:block;
+	}*/
+/*	image.screen{
+		display:none;
+	}*/
+
+		.miniItem0 {
+			fill: darksalmon;
+			stroke-width: 6;	
+		}
+
+		.miniItem1 {
+			fill: darkolivegreen;
+			fill-opacity: .7;
+			stroke-width: 6;	
+		}
+
+		.miniItem2 {
+			fill: slategray;
+			fill-opacity: .7;
+			stroke-width: 6;	
+		}
+		.chart {
+			shape-rendering: crispEdges;
+		}
+		.brush .extent {
+			stroke: gray;
+			fill: dodgerblue;
+			fill-opacity: .365;
+		}
+</style>
+<body>
+    <script src="d3.min.js" charset="utf-8"></script>
+    <script src="http://cdn.jsdelivr.net/sparkjs/0.4.2/spark.min.js"></script>
+    <script src="jquery.min.js"></script>
+<script>
+// Timestamp,Device,button,overview,screenshot
+var entry1 = [];
+var readyToSlide = false;
+// 15:00:07-314093466_12-08-2015
+var parseDate = d3.time.format('%X_%d-%m-%Y').parse;
+var mindate, maxdate, xScale;
+var uniques = [];
+var totalPhotos = [];
+
+// var w = window.innerWidth;
+// var h = window.innerHeight - 40;
+var margin = 25;
+var padding = 200;
+var laneLength = 100;
+
+var m = [20, 15, 15, 120], //top right bottom left
+	w = 960 - m[1] - m[3],
+	h = 500 - m[0] - m[2];
+	miniHeight = laneLength * 12 + 50,
+	mainHeight = h - miniHeight - 50;
+
+//scales
+// var x = d3.scale.linear()
+// 		.domain([mindate, maxdate])
+// 		.range([0, w]);
+var x1 = d3.scale.linear()
+		.range([0, w]);
+
+var chart = d3.select("body")
+			.append("svg")
+			.attr("width", w + m[1] + m[3])
+			.attr("height", h + m[0] + m[2])
+			.attr("class", "chart");
+
+chart.append("defs").append("clipPath")
+	.attr("id", "clip")
+	.append("rect")
+	.attr("width", w)
+	.attr("height", mainHeight);
+// var svg = d3.select("body")
+//     .append("svg")
+//     .attr("width", w)
+//     .attr("height", h);
+var main = chart.append("g")
+			.attr("transform", "translate(" + m[3] + "," + m[0] + ")")
+			.attr("width", w)
+			.attr("height", mainHeight)
+			.attr("class", "main");
+		var mini = chart.append("g")
+					.attr("transform", "translate(" + m[3] + "," + (mainHeight + m[0]) + ")")
+					.attr("width", w)
+					.attr("height", miniHeight)
+					.attr("class", "mini");
+function unique(obj) {
+    var stringify = {};
+    for (var i = 0; i < obj.length; i++) {
+        var keys = Object.keys(obj[i]);
+        keys.sort(function(a, b) {
+            return a - b
+        });
+        var str = '';
+        for (var j = 0; j < keys.length; j++) {
+            str += JSON.stringify(keys[j]);
+            str += JSON.stringify(obj[i][keys[j]]);
+        }
+        if (!stringify.hasOwnProperty(str)) {
+            uniques.push(obj[i]);
+            stringify[str] = true;
+        }
+    }
+    return uniques;
+}
+function photoConsolidation(index) {
+    var total = 0;
+    for (i = 0; i < uniques.length; i++) {
+        if (uniques[i].timeIs.getHours() == index) {
+            total++;
+        } else {}
+    }
+    return total;
+}
+
+getData();
+function getData(){
+	d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
+		console.log(data);
+		console.log(data[0]['screenshot']);
+		console.log(data[data.length-1]['Timestamp']);
+		for (var i= 0; i<data.length; i++){
+		    if (data[i]['Device'] == "330029000647343232363230") { //group 1	
+		        entry1.push({
+		            "buttonIs": data[i]['button'],
+		            "timeIs": parseDate(data[i]['Timestamp']),
+		            "photO": data[i]['overview'],
+		            "photS": data[i]['screenshot']
+		        })
+		    }	
+		}
+		unique(entry1);
+	})	
+	if(uniques.length>0){
+		prepScales();		
+	}
+}
+// svg.on("click", function(){
+	// prepScales();
+// })
+function prepScales(){
+    mindate = uniques[0].timeIs;
+    maxdate = uniques[uniques.length - 1].timeIs;
+    xScale = d3.time.scale()
+        .domain([mindate, maxdate])
+        .range([10, w - 10]);
+
+	for (j = 0; j <= 24; j++) {
+	    totalPhotos[j] = photoConsolidation(j)
+	}
+    console.log(totalPhotos)
+    // showImages();
+    display();
+}
+//main lanes and texts
+main.append("g").selectAll(".laneLines")
+	.data(uniques)
+	.enter().append("circle")
+	.attr("cx", m[1])
+	.attr("cy", 100)
+	.attr("r", 20)
+	.attr("fill","pink");
+
+
+var itemRects = main.append("g")
+					.attr("clip-path", "url(#clip)");
+
+
+
+
+		function display() {
+			var rects, labels,
+				minExtent = brush.extent()[0],
+				maxExtent = brush.extent()[1],
+				visItems = uniques.filter(function(d) {return d.timeIs < maxExtent && d.timeIs > minExtent;});
+
+			mini.select(".brush")
+				.call(brush.extent([minExtent, maxExtent]));
+
+			xScale.domain([minExtent, maxExtent]);
+
+			//update main item rects
+			rects = itemRects.selectAll("rect")
+			        .data(uniques, function(d) { return d; })
+				.attr("x", function(d) {return xScale(d.timeIs);})
+				.attr("width", 30)
+
+			rects.enter().append("rect")
+				.attr("class", function(d) {return "miniItem" + d.buttonIs;})
+				.attr("x", function(d) {return xScale(d.timeIs);})
+				.attr("y", function(d) {return 100;})
+				.attr("width", 30)
+				.attr("height", 10);
+
+			rects.exit().remove();
+		}
+
+
+
+
+
+
+//brush
+var brush = d3.svg.brush()
+					.x(xScale)
+					.on("brush", display);
+var mini = chart.append("g")
+			.attr("transform", "translate(" + m[3] + "," + (mainHeight + m[0]) + ")")
+			.attr("width", w)
+			.attr("height", miniHeight)
+			.attr("class", "mini");
+mini.append("g")
+	.attr("class", "x brush")
+	.call(brush)
+	.selectAll("rect")
+	.attr("y", 1)
+	.attr("height", miniHeight - 1);
+
+// display();
+
+
+// function showImages(){
+// 	svg.selectAll("but")
+// 		.data(uniques)
+// 		.enter()
+// 		.append("image")
+// 		.attr("class", "but")
+// 		// checks
+// 		.attr("xlink:href", function(d, i) {
+// 		    if (d.buttonIs == "button2") { //cloud
+// 		        console.log(d.buttonIs)
+// 		        return "idea.png";
+// 		    }
+// 		})
+// 		.attr("x", function(d, i) {
+// 		    return xScale(d.timeIs); //scale based on d.time
+// 		})
+// 		.attr("width", 20)
+// 		.attr("height", 20)
+// 		.attr("y", function(d, i) {
+// 		    if (d.buttonIs == "button2") {
+// 		        return margin * 2;
+// 		    }
+// 		})
+// 	svg.selectAll("screen")
+// 		.data(uniques)
+// 		.enter()
+// 		.append("image")
+// 		.attr("id","screen")
+// 	    .attr("class", function(d,i){
+// 	    	return i;
+// 	    })
+// 	    .attr("xlink:href", function(d, i) {
+// 		    return d.photS;
+// 	    })
+// 		.attr("x", function(d, i) {
+// 		    return xScale(d.timeIs); //scale based on d.time
+// 		})
+// 	    .attr("y", function(d, i) {
+// 		    return 100;
+// 		})
+// 	    .attr("width", 100)
+// 	    .attr("height", 100)
+// 	    // .style("display","none")
+
+// 	svg.selectAll("over")
+// 		.data(uniques)
+// 		.enter()
+// 		.append("image")
+// 		.attr("id", "over")
+// 	    .attr("class", function(d,i){
+// 	    	return i;
+// 	    })
+// 	    .attr("xlink:href", function(d, i) {
+// 		    return d.photO;
+// 	    })
+// 		.attr("x", function(d, i) {
+// 		    return xScale(d.timeIs); //scale based on d.time
+// 		})
+// 	    .attr("y", function(d, i) {
+// 		    return 100;
+// 		})
+// 	    .attr("width", 100)
+// 	    .attr("height", 100)
+// 	    .style("display","inline")
+
+// 	setTimeout(function(){
+// 		readyToSlide = true;
+// 	},10000)
+
+// 	if(readyToSlide){
+// 		setInterval(function () {
+// 			if($("image#over").css("display")=="inline"){
+// 				$("image#over").hide()	
+// 				$("image#screen").show()	
+// 			}else{
+// 				$("image#over").show()	
+// 				$("image#screen").hide()	
+// 			}
+// 		}, 8000);
+// 	}
+// }
+
+
+</script>
+</body>
+</html>
