@@ -131,7 +131,13 @@ function photoConsolidation(index) {
     }
     return total;
 }
-		
+
+$(window).keypress(function(e) {
+  if (e.keyCode === 0 || e.keyCode === 32) {
+    console.log('Space pressed');
+    	prepScales();
+  }
+});
 
 getData();
 function getData(){
@@ -161,52 +167,17 @@ function prepScales(){
 	console.log("in prep scales")
     mindate = uniques[0].timeIs;
     maxdate = uniques[uniques.length - 1].timeIs;
-    // xScale = d3.time.scale()
-    //     .domain([mindate, maxdate])
-    //     .range([10, w - 10]);
 
-    xScale = d3.scale.linear()
-        .domain([+mindate, +maxdate])
+    // xScale = d3.scale.linear()
+    //     .domain([+mindate, +maxdate])
+    //     .range([10, w - 100]);
+    xScale = d3.time.scale()
+		.domain([mindate, maxdate])
         .range([10, w - 100]);
 
 	for (j = 0; j <= 24; j++) {
 	    totalPhotos[j] = photoConsolidation(j)
 	}
-	// xBrush = d3.scale.linear()
-        // .range([10, w - 10]);
-
-
-		// itemRects = main.append("g")
-		// 			.attr("clip-path", "url(#clip)");
-		
-		//mini item rects
-		// mini.append("g").selectAll("miniItems")
-		// 	.data(uniques)
-		// 	.enter().append("image")
-		// .attr("class", "miniItem")
-		// .attr("xlink:href", function(d, i) {
-		//     if (d.buttonIs == "button2") { //cloud
-		//         console.log(d.buttonIs)
-		//         return "idea.png";
-		//     }
-		// })
-		// // .attr("x", function(d, i) {
-		// //     return xBrush(+d.timeIs); //scale based on d.time
-		// // })
-		// .attr("width", 20)
-		// .attr("height", 20)
-		// .attr("y", function(d, i) {
-		//     if (d.buttonIs == "button2") {
-		//         return margin * 2;
-		//     }
-		// })
-
-
-
-
-
-
-
 
 	//brush
 	brush				
@@ -228,37 +199,31 @@ function prepScales(){
     // showImages();
 }
 
-
+var minExtent, maxExtent;
 function withBrush(){
-	var imgs,
+	var imgs;
 	minExtent = brush.extent()[0],
 	maxExtent = brush.extent()[1],
 
 	toVis=uniques.filter(function(d) {return +(d.timeIs) < maxExtent && +(d.timeIs) > minExtent;});			
-	// console.log(minExtent+"min")
-	// console.log(maxExtent+"max")
+	console.log(minExtent+"min")
+	console.log(maxExtent+"max")
 	// console.log(toVis.length+"tovis");
 
 
 	svg.select(".brush")
 		.call(brush.extent([minExtent, maxExtent]));
 
-	// xBrush = d3.scale.linear()
- //        .range([10, w - 100])
-	// 	.domain([minExtent, maxExtent]);
-    
+	xBrush = d3.scale.linear()
+		.domain([minExtent, maxExtent])
+        .range([10, w - 100]);
+
     xScale = d3.time.scale()
 		.domain([mindate, maxdate])
         .range([10, w - 100]);
 
 	imgs = svg.selectAll("circle")
-	        .data(toVis, function(d) { 
-	        	// console.log(d);
-	        	if(d.buttonIs=="button2"){
-	        		console.log(d);
-	        		return d;
-	        	}
-	        });
+	        .data(toVis)
 
 	    imgs
 	        .enter()
@@ -275,74 +240,33 @@ function withBrush(){
 			//     }
 			// })	        
 			.attr("cx", function(d, i) {
-			    // if (d.buttonIs == "button2") { //cloud
-			    // console.log(xScale(+d.timeIs));
-			    	return xScale(d.timeIs); //scale based on d.time
-				// }
-				// else{
-				// }
+				if(d.buttonIs=="button1" || d.buttonIs=="button2" || d.buttonIs=="button3"){
+					return xScale(+d.timeIs);
+				}
+				else{
+					return 0;
+				}
+			})
+			.attr("fill", function(d){
+				if(d.buttonIs=="button1"){
+					return "red";
+				}
+				if(d.buttonIs=="button2"){
+					return "blue";
+				}
+				if(d.buttonIs=="button3"){
+					return "green";
+				}
+				else{
+					return "white";
+				}
 			})
 			.attr("cy",200)
 			.attr("r", 10)
-				// function(d, i) {
-			//     if (d.buttonIs == "button2") { //cloud
-			//     	return 10;
-			// 	}
-			// 	else{
-			// 		return 0;
-			// 	}
-			// })
-.attr("opacity",.1)
+			.attr("opacity",.1)
 
 	imgs.exit().remove();
-
-	// rects.enter().append("image")
-	// 		.attr("class", "miniItem")
-	// 		.transition()
-	// 		.attr("x", function(d, i) {
-	// 		    return xBrush(+d.timeIs); //scale based on d.time
-	// 		})
-	// 		.attr("y", function(d, i) {
-	// 		    if (d.buttonIs == "button2") {
-	//         	console.log(d.buttonIs+d.timeIs); 
-	// 		        return 100;
-	// 		    }
-	// 		})
-
-
-			// rects.exit().remove();
-
-	// imgs = svg.selectAll("but")
-	// 	.data(toVis)
-	// 	.attr("x", function(d, i) {
-	// 	    return xBrush(+d.timeIs); //scale based on d.time
-	// 	})
-	// 	.attr("width", 20);
-
-	// 	imgs.enter()
-	// 	.append("image")
-	// 	.attr("class", "but")
-	// 	// checks
-	// 	.attr("xlink:href", function(d, i) {
-	// 	    if (d.buttonIs == "button2") { //cloud
-	// 	        console.log(d.buttonIs)
-	// 	        return "idea.png";
-	// 	    }
-	// 	})
-	// 	.attr("x", function(d, i) {
-	// 	    return xBrush(+d.timeIs); //scale based on d.time
-	// 	})
-	// 	.attr("width", 20)
-	// 	.attr("height", 20)
-	// 	.attr("y", function(d, i) {
-	// 	    if (d.buttonIs == "button2") {
-	// 	        return margin * 2;
-	// 	    }
-	// 	})
-	// 	imgs.exit().remove();
-
-		// d3.selectAll(".but").exit().remove();
-	}
+}
 
 function showImages(){
 	svg.selectAll("but")
