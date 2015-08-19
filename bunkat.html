@@ -197,7 +197,7 @@
 			var rects, labels,
 				minExtent = brush.extent()[0],
 				maxExtent = brush.extent()[1],
-				visItems = uniques.filter(function(d) {return d.start < maxExtent && d.end > minExtent;});
+				visItems = items.filter(function(d) {return d.start < maxExtent && d.end > minExtent;});
 
 			mini.select(".brush")
 				.call(brush.extent([minExtent, maxExtent]));
