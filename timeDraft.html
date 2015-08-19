@@ -34,18 +34,23 @@ var parseDate = d3.time.format('%X_%d-%m-%Y').parse;
 var mindate, maxdate, xScale;
 var uniques = [];
 var totalPhotos = [];
+
 var w = window.innerWidth;
 var h = window.innerHeight - 40;
 var margin = 25;
 var padding = 200;
+
 var xScale;
 var xBrush;
 var minExtent, maxExtent;
+
 var brush = d3.svg.brush()
+
 var svg = d3.select("body")
 			.append("svg")
 			.attr("width", w)
 			.attr("height", h)
+
 function unique(obj) {
     var stringify = {};
     for (var i = 0; i < obj.length; i++) {
@@ -65,6 +70,7 @@ function unique(obj) {
     }
     return uniques;
 }
+
 function photoConsolidation(index) {
     var total = 0;
     for (i = 0; i < uniques.length; i++) {
@@ -74,12 +80,14 @@ function photoConsolidation(index) {
     }
     return total;
 }
+
 $(window).keypress(function(e) {
   if (e.keyCode === 0 || e.keyCode === 32) {
     console.log('Space pressed');
     	prepScales();
   }
 });
+
 getData();
 function getData(){
 	d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
@@ -100,20 +108,24 @@ function getData(){
 	})	
 	// prepScales();
 }
+
 var itemRects;
 function prepScales(){
 	console.log("in prep scales")
     mindate = uniques[0].timeIs;
     maxdate = uniques[uniques.length - 1].timeIs;
+
     // xScale = d3.scale.linear()
     //     .domain([+mindate, +maxdate])
     //     .range([10, w - 100]);
     xScale = d3.time.scale()
 		.domain([mindate, maxdate])
         .range([10, w - 100]);
+
 	for (j = 0; j <= 24; j++) {
 	    totalPhotos[j] = photoConsolidation(j)
 	}
+
 	//brush
 	brush				
 		.x(xScale)
@@ -128,45 +140,44 @@ function prepScales(){
 		.attr("y", 10)
 		.attr("height", 10)
 		.style("visibility", "visible");
+
     console.log(totalPhotos)
     // showImages();
 }
-// var minExtent, maxExtent;
+
 function withBrush(){
 	var imgs;
 	var minExtent = brush.extent()[0],
 	maxExtent = brush.extent()[1],
+
 	toVis=uniques.filter(function(d) {return +(d.timeIs) < maxExtent && +(d.timeIs) > minExtent;});			
 	svg.select(".brush")
 		.call(brush.extent([minExtent, maxExtent]));
+
 	// xBrush = d3.scale.linear()
 	// 	.domain([minExtent, maxExtent])
  //        .range([10, w - 100]);
+
     xScale = d3.time.scale()
-		.domain([mindate, maxdate])
+		.domain([minExtent, maxExtent])
         .range([10, w - 100]);
-	imgs = svg.selectAll("image")
+
+	imgs = svg.selectAll("circle")
 	        .data(toVis)
 	    imgs
 	        .enter()
-	        // .append("circle")
-	        .append("image")
+	        .append("circle")
 	        .attr("class", function(d){
 	        	return d.timeIs;
 	        })
-			.attr("xlink:href", function(d, i) {
-				// console.log(d.buttonIs);
-			    if (d.buttonIs == "button2") { //cloud
-			        // console.log(d.buttonIs)
-			        return "idea.png";
-			    }
-			    if (d.buttonIs == "button3") { //cloud
-			        // console.log(d.buttonIs)
-			        return "thunder.png";
-			    }
-			    else{}
-			})	        
-			.attr("x", function(d, i) {
+			// .attr("xlink:href", function(d, i) {
+			// 	console.log(d.buttonIs);
+			//     if (d.buttonIs == "button2") { //cloud
+			//         console.log(d.buttonIs)
+			//         return "idea.png";
+			//     }
+			// })	        
+			.attr("cx", function(d, i) {
 				if(d.buttonIs=="button1" || d.buttonIs=="button2" || d.buttonIs=="button3"){
 					return xScale(d.timeIs);
 				}
@@ -188,13 +199,30 @@ function withBrush(){
 					return "white";
 				}
 			})
-			.attr("y",200)
-			.attr("width",20)
-			.attr("height",20)
-			// .attr("r", 10)
-			.attr("opacity",.5)
+			.attr("cy",200)
+			.attr("r", 10)
+			.attr("opacity",.1)
+
 	imgs.exit().remove();
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function showImages(){
 	svg.selectAll("but")
 		.data(uniques)
@@ -238,6 +266,7 @@ function showImages(){
 	    .attr("width", 100)
 	    .attr("height", 100)
 	    // .style("display","none")
+
 	svg.selectAll("over")
 		.data(uniques)
 		.enter()
@@ -258,9 +287,11 @@ function showImages(){
 	    .attr("width", 100)
 	    .attr("height", 100)
 	    .style("display","inline")
+
 	setTimeout(function(){
 		readyToSlide = true;
 	},10000)
+
 	if(readyToSlide){
 		setInterval(function () {
 			if($("image#over").css("display")=="inline"){
@@ -273,6 +304,7 @@ function showImages(){
 		}, 8000);
 	}
 }
+
 	// if(readyToSlide){
 	// 	setInterval(function () {
 	// 		if($("image.over").css("display")=="inline"){

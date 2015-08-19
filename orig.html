@@ -145,28 +145,23 @@ function withBrush(){
     xScale = d3.time.scale()
 		.domain([mindate, maxdate])
         .range([10, w - 100]);
-	imgs = svg.selectAll("image")
+	imgs = svg.selectAll("circle")
 	        .data(toVis)
 	    imgs
 	        .enter()
-	        // .append("circle")
-	        .append("image")
+	        .append("circle")
+	        // .append("image")
 	        .attr("class", function(d){
 	        	return d.timeIs;
 	        })
-			.attr("xlink:href", function(d, i) {
-				// console.log(d.buttonIs);
-			    if (d.buttonIs == "button2") { //cloud
-			        // console.log(d.buttonIs)
-			        return "idea.png";
-			    }
-			    if (d.buttonIs == "button3") { //cloud
-			        // console.log(d.buttonIs)
-			        return "thunder.png";
-			    }
-			    else{}
-			})	        
-			.attr("x", function(d, i) {
+			// .attr("xlink:href", function(d, i) {
+			// 	console.log(d.buttonIs);
+			//     if (d.buttonIs == "button2") { //cloud
+			//         console.log(d.buttonIs)
+			//         return "idea.png";
+			//     }
+			// })	        
+			.attr("cx", function(d, i) {
 				if(d.buttonIs=="button1" || d.buttonIs=="button2" || d.buttonIs=="button3"){
 					return xScale(d.timeIs);
 				}
@@ -188,11 +183,9 @@ function withBrush(){
 					return "white";
 				}
 			})
-			.attr("y",200)
-			.attr("width",20)
-			.attr("height",20)
-			// .attr("r", 10)
-			.attr("opacity",.5)
+			.attr("cy",200)
+			.attr("r", 10)
+			.attr("opacity",.1)
 	imgs.exit().remove();
 }
 function showImages(){
