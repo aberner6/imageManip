@@ -1,0 +1,239 @@
+
+<html>
+
+<head>
+    <title>Prep</title>
+</head>
+<style>
+	rect.backround{
+		display:block;
+	}
+	.brush .extent {
+		stroke: gray;
+		fill: dodgerblue;
+		fill-opacity: .365;
+		display:block;
+	}
+</style>
+<body>
+    <script src="d3.min.js" charset="utf-8"></script>
+    <script src="http://cdn.jsdelivr.net/sparkjs/0.4.2/spark.min.js"></script>
+    <script src="jquery.min.js"></script>
+<script>
+// Timestamp,Device,button,overview,screenshot
+var entry1 = [];
+// 15:00:07-314093466_12-08-2015
+var parseDate = d3.time.format('%X_%d-%m-%Y').parse;
+var mindate, maxdate;
+
+var uniques = [];
+var totalPhotos = [];
+
+var m = [20, 15, 15, 120], //top right bottom left
+	w = 960 - m[1] - m[3],
+	h = 500 - m[0] - m[2],
+	miniHeight = 10,
+	mainHeight = 300;
+
+//scales
+var x = d3.scale.linear()
+		.range([0, w]);
+var x1 = d3.scale.linear()
+		.range([0, w]);	
+
+var chart = d3.select("body")
+			.append("svg")
+			.attr("width", w + m[1] + m[3])
+			.attr("height", h + m[0] + m[2])
+			.attr("class", "chart");
+
+chart.append("defs").append("clipPath")
+	.attr("id", "clip")
+	.append("rect")
+	.attr("width", w)
+	.attr("height", mainHeight);
+
+var main = chart.append("g")
+			.attr("transform", "translate(" + m[3] + "," + m[0] + ")")
+			.attr("width", w)
+			.attr("height", mainHeight)
+			.attr("class", "main");
+
+var mini = chart.append("g")
+			.attr("transform", "translate(" + m[3] + "," + (mainHeight + m[0]) + ")")
+			.attr("width", w)
+			.attr("height", miniHeight)
+			.attr("class", "mini");
+
+var itemRects = main.append("g")
+					.attr("clip-path", "url(#clip)");
+getData();
+
+function getData(){
+	d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
+		console.log(data);
+		console.log(data[0]['screenshot']);
+		console.log(data[data.length-1]['Timestamp']);
+		for (var i= 0; i<data.length; i++){
+		    if (data[i]['Device'] == "330029000647343232363230") {			   entry1.push({
+		            "buttonIs": data[i]['button'],
+		            "timeIs": parseDate(data[i]['Timestamp']),
+		            "photO": data[i]['overview'],
+		            "photS": data[i]['screenshot']
+		        })
+		    }	
+		}
+		unique(entry1);
+	})	
+}
+
+
+
+
+
+$(window).keypress(function(e) {
+  if (e.keyCode === 0 || e.keyCode === 32) {
+    console.log('Space pressed');
+    	prepScales();
+  }
+});
+
+var brush = d3.svg.brush()
+function prepScales(){
+	console.log("in prep scales")
+    mindate = uniques[0].timeIs;
+    maxdate = uniques[uniques.length - 1].timeIs;
+
+	for (j = 0; j <= 24; j++) {
+	    totalPhotos[j] = photoConsolidation(j)
+	}
+
+	x.domain([mindate, maxdate])
+	//brush
+	brush
+			.x(x)
+			.on("brush", display);
+
+	mini.append("g")
+	.attr("class", "x brush")
+	.call(brush)
+	.selectAll("rect")
+	.attr("y", 1)
+	.attr("stroke","none")
+	.attr("fill","lightgrey")
+	.style("visibility", "visible")
+	.attr("height", miniHeight - 1);
+
+	display();
+	//mini item rects
+	mini.append("g").selectAll("miniItems")
+	.data(uniques)
+	.enter().append("image")
+	.attr("class", function(d) {return "miniItem" + d.timeIs;})
+	.attr("x", function(d) {return x(d.timeIs);})
+	.attr("y", 200)
+	.attr("width", 20)
+	.attr("height", 20)
+                 .attr("xlink:href", function(d, i) {
+                        if (d.buttonIs == "button3") { //1 is bad 3 is good
+                            return "idea.png";
+                        }
+                    });
+}
+
+
+
+
+
+
+
+
+
+
+
+		function display() {
+			var rects,
+				minExtent = brush.extent()[0],
+				maxExtent = brush.extent()[1],
+				visItems = uniques.filter(function(d) {return d.timeIs < maxExtent && d.timeIs > minExtent;});
+
+			mini.select(".brush")
+				.call(brush.extent([minExtent, maxExtent]));
+
+			x1.domain([minExtent, maxExtent]);
+
+			//update main item rects
+			rects = itemRects.selectAll("image")
+			        .data(visItems)
+				.attr("x", function(d) {return x1(d.timeIs);})
+				.attr("width", 20)
+					// function(d) {return x1(d.end) - x1(d.start);});
+			
+			// rects.enter().append("rect")
+			// 	.attr("class", function(d) {return "miniItem" + d.timeIs;})
+			// 	.attr("x", function(d) {return x1(d.timeIs);})
+			// 	.attr("y", 200)
+			// 	.attr("width", 10)
+			// 	.attr("height", 10)
+			// 	.attr("fill","blue")
+			// 	.attr("opacity",.5)
+
+
+			rects.enter().append("image")
+				.attr("class", function(d) {return "miniItem" + d.timeIs;})
+                 .attr("xlink:href", function(d, i) {
+                        if (d.buttonIs == "button3") { //1 is bad 3 is good
+                            return "idea.png";
+                        }
+                    })
+				.attr("x", function(d) {return x1(d.timeIs);})
+				.attr("y", 200)
+				.attr("width", 20)
+				.attr("height", 20)
+				// .attr("fill","blue")
+				.attr("opacity",.5)
+
+			rects.exit().remove();
+
+		}
+
+
+
+
+
+
+
+
+
+
+function unique(obj) {
+    var stringify = {};
+    for (var i = 0; i < obj.length; i++) {
+        var keys = Object.keys(obj[i]);
+        keys.sort(function(a, b) {
+            return a - b
+        });
+        var str = '';
+        for (var j = 0; j < keys.length; j++) {
+            str += JSON.stringify(keys[j]);
+            str += JSON.stringify(obj[i][keys[j]]);
+        }
+        if (!stringify.hasOwnProperty(str)) {
+            uniques.push(obj[i]);
+            stringify[str] = true;
+        }
+    }
+    return uniques;
+}
+function photoConsolidation(index) {
+    var total = 0;
+    for (i = 0; i < uniques.length; i++) {
+        if (uniques[i].timeIs.getHours() == index) {
+            total++;
+        } else {}
+    }
+    return total;
+}
+</script>
+</body>
+</html>

@@ -34,18 +34,168 @@ var parseDate = d3.time.format('%X_%d-%m-%Y').parse;
 var mindate, maxdate, xScale;
 var uniques = [];
 var totalPhotos = [];
-var w = window.innerWidth;
-var h = window.innerHeight - 40;
+
+var w = window.innerWidth-50;
+var h = window.innerHeight - 50;
+
 var margin = 25;
 var padding = 200;
-var xScale;
+
 var xBrush;
+
 var minExtent, maxExtent;
-var brush = d3.svg.brush()
+
+var brush = d3.svg.brush();
+
 var svg = d3.select("body")
 			.append("svg")
 			.attr("width", w)
-			.attr("height", h)
+			.attr("height", h);
+
+function getData(){
+	d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
+		console.log(data);
+		console.log(data[0]['screenshot']);
+		console.log(data[data.length-1]['Timestamp']);
+		for (var i= 0; i<data.length; i++){
+		    if (data[i]['Device'] == "330029000647343232363230") {			   entry1.push({
+		            "buttonIs": data[i]['button'],
+		            "timeIs": parseDate(data[i]['Timestamp']),
+		            "photO": data[i]['overview'],
+		            "photS": data[i]['screenshot']
+		        })
+		    }	
+		}
+		unique(entry1);
+	})	
+}
+var xS = d3.time.scale()
+	.range([10, w - 10]);
+
+function prepScales(){
+	console.log("in prep scales")
+    mindate = uniques[0].timeIs;
+    maxdate = uniques[uniques.length - 1].timeIs;
+
+  //   var xS = d3.time.scale()
+		// .domain([mindate, maxdate])
+  //       .range([10, w - 10]);
+
+    xS.domain([mindate, maxdate])
+
+	for (j = 0; j <= 24; j++) {
+	    totalPhotos[j] = photoConsolidation(j)
+	}
+
+	// svg.selectAll("image")
+	// 	.data(uniques)
+	// 	.enter().append("image")
+ //        .attr("class", function(d){
+ //        	return "uni"+d.timeIs
+ //        })
+	// 	.attr("xlink:href", function(d, i) {
+	// 	    if (d.buttonIs == "button3") { //cloud
+	// 	        return "thunder.png";
+	// 	    }
+	// 	    else{}
+	// 	})	        
+	// 	.attr("x", function(d, i) {
+	// 		if(d.buttonIs=="button3"){
+	// 			return xS(+d.timeIs);
+	// 		}
+	// 		else{
+	// 			return 0;
+	// 		}
+	// 	})
+	// 	.attr("y",200)
+	// 	.attr("width",20)
+	// 	.attr("height",20)
+	// 	.attr("opacity",.5);
+
+	//brush
+	brush				
+		.x(xS)
+		.on("brush", withBrush)
+		
+	svg.append("g")
+		.attr("class", "x brush")
+		.call(brush)
+		.selectAll("rect")
+		.attr("fill","lightyellow")
+		.attr("opacity",.3)
+		.attr("y", 10)
+		.attr("height", 10)
+		.style("visibility", "visible");
+    console.log(totalPhotos)
+    // withBrush();
+}
+
+xScale = d3.time.scale()
+    .range([10, w - 100]);
+// var minExtent, maxExtent;
+function withBrush(){
+	var circles;
+	var minExtent = brush.extent()[0],
+	maxExtent = brush.extent()[1];
+	
+	var toVis = uniques.filter(function(d) {
+		return +(d.timeIs) < +maxExtent && +(d.timeIs) > +minExtent;
+	});	
+
+	console.log(toVis.length);
+	console.log(minExtent+"min");
+	console.log(maxExtent+"max");
+
+	svg.select(".brush")
+		.call(brush.extent([minExtent, maxExtent]));
+
+    xScale.domain([minExtent, maxExtent])
+
+    //update?
+	circles = svg.selectAll("circle")
+	        .data(toVis) //filtered
+	    circles
+	        .enter()
+	        .append("circle")
+	        // .attr("class", "circle")	        
+			.attr("cx", function(d) {
+				if(d.buttonIs=="button3"){
+					console.log(d.timeIs);
+					return xScale(d.timeIs);
+				}
+				else{
+					return 0;
+				}
+			})
+			.attr("cy",200)
+			.attr("r",10)
+			.attr("fill", function(d){
+				if(d.buttonIs=="button3"){
+					return "pink";
+				}
+				else{
+					return "white";
+				}
+			})
+			// .attr("width",20)
+			// .attr("height",20)
+			.attr("opacity",.5)
+	circles.exit().remove();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function unique(obj) {
     var stringify = {};
     for (var i = 0; i < obj.length; i++) {
@@ -81,198 +231,84 @@ $(window).keypress(function(e) {
   }
 });
 getData();
-function getData(){
-	d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
-		console.log(data);
-		console.log(data[0]['screenshot']);
-		console.log(data[data.length-1]['Timestamp']);
-		for (var i= 0; i<data.length; i++){
-		    if (data[i]['Device'] == "330029000647343232363230") { //group 1	
-		        entry1.push({
-		            "buttonIs": data[i]['button'],
-		            "timeIs": parseDate(data[i]['Timestamp']),
-		            "photO": data[i]['overview'],
-		            "photS": data[i]['screenshot']
-		        })
-		    }	
-		}
-		unique(entry1);
-	})	
-	// prepScales();
-}
-var itemRects;
-function prepScales(){
-	console.log("in prep scales")
-    mindate = uniques[0].timeIs;
-    maxdate = uniques[uniques.length - 1].timeIs;
-    // xScale = d3.scale.linear()
-    //     .domain([+mindate, +maxdate])
-    //     .range([10, w - 100]);
-    xScale = d3.time.scale()
-		.domain([mindate, maxdate])
-        .range([10, w - 100]);
-	for (j = 0; j <= 24; j++) {
-	    totalPhotos[j] = photoConsolidation(j)
-	}
-	//brush
-	brush				
-		.x(xScale)
-		.on("brush", withBrush)
-		
-	svg.append("g")
-		.attr("class", "x brush")
-		.call(withBrush)
-		.selectAll("rect")
-		.attr("fill","lightyellow")
-		.attr("opacity",.3)
-		.attr("y", 10)
-		.attr("height", 10)
-		.style("visibility", "visible");
-    console.log(totalPhotos)
-    // showImages();
-}
-// var minExtent, maxExtent;
-function withBrush(){
-	var imgs;
-	var minExtent = brush.extent()[0],
-	maxExtent = brush.extent()[1],
-	toVis=uniques.filter(function(d) {return +(d.timeIs) < maxExtent && +(d.timeIs) > minExtent;});			
-	svg.select(".brush")
-		.call(brush.extent([minExtent, maxExtent]));
-	// xBrush = d3.scale.linear()
-	// 	.domain([minExtent, maxExtent])
- //        .range([10, w - 100]);
-    xScale = d3.time.scale()
-		.domain([mindate, maxdate])
-        .range([10, w - 100]);
-	imgs = svg.selectAll("image")
-	        .data(toVis)
-	    imgs
-	        .enter()
-	        // .append("circle")
-	        .append("image")
-	        .attr("class", function(d){
-	        	return d.timeIs;
-	        })
-			.attr("xlink:href", function(d, i) {
-				// console.log(d.buttonIs);
-			    if (d.buttonIs == "button2") { //cloud
-			        // console.log(d.buttonIs)
-			        return "idea.png";
-			    }
-			    if (d.buttonIs == "button3") { //cloud
-			        // console.log(d.buttonIs)
-			        return "thunder.png";
-			    }
-			    else{}
-			})	        
-			.attr("x", function(d, i) {
-				if(d.buttonIs=="button1" || d.buttonIs=="button2" || d.buttonIs=="button3"){
-					return xScale(d.timeIs);
-				}
-				else{
-					return 0;
-				}
-			})
-			.attr("fill", function(d){
-				if(d.buttonIs=="button1"){
-					return "red";
-				}
-				if(d.buttonIs=="button2"){
-					return "blue";
-				}
-				if(d.buttonIs=="button3"){
-					return "green";
-				}
-				else{
-					return "white";
-				}
-			})
-			.attr("y",200)
-			.attr("width",20)
-			.attr("height",20)
-			// .attr("r", 10)
-			.attr("opacity",.5)
-	imgs.exit().remove();
-}
-function showImages(){
-	svg.selectAll("but")
-		.data(uniques)
-		.enter()
-		.append("image")
-		.attr("class", "but")
-		// checks
-		.attr("xlink:href", function(d, i) {
-		    if (d.buttonIs == "button2") { //cloud
-		        console.log(d.buttonIs)
-		        return "idea.png";
-		    }
-		})
-		.attr("x", function(d, i) {
-		    return xScale(d.timeIs); //scale based on d.time
-		})
-		.attr("width", 20)
-		.attr("height", 20)
-		.attr("y", function(d, i) {
-		    if (d.buttonIs == "button2") {
-		        return margin * 2;
-		    }
-		})
-	svg.selectAll("screen")
-		.data(uniques)
-		.enter()
-		.append("image")
-		.attr("id","screen")
-	    .attr("class", function(d,i){
-	    	return i;
-	    })
-	    .attr("xlink:href", function(d, i) {
-		    return d.photS;
-	    })
-		.attr("x", function(d, i) {
-		    return xScale(d.timeIs); //scale based on d.time
-		})
-	    .attr("y", function(d, i) {
-		    return 100;
-		})
-	    .attr("width", 100)
-	    .attr("height", 100)
-	    // .style("display","none")
-	svg.selectAll("over")
-		.data(uniques)
-		.enter()
-		.append("image")
-		.attr("id", "over")
-	    .attr("class", function(d,i){
-	    	return i;
-	    })
-	    .attr("xlink:href", function(d, i) {
-		    return d.photO;
-	    })
-		.attr("x", function(d, i) {
-		    return xScale(d.timeIs); //scale based on d.time
-		})
-	    .attr("y", function(d, i) {
-		    return 100;
-		})
-	    .attr("width", 100)
-	    .attr("height", 100)
-	    .style("display","inline")
-	setTimeout(function(){
-		readyToSlide = true;
-	},10000)
-	if(readyToSlide){
-		setInterval(function () {
-			if($("image#over").css("display")=="inline"){
-				$("image#over").hide()	
-				$("image#screen").show()	
-			}else{
-				$("image#over").show()	
-				$("image#screen").hide()	
-			}
-		}, 8000);
-	}
-}
+// function showImages(){
+// 	svg.selectAll("but")
+// 		.data(uniques)
+// 		.enter()
+// 		.append("image")
+// 		.attr("class", "but")
+// 		// checks
+// 		.attr("xlink:href", function(d, i) {
+// 		    if (d.buttonIs == "button2") { //cloud
+// 		        console.log(d.buttonIs)
+// 		        return "idea.png";
+// 		    }
+// 		})
+// 		.attr("x", function(d, i) {
+// 		    return xScale(d.timeIs); //scale based on d.time
+// 		})
+// 		.attr("width", 20)
+// 		.attr("height", 20)
+// 		.attr("y", function(d, i) {
+// 		    if (d.buttonIs == "button2") {
+// 		        return margin * 2;
+// 		    }
+// 		})
+// 	svg.selectAll("screen")
+// 		.data(uniques)
+// 		.enter()
+// 		.append("image")
+// 		.attr("id","screen")
+// 	    .attr("class", function(d,i){
+// 	    	return i;
+// 	    })
+// 	    .attr("xlink:href", function(d, i) {
+// 		    return d.photS;
+// 	    })
+// 		.attr("x", function(d, i) {
+// 		    return xScale(d.timeIs); //scale based on d.time
+// 		})
+// 	    .attr("y", function(d, i) {
+// 		    return 100;
+// 		})
+// 	    .attr("width", 100)
+// 	    .attr("height", 100)
+// 	    // .style("display","none")
+// 	svg.selectAll("over")
+// 		.data(uniques)
+// 		.enter()
+// 		.append("image")
+// 		.attr("id", "over")
+// 	    .attr("class", function(d,i){
+// 	    	return i;
+// 	    })
+// 	    .attr("xlink:href", function(d, i) {
+// 		    return d.photO;
+// 	    })
+// 		.attr("x", function(d, i) {
+// 		    return xScale(d.timeIs); //scale based on d.time
+// 		})
+// 	    .attr("y", function(d, i) {
+// 		    return 100;
+// 		})
+// 	    .attr("width", 100)
+// 	    .attr("height", 100)
+// 	    .style("display","inline")
+// 	setTimeout(function(){
+// 		readyToSlide = true;
+// 	},10000)
+// 	if(readyToSlide){
+// 		setInterval(function () {
+// 			if($("image#over").css("display")=="inline"){
+// 				$("image#over").hide()	
+// 				$("image#screen").show()	
+// 			}else{
+// 				$("image#over").show()	
+// 				$("image#screen").hide()	
+// 			}
+// 		}, 8000);
+// 	}
+// }
 	// if(readyToSlide){
 	// 	setInterval(function () {
 	// 		if($("image.over").css("display")=="inline"){
