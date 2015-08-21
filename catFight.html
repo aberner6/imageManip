@@ -19,7 +19,13 @@
     <script src="d3.min.js" charset="utf-8"></script>
     <script src="http://cdn.jsdelivr.net/sparkjs/0.4.2/spark.min.js"></script>
     <script src="jquery.min.js"></script>
-<script>
+<script type="text/javascript">
+var items = [
+{"lane": 0, "id": "Qin", "start": 5, "end": 205},
+{"lane": 0, "id": "Jin", "start": 265, "end": 420},
+{"lane": 0, "id": "Sui", "start": 580, "end": 615},
+{"lane": 0, "id": "Tang", "start": 620, "end": 900}
+]
 // Timestamp,Device,button,overview,screenshot
 var entry1 = [];
 // 15:00:07-314093466_12-08-2015
@@ -124,7 +130,23 @@ function prepScales(){
 	.style("visibility", "visible")
 	.attr("height", miniHeight - 1);
 
-	display();
+
+
+	//mini item rects
+	mini.append("g").selectAll(".linie")
+	.data(uniques)
+	.enter().append("line")
+	.attr("class", "linie")
+	// .attr("class", function(d) {return "miniItem" + d.timeIs;})
+	.attr("x1", function(d) {return x(d.timeIs);})
+	.attr("x2", function(d) {return x(d.timeIs);})
+	.attr("y1", 10)
+	.attr("y2", 15)
+	.attr("stroke","grey")
+	// .attr("fill","white")
+	.attr("opacity",.5);
+
+
 	//mini item rects
 	mini.append("g").selectAll("miniItems")
 	.data(uniques)
@@ -139,6 +161,7 @@ function prepScales(){
                             return "idea.png";
                         }
                     });
+	display();
 }
 
 
