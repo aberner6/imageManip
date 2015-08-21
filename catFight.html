@@ -21,10 +21,8 @@
     <script src="jquery.min.js"></script>
 <script type="text/javascript">
 var items = [
-{"lane": 0, "id": "Qin", "start": 5, "end": 205},
-{"lane": 0, "id": "Jin", "start": 265, "end": 420},
-{"lane": 0, "id": "Sui", "start": 580, "end": 615},
-{"lane": 0, "id": "Tang", "start": 620, "end": 900}
+{"lane": 0, "id": "Qin", "start": 1439308645000, "end": 1439308645000+44762800},
+{"lane": 0, "id": "Jin", "start": 1439308645000, "end": 1439308645000+44762800},
 ]
 // Timestamp,Device,button,overview,screenshot
 var entry1 = [];
@@ -71,7 +69,14 @@ var mini = chart.append("g")
 			.attr("height", miniHeight)
 			.attr("class", "mini");
 
+
+var itemRectz = main.append("g")
+					.attr("clip-path", "url(#clip)");
+
 var itemRects = main.append("g")
+					.attr("clip-path", "url(#clip)");
+
+var itemCircs = main.append("g")
 					.attr("clip-path", "url(#clip)");
 getData();
 
@@ -115,6 +120,26 @@ function prepScales(){
 	}
 
 	x.domain([mindate, maxdate])
+
+
+
+
+		//mini item rects
+		// mini.append("g").selectAll("miniItemz")
+		// 	.data(items)
+		// 	.enter().append("rect")
+		// 	.attr("class", function(d) {return "miniItemz" + d.lane;})
+		// 	.attr("x", function(d) {return x(d.start);})
+		// 	.attr("y", function(d) {return y2(d.lane + .5) - 5;})
+		// 	.attr("width", function(d) {return x(d.end - d.start);})
+		// 	.attr("height", 10);
+
+
+
+
+
+
+
 	//brush
 	brush
 			.x(x)
@@ -132,93 +157,136 @@ function prepScales(){
 
 
 
-	//mini item rects
+	//mini item lines
 	mini.append("g").selectAll(".linie")
 	.data(uniques)
 	.enter().append("line")
 	.attr("class", "linie")
-	// .attr("class", function(d) {return "miniItem" + d.timeIs;})
 	.attr("x1", function(d) {return x(d.timeIs);})
 	.attr("x2", function(d) {return x(d.timeIs);})
 	.attr("y1", 10)
 	.attr("y2", 15)
 	.attr("stroke","grey")
-	// .attr("fill","white")
 	.attr("opacity",.5);
 
 
 	//mini item rects
-	mini.append("g").selectAll("miniItems")
-	.data(uniques)
-	.enter().append("image")
-	.attr("class", function(d) {return "miniItem" + d.timeIs;})
-	.attr("x", function(d) {return x(d.timeIs);})
-	.attr("y", 200)
-	.attr("width", 20)
-	.attr("height", 20)
-                 .attr("xlink:href", function(d, i) {
-                        if (d.buttonIs == "button3") { //1 is bad 3 is good
-                            return "idea.png";
-                        }
-                    });
+	// mini.append("g").selectAll("miniItems")
+	// .data(uniques)
+	// .enter().append("image")
+	// .attr("class", function(d) {return "miniItem" + d.timeIs;})
+	// .attr("x", function(d) {return x(d.timeIs);})
+	// .attr("y", 200)
+	// .attr("width", 20)
+	// .attr("height", 20)
+	// .attr("xlink:href", function(d, i) {
+	//         if (d.buttonIs == "button3") { //1 is bad 3 is good
+	//             return "idea.png";
+	//         }
+	// });
+	
+	//mini item circles
+	// mini.append("g").selectAll("circles")
+	// .data(uniques)
+	// .enter().append("circle")
+	// .attr("class", function(d) {return "circles" + d.timeIs;})
+	// .attr("cx", function(d) {return x(d.timeIs);})
+	// .attr("cy", 100)
+	// .attr("r",5);
+
 	display();
 }
 
 
 
+function display() {
+	var rects, circs, rectz,
+		minExtent = brush.extent()[0],
+		maxExtent = brush.extent()[1],
+		visItems = uniques.filter(function(d) {return d.timeIs < maxExtent && d.timeIs > minExtent;});
+
+		vizItems = items.filter(function(d) {return d.start < maxExtent && d.end > minExtent;}); 
+console.log(vizItems);
+	mini.select(".brush")
+		.call(brush.extent([minExtent, maxExtent]));
+
+	x1.domain([minExtent, maxExtent]);
+
+	//update main item rects
+	rects = itemRects.selectAll("image")
+	        .data(visItems)
+		.attr("x", function(d) {return x1(d.timeIs);})
+		.attr("width", 20);
+			// function(d) {return x1(d.end) - x1(d.start);});
+
+	//update main item circs
+	circs = itemCircs.selectAll("circle")
+	        .data(visItems)
+		.attr("cx", function(d) {
+			return x1(d.timeIs);
+		})
+		.attr("r", 2);			
 
 
 
 
 
 
-
-
-		function display() {
-			var rects,
-				minExtent = brush.extent()[0],
-				maxExtent = brush.extent()[1],
-				visItems = uniques.filter(function(d) {return d.timeIs < maxExtent && d.timeIs > minExtent;});
-
-			mini.select(".brush")
-				.call(brush.extent([minExtent, maxExtent]));
-
-			x1.domain([minExtent, maxExtent]);
-
+///////////////////////////////
 			//update main item rects
-			rects = itemRects.selectAll("image")
-			        .data(visItems)
-				.attr("x", function(d) {return x1(d.timeIs);})
-				.attr("width", 20)
-					// function(d) {return x1(d.end) - x1(d.start);});
-			
-			// rects.enter().append("rect")
-			// 	.attr("class", function(d) {return "miniItem" + d.timeIs;})
-			// 	.attr("x", function(d) {return x1(d.timeIs);})
-			// 	.attr("y", 200)
-			// 	.attr("width", 10)
-			// 	.attr("height", 10)
-			// 	.attr("fill","blue")
-			// 	.attr("opacity",.5)
+			rectz = itemRectz.selectAll("rect")
+			        .data(vizItems, function(d) { return d.id; })
+				.attr("x", function(d) {return x1(d.start);})
+				.attr("width", function(d) {return x1(d.end) - x1(d.start);});
+			rectz.enter().append("rect")
+				.attr("class", function(d) {return "miniItemz" + d.lane;})
+				.attr("x", function(d) {return x1(d.start);})
+				.attr("y", 50)
+				.attr("width", function(d) {return x1(d.end) - x1(d.start);})
+				.attr("height", 10)
+				.attr("fill","pink")
+			rectz.exit().remove();
+///////////////////////////////
 
 
-			rects.enter().append("image")
-				.attr("class", function(d) {return "miniItem" + d.timeIs;})
-                 .attr("xlink:href", function(d, i) {
-                        if (d.buttonIs == "button3") { //1 is bad 3 is good
-                            return "idea.png";
-                        }
-                    })
-				.attr("x", function(d) {return x1(d.timeIs);})
-				.attr("y", 200)
-				.attr("width", 20)
-				.attr("height", 20)
-				// .attr("fill","blue")
-				.attr("opacity",.5)
 
-			rects.exit().remove();
 
-		}
+
+
+
+
+
+	rects.enter().append("image")
+		.attr("class", function(d) {return "miniItem" + d.timeIs;})
+         .attr("xlink:href", function(d, i) {
+                if (d.buttonIs == "button3") { //1 is bad 3 is good
+                    return "idea.png";
+                }
+            })
+		.attr("x", function(d) {return x1(d.timeIs);})
+		.attr("y", 200)
+		.attr("width", 20)
+		.attr("height", 20)
+		// .attr("fill","blue")
+		.attr("opacity",.5);
+
+		/////////
+	circs.enter().append("circle")
+		.attr("class", function(d) {return "circles" + d.timeIs;})
+		.attr("cx", function(d) {return x1(d.timeIs);})
+		.attr("cy", 100)
+		.attr("r",2)
+		.attr("fill","blue")
+		.attr("opacity",.5);
+	circs.exit().remove();
+		/////////
+
+
+
+
+	rects.exit().remove();
+
+}
 
 
 
