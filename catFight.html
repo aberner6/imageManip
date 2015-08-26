@@ -14,28 +14,44 @@
 		fill-opacity: .365;
 		display:block;
 	}
+	#click{
+		background-color: gray;
+		width:20px;
+		color:white;
+		padding:2px;
+	}
 </style>
 <body>
     <script src="d3.min.js" charset="utf-8"></script>
     <script src="http://cdn.jsdelivr.net/sparkjs/0.4.2/spark.min.js"></script>
     <script src="jquery.min.js"></script>
+    <div id="click">up</div>
 <script type="text/javascript">
 var items = [
 {"component": 1, "start": 1439308645000, "end": 1439308645000+44762800},
 {"component": 2, "start": 1440156273000-100000000, "end": 1440156273000},
 {"component": 3, "start": 1440156273000-80000000, "end": 1440156273000},
 ]
+$("#click").click(function(){
+	updateData();
+})
+
 // Timestamp,Device,button,overview,screenshot
 var entry1 = [];
+var prepped = false;
+
 // 15:00:07-314093466_12-08-2015
 var parseDate = d3.time.format('%X_%d-%m-%Y').parse;
-var mindate, maxdate;
+var mindate;
+var maxdate = "Fri Aug 01 2015 13:24:33 GMT+0200 (CEST)";
 
 var uniques = [];
+// var uniques2 = [];
+
 var totalPhotos = [];
 
 var m = [20, 15, 15, 120], //top right bottom left
-	w = 960 - m[1] - m[3],
+	w = 960, //- m[1] - m[3],
 	h = 500 - m[0] - m[2],
 	miniHeight = 10,
 	mainHeight = 300;
@@ -44,7 +60,7 @@ var m = [20, 15, 15, 120], //top right bottom left
 var x = d3.scale.linear()
 		.range([0, w]);
 var x1 = d3.scale.linear()
-		.range([0, w]);	
+		.range([0, w-m[1]]);	
 var oColor = d3.scale.ordinal()
 	.domain([d3.range(10)])
     .range(["#16CEC5","#96CEB4", "#ADB3FF", "#FFEEAD"]);
@@ -82,28 +98,78 @@ var itemRects = main.append("g")
 
 var itemCircs = main.append("g")
 					.attr("clip-path", "url(#clip)");
-getData();
+// setInterval(function() {
+// 	var e = [mindate, +mindate+3600000]; //set brush range
+// 	brush.extent(e);    
+// 	mini.call(brush);  
+// }, 30000);
 
+
+	getData();
+
+var uniques1, uniques2;
+// , uniques3;
 function getData(){
-	// for(i=0; i<items.length; i++){
-	// 	groupNames = items[i].
-	// }
 	d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
-		console.log(data);
-		console.log(data[0]['screenshot']);
-		console.log(data[data.length-1]['Timestamp']);
+		console.log(parseDate(data[data.length-1]['Timestamp']));
 		for (var i= 0; i<data.length; i++){
-		    if (data[i]['Device'] == "330029000647343232363230") {			   entry1.push({
+		// console.log(data[i]['Device'])
+		    if (data[i]['Device'] == "420038000547343232363230") {  
+		    	entry1.push({
 		            "buttonIs": data[i]['button'],
 		            "timeIs": parseDate(data[i]['Timestamp']),
 		            "photO": data[i]['overview'],
 		            "photS": data[i]['screenshot']
 		        })
-		    }	
+		    }
 		}
-		unique(entry1);
-	})	
+		uniques1 = unique(entry1);
+		if(uniques1.length>0){
+			console.log(uniques1.length);
+			prepScales();
+			console.log("prepped")
+			prepped = true;
+		}
+		// console.log(entry1[entry1.length-1].timeIs)
+	})
 }
+
+var i = 0;
+var entry2 = [];
+function updateData() {
+	d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
+		for (var i= 0; i<data.length; i++){
+		    if (data[i]['Device'] == "420038000547343232363230") {  
+		    	entry2.push({
+		            "buttonIs": data[i]['button'],
+		            "timeIs": parseDate(data[i]['Timestamp']),
+		            "photO": data[i]['overview'],
+		            "photS": data[i]['screenshot']
+		        })
+		    }
+		}
+		uniques1 = unique(entry2);
+	})
+}
+
+
+var index = 0;
+if(prepped){
+	var autoMove = setInterval(function() {
+		var e = [mindate, +mindate+3600000*index]; //set brush range
+		brush.extent(e);    
+		mini.call(brush);  
+	}, 30000);
+	index++;
+	console.log(index);	
+	if((+mindate+3600000*index)>= maxdate){
+		//then stop interval
+		console.log("stopping interval")
+	}
+}
+
+
+
 
 
 
@@ -112,19 +178,20 @@ function getData(){
 $(window).keypress(function(e) {
   if (e.keyCode === 0 || e.keyCode === 32) {
     console.log('Space pressed');
-    	prepScales();
+    prepScales();
   }
 });
 
 var brush = d3.svg.brush()
 function prepScales(){
 	console.log("in prep scales")
-    mindate = uniques[0].timeIs;
-    maxdate = uniques[uniques.length - 1].timeIs;
+	console.log(uniques1.length)
+    mindate = uniques1[1].timeIs;
+    maxdate = uniques1[uniques1.length - 1].timeIs;
 
-	for (j = 0; j <= 24; j++) {
-	    totalPhotos[j] = photoConsolidation(j)
-	}
+	// for (j = 0; j <= 24; j++) {
+	//     totalPhotos[j] = photoConsolidation(j)
+	// }
 
 	x.domain([mindate, maxdate])
 
@@ -147,7 +214,7 @@ function prepScales(){
 
 	//mini item lines
 	mini.append("g").selectAll(".linie")
-	.data(uniques)
+	.data(uniques1)
 	.enter().append("line")
 	.attr("class", "linie")
 	.attr("x1", function(d) {return x(d.timeIs);})
@@ -195,12 +262,14 @@ function prepScales(){
 }
 
 
-
+var rects;
 function display() {
-	var rects, circs, rectz,
+
+	// var rects, 
+	var circs, rectz,
 		minExtent = brush.extent()[0],
 		maxExtent = brush.extent()[1],
-		visItems = uniques.filter(function(d) {return d.timeIs < maxExtent && d.timeIs > minExtent;});
+		visItems = uniques1.filter(function(d) {return d.timeIs < maxExtent && d.timeIs > minExtent;});
 
 		vizItems = items.filter(function(d) {return d.start < maxExtent && d.end > minExtent;}); 
 
@@ -208,7 +277,8 @@ function display() {
 		.call(brush.extent([minExtent, maxExtent]));
 
 	x1.domain([minExtent, maxExtent]);
-
+	console.log(maxExtent);
+	console.log(maxdate);
 ///////////////////////////////
 			rectz = itemRectz.selectAll("rect")
 			        .data(vizItems)
@@ -287,12 +357,20 @@ function display() {
 
 
 
-
-
-
+function getUnique(inputArray){
+	var outputArray = [];
+	for (var i = 0; i<inputArray.length; i++){
+		if(jQuery.inArray(inputArray[i], outputArray)==-1)
+		{
+			outputArray.push(inputArray[i]);
+		}
+	}
+	return outputArray;
+}
 
 
 function unique(obj) {
+    var uniques = [];
     var stringify = {};
     for (var i = 0; i < obj.length; i++) {
         var keys = Object.keys(obj[i]);
