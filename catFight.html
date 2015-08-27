@@ -9,8 +9,8 @@
 		display:block;
 	}
 	.brush .extent {
-		stroke: gray;
-		fill: dodgerblue;
+		stroke: lightgray;
+		fill: lightgray;
 		fill-opacity: .365;
 		display:block;
 	}
@@ -67,7 +67,12 @@ var options = ["HUB", "BTN", "LED", "POT", "LDR", "TMP", "ACR", "UKN", "RLY", "P
     // .range(["#16CEC5","#96CEB4", "#ADB3FF", "#FFEEAD"]);
 var oColor = d3.scale.ordinal()
 	.domain([options])
-    .range(["#16CEC5","#96CEB4", "#ADB3FF", "#FFEEAD"]);
+    .range(d3.scale.category20c().range());
+
+var yis = d3.scale.ordinal()
+	.domain([options])
+    .range([100, h/2]);
+
 var chart = d3.select("body")
 			.append("svg")
 			.attr("width", w + m[1] + m[3])
@@ -145,11 +150,13 @@ function getData(){
 			    "mod": arData[i]['mod'],
 			    "start": parseInt(arData[i]['timestamp']),
 			    "end": Date.now(),
-			    "from":arData[i]['fromType']
+			    "from":(arData[i]['fromType']),
+			    "sF":parseInt(arData[i]['sF'])
 			})
-			if(arData[i].sF==2){
-				ardEntry[i].end = parseInt(arData[i]['timestamp'])
-			} 			
+			// if(parseInt(arData[i]['sF'])==2){
+				// console.log(arData[i]['sF']);
+				// ardEntry[i].end = parseInt(arData[i]['timestamp'])
+			// } 			
 		}
 	})
 }
@@ -251,8 +258,9 @@ if(uniques1[uniques1.length - 1].timeIs>ardEntry[ardEntry.length-1].end){
 	.call(brush)
 	.selectAll("rect")
 	.attr("y", 1)
-	.attr("stroke","none")
-	.attr("fill","lightgrey")
+	.attr("stroke","lightgrey")
+	.attr("stroke-width",1)
+	.attr("fill","none")
 	.style("visibility", "visible")
 	.attr("height", miniHeight - 1);
 
@@ -366,8 +374,12 @@ function display() {
 					return x1(d.start);
 				})
 				.attr("y", function(d,i){
-					console.log(d.id);
-					return (d.id)*20+50;
+					console.log("'"+d.from+"'");
+					return yis("'"+d.from+"'");
+					// console.log(d.id);
+					// if(d.from>0){
+						// return (d.id)*10+50;						
+					// }
 				})
 				.attr("width", function(d) {
 					return x1(d.end) - x1(d.start);
