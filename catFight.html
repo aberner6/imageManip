@@ -61,10 +61,13 @@ var x = d3.scale.linear()
 		.range([0, w]);
 var x1 = d3.scale.linear()
 		.range([0, w-m[1]]);	
-var oColor = d3.scale.ordinal()
-	.domain([d3.range(10)])
-    .range(["#16CEC5","#96CEB4", "#ADB3FF", "#FFEEAD"]);
 
+var options = ["HUB", "BTN", "LED", "POT", "LDR", "TMP", "ACR", "UKN", "RLY", "PEZ", "RGB", "COL", "MTR", "ROT", "IF", "Interval", "Fade", "Swap", "Map", "Counter", "Trigger", "Note", "Random", "PONG", "SimonSays"];
+// var oColor = d3.scale.category20b()
+    // .range(["#16CEC5","#96CEB4", "#ADB3FF", "#FFEEAD"]);
+var oColor = d3.scale.ordinal()
+	.domain([options])
+    .range(["#16CEC5","#96CEB4", "#ADB3FF", "#FFEEAD"]);
 var chart = d3.select("body")
 			.append("svg")
 			.attr("width", w + m[1] + m[3])
@@ -98,6 +101,9 @@ var itemRects = main.append("g")
 
 var itemCircs = main.append("g")
 					.attr("clip-path", "url(#clip)");
+
+var itemArdz = main.append("g")
+					.attr("clip-path", "url(#clip)");
 // setInterval(function() {
 // 	var e = [mindate, +mindate+3600000]; //set brush range
 // 	brush.extent(e);    
@@ -105,20 +111,15 @@ var itemCircs = main.append("g")
 // }, 30000);
 
 
-	getData();
+getData();
 
 var uniques1, uniques2;
-// , uniques3;
+var ardEntry = [];
 function getData(){
-// https://www.dropbox.com/s/t2vbg2tsdbord9w/events1.log?dl=0
-d3.csv("https://dl.dropboxusercontent.com/s/t2vbg2tsdbord9w/events1.log?dl=0", function(error,arData){
-	console.log(arData[1]['timestamp']+"timestamp");
-	console.log(arData[1]['mod']+"mod");
 
-})
 	d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
-		console.log(parseDate(data[data.length-1]['Timestamp']));
-		console.log(data[1]['Timestamp']+"TIMEstamp")
+		// console.log(parseDate(data[data.length-1]['Timestamp']));
+		// console.log(data[1]['Timestamp']+"TIMEstamp")
 		for (var i= 0; i<data.length; i++){
 		// console.log(data[i]['Device'])
 		    if (data[i]['Device'] == "420038000547343232363230") {  
@@ -131,18 +132,41 @@ d3.csv("https://dl.dropboxusercontent.com/s/t2vbg2tsdbord9w/events1.log?dl=0", f
 		    }
 		}
 		uniques1 = unique(entry1);
-		if(uniques1.length>0){
-			console.log(uniques1.length);
+	})
+	// https://www.dropbox.com/s/t2vbg2tsdbord9w/events1.log?dl=0
+// https://www.dropbox.com/s/esr08wyx8sx1st2/events.tab.log?dl=0
+	d3.csv("https://dl.dropboxusercontent.com/s/t2vbg2tsdbord9w/events1.log?dl=0", function(ferror,arData){
+		// console.log(arData)
+	// console.log(arData[1]['timestamp']+"timestamp");
+	// console.log(arData[1]['mod']+"mod");
+		for (var i=1; i<arData.length-1; i++){
+			ardEntry.push({
+				"id": parseInt(arData[i]['id']),
+			    "mod": arData[i]['mod'],
+			    "start": parseInt(arData[i]['timestamp']),
+			    "end": Date.now(),
+			    "from":arData[i]['fromType']
+			})
+			if(arData[i].sF==2){
+				ardEntry[i].end = parseInt(arData[i]['timestamp'])
+			} 			
+		}
+	})
+}
+setTimeout(function(){
+		if(uniques1.length>0){ // && ardEntry.length>0
+			console.log(uniques1.length+"button");
+			// console.log(ardEntry.length+"ard");
+
 			prepScales();
 			console.log("prepped")
 			prepped = true;
 			if(prepped){
-				autoMovement();
+				// autoMovement();
 			}
 		}
-		// console.log(entry1[entry1.length-1].timeIs)
-	})
-}
+},3000)
+
 
 var i = 0;
 var entry2 = [];
@@ -170,8 +194,6 @@ function autoMovement(){
 	var interval = (maxdate-mindate)/amt;
 	autoMove = setInterval(function() {
 		var e = [mindate, +mindate+interval*index]; //set brush range
-
-		// var e = [mindate, +mindate+3600000*index]; //set brush range
 		brush.extent(e);    
 		mini.call(brush); 
 		display();
@@ -188,9 +210,6 @@ console.log(index+"index")
 
 	}, 1000);
 	console.log(index+"index");	
-	// 1441279631000
-// catFight.html:289 Wed Aug 26 2015 17:18:43 GMT+0200 (CEST)
-
 }
 
 
@@ -210,8 +229,12 @@ function prepScales(){
 	console.log("in prep scales")
 	console.log(uniques1.length)
     mindate = uniques1[1].timeIs;
-    maxdate = uniques1[uniques1.length - 1].timeIs;
-
+    // maxdate = uniques1[uniques1.length - 1].timeIs;
+if(uniques1[uniques1.length - 1].timeIs>ardEntry[ardEntry.length-1].end){
+	maxdate = uniques1[uniques1.length - 1].timeIs;
+}else{
+	maxdate = ardEntry[ardEntry.length-1].end;	
+}
 	// for (j = 0; j <= 24; j++) {
 	//     totalPhotos[j] = photoConsolidation(j)
 	// }
@@ -281,12 +304,16 @@ var rects;
 function display() {
 
 	// var rects, 
-	var circs, rectz,
+	var circs, rectz, ardRectz,
 		minExtent = brush.extent()[0],
 		maxExtent = brush.extent()[1],
 		visItems = uniques1.filter(function(d) {return d.timeIs < maxExtent && d.timeIs > minExtent;});
 
 		vizItems = items.filter(function(d) {return d.start < maxExtent && d.end > minExtent;}); 
+
+		ardItems = ardEntry.filter(function(d) {return d.start < maxExtent && d.end > minExtent;}); 
+
+			    // "mod": arData[i]['mod'],
 
 	mini.select(".brush")
 		.call(brush.extent([minExtent, maxExtent]));
@@ -295,36 +322,61 @@ function display() {
 	// console.log(maxExtent);
 	// console.log(maxdate);
 ///////////////////////////////
-			rectz = itemRectz.selectAll("rect")
-		        .data(vizItems)
+			// rectz = itemRectz.selectAll("rect")
+		 //        .data(vizItems)
+			// 	.attr("x", function(d) {
+			// 		return x1(d.start);
+			// 	})
+			// 	.attr("width", function(d) {
+			// 		return x1(d.end) - x1(d.start);
+			// 	});
+			// rectz.enter().append("rect")
+			// 	.attr("class", function(d) {
+			// 		return "miniItemz" + d.component;
+			// 	})
+			// 	.attr("x", function(d) {
+			// 		return x1(d.start);
+			// 	})
+			// 	.attr("y", function(d){
+			// 		return d.component*20+50;
+			// 	})
+			// 	.attr("width", function(d) {
+			// 		return x1(d.end) - x1(d.start);
+			// 	})
+			// 	.attr("height", 5)
+			// 	.attr("fill",function(d){
+			// 		return oColor(d.component);
+			// 	});
+			// 		rectz.exit().remove();
+///////////////////////////////
+
+			ardRectz = itemArdz.selectAll("rect")
+		        .data(ardItems)
 				.attr("x", function(d) {
 					return x1(d.start);
 				})
 				.attr("width", function(d) {
 					return x1(d.end) - x1(d.start);
 				});
-			rectz.enter().append("rect")
+			ardRectz.enter().append("rect")
 				.attr("class", function(d) {
-					return "miniItemz" + d.component;
+					return "miniItemz" + d.mod;
 				})
 				.attr("x", function(d) {
 					return x1(d.start);
 				})
-				.attr("y", function(d){
-					return d.component*20+50;
+				.attr("y", function(d,i){
+					console.log(d.id);
+					return (d.id)*20+50;
 				})
 				.attr("width", function(d) {
 					return x1(d.end) - x1(d.start);
 				})
 				.attr("height", 5)
 				.attr("fill",function(d){
-					return oColor(d.component);
+					return oColor(d.from);
 				});
-					rectz.exit().remove();
-
-///////////////////////////////
-
-
+			ardRectz.exit().remove();
 
 ///////////////////////////////
 	rects = itemRects.selectAll("image")
