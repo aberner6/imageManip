@@ -110,8 +110,15 @@ var itemCircs = main.append("g")
 var uniques1, uniques2;
 // , uniques3;
 function getData(){
+// https://www.dropbox.com/s/t2vbg2tsdbord9w/events1.log?dl=0
+d3.csv("https://dl.dropboxusercontent.com/s/t2vbg2tsdbord9w/events1.log?dl=0", function(error,arData){
+	console.log(arData[1]['timestamp']+"timestamp");
+	console.log(arData[1]['mod']+"mod");
+
+})
 	d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
 		console.log(parseDate(data[data.length-1]['Timestamp']));
+		console.log(data[1]['Timestamp']+"TIMEstamp")
 		for (var i= 0; i<data.length; i++){
 		// console.log(data[i]['Device'])
 		    if (data[i]['Device'] == "420038000547343232363230") {  
