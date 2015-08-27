@@ -129,6 +129,9 @@ function getData(){
 			prepScales();
 			console.log("prepped")
 			prepped = true;
+			if(prepped){
+				autoMovement();
+			}
 		}
 		// console.log(entry1[entry1.length-1].timeIs)
 	})
@@ -154,21 +157,34 @@ function updateData() {
 
 
 var index = 0;
-if(prepped){
-	var autoMove = setInterval(function() {
-		var e = [mindate, +mindate+3600000*index]; //set brush range
+var autoMove;
+var amt = 6;
+function autoMovement(){
+	var interval = (maxdate-mindate)/amt;
+	autoMove = setInterval(function() {
+		var e = [mindate, +mindate+interval*index]; //set brush range
+
+		// var e = [mindate, +mindate+3600000*index]; //set brush range
 		brush.extent(e);    
-		mini.call(brush);  
-	}, 30000);
-	index++;
-	console.log(index);	
-	if((+mindate+3600000*index)>= maxdate){
+		mini.call(brush); 
+		display();
+		index++; 
+
+	if((+mindate+interval*(index-1))>= maxdate){
+console.log(index+"index")
+// console.log((+mindate+110600000*index+1));
+	// if((+mindate+3600000*index)>= maxdate){
 		//then stop interval
+		clearInterval(autoMove);
 		console.log("stopping interval")
 	}
+
+	}, 1000);
+	console.log(index+"index");	
+	// 1441279631000
+// catFight.html:289 Wed Aug 26 2015 17:18:43 GMT+0200 (CEST)
+
 }
-
-
 
 
 
@@ -240,14 +256,6 @@ function prepScales(){
 	//         }
 	// });
 	
-	//mini item circles
-	// mini.append("g").selectAll("circles")
-	// .data(uniques)
-	// .enter().append("circle")
-	// .attr("class", function(d) {return "circles" + d.timeIs;})
-	// .attr("cx", function(d) {return x(d.timeIs);})
-	// .attr("cy", 100)
-	// .attr("r",5);
 
 	//mini item rects
 	// mini.append("g").selectAll("miniItemz")
@@ -277,17 +285,17 @@ function display() {
 		.call(brush.extent([minExtent, maxExtent]));
 
 	x1.domain([minExtent, maxExtent]);
-	console.log(maxExtent);
-	console.log(maxdate);
+	// console.log(maxExtent);
+	// console.log(maxdate);
 ///////////////////////////////
 			rectz = itemRectz.selectAll("rect")
-			        .data(vizItems)
-					.attr("x", function(d) {
-						return x1(d.start);
-					})
-					.attr("width", function(d) {
-						return x1(d.end) - x1(d.start);
-					});
+		        .data(vizItems)
+				.attr("x", function(d) {
+					return x1(d.start);
+				})
+				.attr("width", function(d) {
+					return x1(d.end) - x1(d.start);
+				});
 			rectz.enter().append("rect")
 				.attr("class", function(d) {
 					return "miniItemz" + d.component;
@@ -303,10 +311,10 @@ function display() {
 				})
 				.attr("height", 5)
 				.attr("fill",function(d){
-					console.log(d.component)
 					return oColor(d.component);
-				})
-			rectz.exit().remove();
+				});
+					rectz.exit().remove();
+
 ///////////////////////////////
 
 
@@ -324,12 +332,17 @@ function display() {
                     return "idea.png";
                 }
             })
-		.attr("x", function(d) {return x1(d.timeIs);})
 		.attr("y", 200)
 		.attr("width", 20)
 		.attr("height", 20)
-		.attr("opacity",.5);
-	rects.exit().remove();
+		.attr("opacity",.5)
+		// .attr("x", w)
+		// .transition()
+		// .duration(500)
+		.attr("x", function(d) {return x1(d.timeIs);})
+		// .each("end", function(d){
+			rects.exit().remove();
+		// })
 ///////////////////////////////
 
 
