@@ -120,6 +120,7 @@ getData();
 
 var uniques1, uniques2;
 var ardEntry = [];
+var ardExit = [];
 function getData(){
 
 	d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
@@ -138,26 +139,44 @@ function getData(){
 		}
 		uniques1 = unique(entry1);
 	})
-	// https://www.dropbox.com/s/t2vbg2tsdbord9w/events1.log?dl=0
-// https://www.dropbox.com/s/esr08wyx8sx1st2/events.tab.log?dl=0
-	d3.csv("https://dl.dropboxusercontent.com/s/t2vbg2tsdbord9w/events1.log?dl=0", function(ferror,arData){
-		// console.log(arData)
-	// console.log(arData[1]['timestamp']+"timestamp");
-	// console.log(arData[1]['mod']+"mod");
-		for (var i=1; i<arData.length-1; i++){
-			ardEntry.push({
-				"id": parseInt(arData[i]['id']),
-			    "mod": arData[i]['mod'],
-			    "start": parseInt(arData[i]['timestamp']),
-			    "end": Date.now(),
-			    "from":(arData[i]['fromType']),
-			    "sF":parseInt(arData[i]['sF'])
-			})
-			// if(parseInt(arData[i]['sF'])==2){
-				// console.log(arData[i]['sF']);
+
+// https://www.dropbox.com/s/a6uni0ubw86wwe0/events2.log?dl=0
+	// d3.csv("https://dl.dropboxusercontent.com/s/t2vbg2tsdbord9w/events1.log?dl=0", function(ferror,arData){
+	d3.csv("https://dl.dropboxusercontent.com/s/a6uni0ubw86wwe0/events2.log?dl=0", function(ferror,arData){
+
+		console.log(arData)
+		for (var i=0; i<arData.length; i++){
+			if(parseInt(arData[i]['sF'])==2){
+				ardExit.push({
+					"id": parseInt(arData[i]['id']),
+				    "mod": arData[i]['mod'],
+				    "end": parseInt(arData[i]['timestamp']),
+				    "from":(arData[i]['fromType']),
+				    "sF": parseInt(arData[i]['sF'])
+				})
+			}else{ //be normal
+				// ardExit.push({
+				// 	"id": parseInt(arData[i]['id']),
+				//     "mod": arData[i]['mod'],
+				//     "start": parseInt(arData[i]['timestamp']),
+				//     "end": Date.now(),
+				//     "from":(arData[i]['fromType']),
+				//     "sF": parseInt(arData[i]['sF'])
+				// })				
+			}
+			if(parseInt(arData[i]['sF'])==1){
+				ardEntry.push({
+					"id": parseInt(arData[i]['id']),
+				    "mod": arData[i]['mod'],
+				    "start": parseInt(arData[i]['timestamp']),
+				    "end": Date.now(),
+				    "from":(arData[i]['fromType']),
+				    "sF": parseInt(arData[i]['sF'])
+				})
+			}
 				// ardEntry[i].end = parseInt(arData[i]['timestamp'])
-			// } 			
-		}
+			} 			
+		// }
 	})
 }
 setTimeout(function(){
@@ -364,8 +383,19 @@ function display() {
 					return x1(d.start);
 				})
 				.attr("width", function(d) {
-					return x1(d.end) - x1(d.start);
-				});
+					for(i=0; i<ardExit.length; i++){
+						if(d.mod==ardExit[i].mod && d.id==ardExit[i].id && d.fromType == ardExit[i].fromType){
+							console.log("whats up");
+							console.log(ardExit[i].end+"thisend")
+							console.log(x1(ardExit[i].end)-x1(d.start)+"abnormal");
+							return x1(ardExit[i].end)-x1(d.start);
+						}
+						else{
+							console.log(x1(d.end) - x1(d.start)+"normal");
+							return x1(d.end) - x1(d.start);
+						}						
+					}
+				})
 			ardRectz.enter().append("rect")
 				.attr("class", function(d) {
 					return "miniItemz" + d.mod;
@@ -374,15 +404,26 @@ function display() {
 					return x1(d.start);
 				})
 				.attr("y", function(d,i){
-					console.log("'"+d.from+"'");
-					return yis("'"+d.from+"'");
+					// console.log("'"+d.from+"'");
+					// return yis("'"+d.from+"'");
 					// console.log(d.id);
 					// if(d.from>0){
-						// return (d.id)*10+50;						
+						return (i)*10+50;						
 					// }
 				})
 				.attr("width", function(d) {
-					return x1(d.end) - x1(d.start);
+					for(i=0; i<ardExit.length; i++){
+						if(d.mod==ardExit[i].mod && d.id==ardExit[i].id && d.fromType == ardExit[i].fromType){
+							console.log("whats up");
+							console.log(ardExit[i].end+"thisend")
+							console.log(x1(ardExit[i].end)-x1(d.start)+"abnormal");
+							return x1(ardExit[i].end)-x1(d.start);
+						}
+						else{
+							console.log(x1(d.end) - x1(d.start)+"normal");
+							return x1(d.end) - x1(d.start);
+						}						
+					}
 				})
 				.attr("height", 5)
 				.attr("fill",function(d){
