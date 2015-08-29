@@ -20,6 +20,18 @@
 		color:white;
 		padding:2px;
 	}
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    font-family: sans-serif;
+    font-size: 11px;
+}
+
 </style>
 <body>
     <script src="d3.min.js" charset="utf-8"></script>
@@ -46,7 +58,6 @@ var mindate;
 var maxdate = "Fri Aug 01 2015 13:24:33 GMT+0200 (CEST)";
 
 var uniques = [];
-// var uniques2 = [];
 
 var totalPhotos = [];
 
@@ -56,22 +67,28 @@ var m = [20, 15, 15, 120], //top right bottom left
 	miniHeight = 10,
 	mainHeight = 300;
 
+var xAxis = d3.svg.axis();
+var xAx = d3.scale.linear()
+		.range([0, w]);
 //scales
+var y = d3.scale.linear()
+		.range([50, h/2]);
 var x = d3.scale.linear()
 		.range([0, w]);
 var x1 = d3.scale.linear()
 		.range([0, w-m[1]]);	
 
-var options = ["HUB", "BTN", "LED", "POT", "LDR", "TMP", "ACR", "UKN", "RLY", "PEZ", "RGB", "COL", "MTR", "ROT", "IF", "Interval", "Fade", "Swap", "Map", "Counter", "Trigger", "Note", "Random", "PONG", "SimonSays"];
-// var oColor = d3.scale.category20b()
-    // .range(["#16CEC5","#96CEB4", "#ADB3FF", "#FFEEAD"]);
+var options = [];
+
+options.push("HUB", "BTN", "LED", "POT", "LDR", "TMP", "ACR", "UKN", "RLY", "PEZ", "RGB", "COL", "MTR", "ROT", "IF", "Interval", "Fade", "Swap", "Map", "Counter", "Trigger", "Note", "Random", "PONG", "SimonSays");
+
 var oColor = d3.scale.ordinal()
-	.domain([options])
+	.domain(options)
     .range(d3.scale.category20c().range());
 
 var yis = d3.scale.ordinal()
-	.domain([options])
-    .range([100, h/2]);
+          .domain(options)
+          .rangePoints([50, mainHeight]);
 
 var chart = d3.select("body")
 			.append("svg")
@@ -109,19 +126,15 @@ var itemCircs = main.append("g")
 
 var itemArdz = main.append("g")
 					.attr("clip-path", "url(#clip)");
-// setInterval(function() {
-// 	var e = [mindate, +mindate+3600000]; //set brush range
-// 	brush.extent(e);    
-// 	mini.call(brush);  
-// }, 30000);
-
-
 getData();
 
 var uniques1, uniques2;
 var ardUniques1;
 var ardEntry = [];
 var ardExit = [];
+var ardAll = [];
+var ardUni = [];
+
 function getData(){
 
 	d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
@@ -137,30 +150,27 @@ function getData(){
 		}
 		uniques1 = unique(entry1);
 	})
-
 	d3.csv("https://dl.dropboxusercontent.com/s/t2vbg2tsdbord9w/events1.log?dl=0", function(ferror,arData){
 	// d3.csv("https://dl.dropboxusercontent.com/s/a6uni0ubw86wwe0/events2.log?dl=0", function(ferror,arData){
-var ardAll = [];
 		console.log(arData)
 		for (var i=0; i<arData.length; i++){
-			ardAll.push({
-					"id": parseInt(arData[i]['id']),
+			ardUni.push({
 				    "mod": arData[i]['mod'],
 				    "from":(arData[i]['fromType']),
 				})
-
-			if(parseInt(arData[i]['sF'])==2){
-				ardExit.push({
+			ardAll.push({
+					"specialID": parseInt(arData[i]['timestamp']),
 					"id": parseInt(arData[i]['id']),
 				    "mod": arData[i]['mod'],
-				    "end": parseInt(arData[i]['timestamp']),
+				    "start": parseInt(arData[i]['timestamp']),
+				    // "end": Date.now(),//parseInt(arData[i]['timestamp']),
 				    "from":(arData[i]['fromType']),
 				    "sF": parseInt(arData[i]['sF'])
 				})
-			}else{ //be normal			
-			}
-			if(parseInt(arData[i]['sF'])==1){
+if(parseInt(arData[i+1]['sF'])==1){
+// console.log(parseInt(arData[i+1]['sF'])+" it hit another start"); 
 				ardEntry.push({
+					"specialID": parseInt(arData[i]['timestamp'])+parseInt(arData[i]['id']),
 					"id": parseInt(arData[i]['id']),
 				    "mod": arData[i]['mod'],
 				    "start": parseInt(arData[i]['timestamp']),
@@ -168,11 +178,23 @@ var ardAll = [];
 				    "from":(arData[i]['fromType']),
 				    "sF": parseInt(arData[i]['sF'])
 				})
-			}
+	// return Date.now()
+} else{
+// console.log(parseInt(arData[i+1]['sF'])+" it hit the end"); 
+
+				ardEntry.push({
+					"specialID": parseInt(arData[i]['timestamp'])+parseInt(arData[i]['id']),
+					"id": parseInt(arData[i]['id']),
+				    "mod": arData[i]['mod'],
+				    "start": parseInt(arData[i]['timestamp']),
+				    "end": parseInt(arData[i+1]['timestamp']),
+				    "from":(arData[i]['fromType']),
+				    "sF": parseInt(arData[i]['sF'])
+				})
+} 
+
 				// ardEntry[i].end = parseInt(arData[i]['timestamp'])
 			} 			
-		ardUniques1 = unique(ardAll);
-		console.log(ardUniques1);
 	})
 }
 setTimeout(function(){
@@ -184,7 +206,7 @@ setTimeout(function(){
 			console.log("prepped")
 			prepped = true;
 			if(prepped){
-				// autoMovement();
+				autoMovement();
 			}
 		}
 },3000)
@@ -209,31 +231,6 @@ function updateData() {
 }
 
 
-var index = 0;
-var autoMove;
-var amt = 6;
-function autoMovement(){
-	var interval = (maxdate-mindate)/amt;
-	autoMove = setInterval(function() {
-		var e = [mindate, +mindate+interval*index]; //set brush range
-		brush.extent(e);    
-		mini.call(brush); 
-		display();
-		index++; 
-
-	if((+mindate+interval*(index-1))>= maxdate){
-console.log(index+"index")
-// console.log((+mindate+110600000*index+1));
-	// if((+mindate+3600000*index)>= maxdate){
-		//then stop interval
-		clearInterval(autoMove);
-		console.log("stopping interval")
-	}
-
-	}, 1000);
-	console.log(index+"index");	
-}
-
 
 
 
@@ -246,22 +243,60 @@ $(window).keypress(function(e) {
   }
 });
 
+
 var brush = d3.svg.brush()
+var timevar = 60000;
 function prepScales(){
+	var timeFormat = d3.time.format("%a %H:%M");
+	// var timeFormat = d3.time.format("%I:%M %p %a");
+	// find data range
+	var xMin = d3.min(ardEntry, function(d){ return Math.min(d.start); });
+	var xMax = d3.max(ardEntry, function(d){ return Math.max(d.start); });
+	console.log(xMin+"xmin")
+	console.log(xMax+"xmax")
+
+	// scale using ranges
+	var xAxisScale= d3.time.scale()
+		.domain([xMin-timevar, xMax+timevar])
+		.range([0, w]);
+
+	var xAxis = d3.svg.axis()
+	    .scale(xAxisScale)
+	    .orient("bottom")
+		.ticks(5)
+		.tickPadding(5)
+		.tickFormat(timeFormat);
+	mini.append('g').call(xAxis)
+		.attr("class", "axis")  //Assign "axis" class
+		.attr('transform', 'translate(0, ' + (10) + ')');
+
+
+
+
+
+
+	mindate = xMin;//ardEntry[0].start;
+	maxdate = xMax;
+
+		ardUniques1 = unique(ardUni);
+		console.log(ardUniques1+"arduni");
+
 	console.log("in prep scales")
-	console.log(uniques1.length)
-    mindate = uniques1[1].timeIs;
-    // maxdate = uniques1[uniques1.length - 1].timeIs;
-if(uniques1[uniques1.length - 1].timeIs>ardEntry[ardEntry.length-1].end){
-	maxdate = uniques1[uniques1.length - 1].timeIs;
-}else{
-	maxdate = ardEntry[ardEntry.length-1].end;	
-}
+	// console.log(uniques1.length)
+    // mindate = uniques1[1].timeIs;
+
+	if(uniques1[uniques1.length - 1].timeIs>ardEntry[ardEntry.length-1].end){
+	// maxdate = uniques1[uniques1.length - 1].timeIs;
+	}else{
+	// maxdate = ardEntry[ardEntry.length-1].end;	
+	}
 	// for (j = 0; j <= 24; j++) {
 	//     totalPhotos[j] = photoConsolidation(j)
 	// }
 
-	x.domain([mindate, maxdate])
+	y.domain([0, ardUniques1.length]);
+// console.log(mindate+"mindate"+)
+	x.domain([mindate-timevar, maxdate+timevar]);
 
 	//brush
 	brush
@@ -280,7 +315,7 @@ if(uniques1[uniques1.length - 1].timeIs>ardEntry[ardEntry.length-1].end){
 	.attr("height", miniHeight - 1);
 
 
-
+//THESE ARE FOR THE BUTTON PRESSES
 	//mini item lines
 	mini.append("g").selectAll(".linie")
 	.data(uniques1)
@@ -292,265 +327,187 @@ if(uniques1[uniques1.length - 1].timeIs>ardEntry[ardEntry.length-1].end){
 	.attr("y2", 15)
 	.attr("stroke","grey")
 	.attr("opacity",.5);
-
-
-	//mini item rects
-	// mini.append("g").selectAll("miniItems")
-	// .data(uniques)
-	// .enter().append("image")
-	// .attr("class", function(d) {return "miniItem" + d.timeIs;})
-	// .attr("x", function(d) {return x(d.timeIs);})
-	// .attr("y", 200)
-	// .attr("width", 20)
-	// .attr("height", 20)
-	// .attr("xlink:href", function(d, i) {
-	//         if (d.buttonIs == "button3") { //1 is bad 3 is good
-	//             return "idea.png";
-	//         }
-	// });
 	
-
-	//mini item rects
-	// mini.append("g").selectAll("miniItemz")
-	// 	.data(items)
-	// 	.enter().append("rect")
-	// 	.attr("class", function(d) {return "miniItemz" + d.lane;})
-	// 	.attr("x", function(d) {return x(d.start);})
-	// 	.attr("y", function(d) {return y2(d.lane + .5) - 5;})
-	// 	.attr("width", function(d) {return x(d.end - d.start);})
-	// 	.attr("height", 10);
 	display();
+}
+
+var index = 0;
+var autoMove;
+var amt = 6;
+function autoMovement(){
+	var interval = ((maxdate+timevar)-(mindate))/amt;
+	autoMove = setInterval(function() {
+		var e = [mindate-timevar, +mindate+interval*index]; //set brush range
+		brush.extent(e);    
+		mini.call(brush); 
+		display();
+		index++; 
+
+	if((+mindate+interval*(index-1))>= maxdate+timevar){
+		console.log(index+"index")
+		clearInterval(autoMove);
+		display();
+		console.log("stopping interval")
+	}
+
+	}, 1000);
+	console.log(index+"index");	
 }
 
 
 var rects;
 function display() {
-// console.log(ardExit.length+"ardexit length")
-	// var rects, 
+
 	var circs, rectz, ardRectz,
 		minExtent = brush.extent()[0],
 		maxExtent = brush.extent()[1],
 		visItems = uniques1.filter(function(d) {return d.timeIs < maxExtent && d.timeIs > minExtent;});
 
-		vizItems = items.filter(function(d) {return d.start < maxExtent && d.end > minExtent;}); 
+		ardItems = ardEntry.filter(function(d) {return d.start < maxExtent && d.end > minExtent && d.sF==1;}); 
+		// ardItems = ardOne.filter(function(d) {return d.sF==1}); 
 
-		ardItems = ardEntry.filter(function(d) {return d.start < maxExtent && d.end > minExtent;}); 
-
-			    // "mod": arData[i]['mod'],
+		ardAllItems = ardEntry.filter(function(d) {return d.start < maxExtent && d.end > minExtent;}); 
 
 	mini.select(".brush")
 		.call(brush.extent([minExtent, maxExtent]));
 
 	x1.domain([minExtent, maxExtent]);
-	// console.log(maxExtent);
-	// console.log(maxdate);
-///////////////////////////////
-			// rectz = itemRectz.selectAll("rect")
-		 //        .data(vizItems)
-			// 	.attr("x", function(d) {
-			// 		return x1(d.start);
-			// 	})
-			// 	.attr("width", function(d) {
-			// 		return x1(d.end) - x1(d.start);
-			// 	});
-			// rectz.enter().append("rect")
-			// 	.attr("class", function(d) {
-			// 		return "miniItemz" + d.component;
-			// 	})
-			// 	.attr("x", function(d) {
-			// 		return x1(d.start);
-			// 	})
-			// 	.attr("y", function(d){
-			// 		return d.component*20+50;
-			// 	})
-			// 	.attr("width", function(d) {
-			// 		return x1(d.end) - x1(d.start);
-			// 	})
-			// 	.attr("height", 5)
-			// 	.attr("fill",function(d){
-			// 		return oColor(d.component);
-			// 	});
-			// 		rectz.exit().remove();
-///////////////////////////////
-					// for(var j=0; j<ardExit.length; j++){ //ardExit.length
-					// 	console.log(j+"why");
-					// }
+
 			ardRectz = itemArdz.selectAll("rect")
-		        .data(ardItems)
+		        .data(ardItems, function(d){ return d.specialID;})
 				.attr("x", function(d) {
 					return x1(d.start);
 				})
-				.attr("width", function(d) {
-					for(var j=0; j<ardExit.length; j++){
-						if(d.mod.indexOf(ardExit[j].mod)>-1 && d.id==ardExit[j].id && d.from.indexOf(ardExit[j].from)>-1){
-							// console.log((ardExit[j].from))
-								return x1(ardExit[j].end)-x1(d.start);
-						}					
-					}
-					return 50;
+				.attr("width", function(d,i) {
+					return x1(d.end)-x1(d.start);
+					// for(var j=0; j<ardExit.length; j++){
+					// 	if(d.mod.indexOf(ardExit[j].mod)>-1 && d.id==ardExit[j].id && d.from.indexOf(ardExit[j].from)>-1){
+					// 			return x1(ardExit[j].end)-x1(d.start);
+					// 	}					
+					// }
+					// return 50;
 				})
 			ardRectz.enter().append("rect")
 				.attr("class", function(d) {
-					return "miniItemz" + d.from;
+					return "miniItemz" + d.specialID;
 				})
 				.attr("x", function(d) {
 					return x1(d.start);
 				})
 				.attr("y", function(d,i){
-					for (j=0; j<ardUniques1.length; j++){
-						if(d.mod.indexOf(ardUniques1[j].mod)>-1 && d.id==ardUniques1[j].id && d.from.indexOf(ardUniques1[j].from)>-1){
-								return j*10+50;
-						}					
-					}
-					// return 50;
+					return yis(d.from);
 				})
 				.attr("width", function(d) {
-					for(var j=0; j<ardExit.length; j++){
-						if(d.mod.indexOf(ardExit[j].mod)>-1 && d.id==ardExit[j].id && d.from.indexOf(ardExit[j].from)>-1){
-							// console.log((ardExit[j].from))
-								return x1(ardExit[j].end)-x1(d.start);
-						}					
-					}
-					return 50;
+					return x1(d.end)-x1(d.start);
 				})
-
-
-
-
-
-
-
-
-
-
-// 				.attr("width", function(d) {
-// for(var j=0; j<ardExit.length; j++){ 
-// 	if(d.mod.indexOf(ardExit[j].mod)>-1 && d.id==ardExit[j].id && d.from.indexOf(ardExit[j].from)>-1)
-// 						{
-// 							return x1(ardExit[j].end)-x1(d.start);
-// 						}
-// 						else{
-// 							// return x1(d.end) - x1(d.start);
-// 						}						
-// 				}
-// 				})
-
-
-
-
-
-
-// 				.attr("width", function() {
-// 					for (i=0; i<ardItems.length; i++){
-// 						for(j=0; j<ardExit.length; j++){ //ardExit.length
-// 						console.log(j+"j");
-// 						console.log(ardExit[j].from+"from"+" index number "+j)
-// if(ardItems[i].mod.indexOf(ardExit[j].mod)>-1 && ardItems[i].id==ardExit[j].id && ardItems[i].from.indexOf(ardExit[j].from)>-1)
-// 						{
-// 							console.log(ardExit[j].from+"from this thing up here")
-// 							return x1(ardExit[j].end)-x1(ardItems[i].start);
-// 						}
-// 						else{
-// 							// console.log(x1(d.end) - x1(d.start)+"normal");
-// 							return x1(ardItems[i].end) - x1(ardItems[i].start);
-// 						}						
-// 					}
-// 				}
-// 				})
-
-
-
-
-
-
-// 				.attr("width", function(d) {
-// 					for(var j=0; j<ardExit.length; j++){ //ardExit.length
-// 						console.log(j);
-// 						console.log(ardExit[j].from+"from"+" index number "+j)
-// if(d.mod.indexOf(ardExit[j].mod)>-1 && d.id==ardExit[j].id && d.from.indexOf(ardExit[j].from)>-1)
-// 						{
-// 							console.log(ardExit[j].from+"from this thing up here")
-// 							return x1(ardExit[j].end)-x1(d.start);
-// 						}
-// 						else{
-// 							// console.log(x1(d.end) - x1(d.start)+"normal");
-// 							return x1(d.end) - x1(d.start);
-// 						}						
-// 					}
-// 				})
-
-
-
-
-
-
-				// .attr("width", function(d) {
-				// 	for(i=0; i<ardExit.length; i++){
-				// 		if(d.mod.indexOf(ardExit[i].mod)>-1 && d.id==ardExit[i].id && d.from.indexOf(ardExit[i].from)>-1){
-				// 		// if(d.mod==ardExit[i].mod && d.id==ardExit[i].id && d.from == ardExit[i].from){
-				// 			// console.log("whats up");
-				// 			console.log(ardExit[i].from+"from this thing down here")
-				// 			// console.log(ardExit[i].end+"thisend")
-				// 			// console.log(x1(ardExit[i].end)-x1(d.start)+"abnormal");
-				// 			return x1(ardExit[i].end)-x1(d.start);
-				// 		}
-				// 		else{
-				// 			// console.log(x1(d.end) - x1(d.start)+"normal");
-				// 			return x1(d.end) - x1(d.start);
-				// 		}						
-				// 	}
-				// })
 				.attr("height", 5)
-				.attr("fill",function(d){
+				.attr("fill", function(d){
 					return oColor(d.from);
-				});
+				})
+				.attr("stroke","none")
+				.attr("opacity",.4)
+
 			ardRectz.exit().remove();
 
-///////////////////////////////
-	rects = itemRects.selectAll("image")
-	        .data(visItems)
-		.attr("x", function(d) {return x1(d.timeIs);})
-		.attr("width", 20);
-
-	rects.enter().append("image")
-		.attr("class", function(d) {return "miniItem" + d.timeIs;})
-         .attr("xlink:href", function(d, i) {
-                if (d.buttonIs == "button3") { //1 is bad 3 is good
-                    return "idea.png";
-                }
-            })
-		.attr("y", 200)
-		.attr("width", 20)
-		.attr("height", 20)
-		.attr("opacity",.5)
-		// .attr("x", w)
-		// .transition()
-		// .duration(500)
-		.attr("x", function(d) {return x1(d.timeIs);})
-		// .each("end", function(d){
-			rects.exit().remove();
-		// })
-///////////////////////////////
-
-
-
+var r = 4;
 // ///////////////////////////////
-// 	circs = itemCircs.selectAll("circle")
-// 	        .data(visItems)
-// 		.attr("cx", function(d) {
-// 			return x1(d.timeIs);
-// 		})
-// 		.attr("r", 2);	
-
-// 	circs.enter().append("circle")
-// 		.attr("class", function(d) {return "circles" + d.timeIs;})
-// 		.attr("cx", function(d) {return x1(d.timeIs);})
-// 		.attr("cy", 150)
-// 		.attr("r",2)
-// 		.attr("fill","blue")
-// 		.attr("opacity",.5);
-// 	circs.exit().remove();
+	circs = itemCircs.selectAll("circle")
+		        .data(ardAllItems, function(d){ return d.specialID;})
+				.attr("cx", function(d) {
+					return x1(d.start);
+				})
+				.attr("r", r)
+	circs.enter().append("circle")
+				.attr("class", function(d) {
+					return "circs" + d.from+d.start;
+				})
+				.attr("r", r)
+				.attr("cx", function(d) {
+					if(d.sF==1){
+						return x1(d.start);						
+					}
+					else{
+						return x1(d.end);
+					}
+				})
+				.attr("cy", function(d,i){
+					return yis(d.from)+r;
+				})
+				.attr("fill",function(d){
+					if(d.sF==1){
+						return oColor(d.from);
+					}else{
+						return "none";
+					}
+				})
+				.attr("opacity",.5)
+	circs.exit().remove();
 // ///////////////////////////////
+	var circR;
+	circR = itemCircs.selectAll("rect")
+		        .data(ardAllItems, function(d){ return d.specialID;})
+				.attr("x", function(d) {
+					return x1(d.start);
+				})
+				.attr("fill","none")
+				.attr("stroke",function(d){
+					if(d.sF==1){
+						return "none";
+					}else{
+						return oColor(d.from);
+					}
+				})
+	circR.enter().append("rect")
+				.attr("class", function(d) {
+					return "circR" + d.from+d.start;
+				})
+				.attr("width", 7)
+				.attr("height",7)
+				.attr("x", function(d) {
+					if(d.sF==1){
+						return x1(d.start);						
+					}
+					else{
+						return x1(d.end);
+					}
+				})
+				.attr("y", function(d,i){
+					return yis(d.from);
+				})
+				.attr("fill","none")
+				.attr("stroke",function(d){
+					if(d.sF==1){
+						return "none";
+					}else{
+						return oColor(d.from);
+					}
+				})
+				.attr("opacity",.5)
+	circR.exit().remove();
+
+			// 		rectz.exit().remove();
+
+
+///////////////////////////////
+	// rects = itemRects.selectAll("image")
+	//         .data(visItems)
+	// 	.attr("x", function(d) {return x1(d.timeIs);})
+	// 	.attr("width", 20);
+
+	// rects.enter().append("image")
+	// 	.attr("class", function(d) {return "miniItem" + d.timeIs;})
+ //         .attr("xlink:href", function(d, i) {
+ //                if (d.buttonIs == "button3") { //1 is bad 3 is good
+ //                    return "idea.png";
+ //                }
+ //            })
+	// 	.attr("y", 200)
+	// 	.attr("width", 20)
+	// 	.attr("height", 20)
+	// 	.attr("opacity",.5)
+	// 	.attr("x", function(d) {return x1(d.timeIs);})
+	// 		rects.exit().remove();
+///////////////////////////////
 }
 
 
