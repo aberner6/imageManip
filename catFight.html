@@ -243,11 +243,10 @@ $(window).keypress(function(e) {
   }
 });
 
-
+var timeFormat = d3.time.format("%a %H:%M");
 var brush = d3.svg.brush()
 var timevar = 60000;
 function prepScales(){
-	var timeFormat = d3.time.format("%a %H:%M");
 	// var timeFormat = d3.time.format("%I:%M %p %a");
 	// find data range
 	var xMin = d3.min(ardEntry, function(d){ return Math.min(d.start); });
@@ -367,11 +366,30 @@ function display() {
 		// ardItems = ardOne.filter(function(d) {return d.sF==1}); 
 
 		ardAllItems = ardEntry.filter(function(d) {return d.start < maxExtent && d.end > minExtent;}); 
+d3.selectAll(".wodry").remove();
 
 	mini.select(".brush")
 		.call(brush.extent([minExtent, maxExtent]));
 
 	x1.domain([minExtent, maxExtent]);
+
+
+// var timeText;
+console.log(minExtent+" min "+timeFormat(new Date(minExtent)));
+var thisTime = timeFormat(new Date(minExtent));
+
+var timeText = itemArdz.selectAll("wodry")
+    .data(d3.range(1))
+    .enter()
+    .append("text").attr("class", "wodry")
+		.attr("x",100)
+		.attr("y",100)
+		.text(thisTime);
+		// timeText.exit().remove();
+
+
+
+
 
 			ardRectz = itemArdz.selectAll("rect")
 		        .data(ardItems, function(d){ return d.specialID;})
@@ -380,12 +398,6 @@ function display() {
 				})
 				.attr("width", function(d,i) {
 					return x1(d.end)-x1(d.start);
-					// for(var j=0; j<ardExit.length; j++){
-					// 	if(d.mod.indexOf(ardExit[j].mod)>-1 && d.id==ardExit[j].id && d.from.indexOf(ardExit[j].from)>-1){
-					// 			return x1(ardExit[j].end)-x1(d.start);
-					// 	}					
-					// }
-					// return 50;
 				})
 			ardRectz.enter().append("rect")
 				.attr("class", function(d) {
