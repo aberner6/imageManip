@@ -336,7 +336,10 @@ var amt = 6;
 function autoMovement(){
 	var interval = ((maxdate+timevar)-(mindate))/amt;
 	autoMove = setInterval(function() {
-		var e = [mindate-timevar, +mindate+interval*index]; //set brush range
+//going in little chunks where minimum date increases
+		var e = [+mindate-timevar+interval/1.1*index, +mindate+interval*index]; //set brush range
+//going from 0 to full max date
+		// var e = [mindate-timevar, +mindate+interval*index]; //set brush range
 		brush.extent(e);    
 		mini.call(brush); 
 		display();
@@ -375,8 +378,9 @@ d3.selectAll(".wodry").remove();
 
 
 // var timeText;
-console.log(minExtent+" min "+timeFormat(new Date(minExtent)));
-var thisTime = timeFormat(new Date(minExtent));
+// console.log(minExtent+" min "+timeFormat(new Date(minExtent)));
+var minExtTime = timeFormat(new Date(minExtent));
+var maxExtTime = timeFormat(new Date(maxExtent));
 
 var timeText = itemArdz.selectAll("wodry")
     .data(d3.range(1))
@@ -384,7 +388,7 @@ var timeText = itemArdz.selectAll("wodry")
     .append("text").attr("class", "wodry")
 		.attr("x",100)
 		.attr("y",100)
-		.text(thisTime);
+		.text(minExtTime+" - "+maxExtTime);
 		// timeText.exit().remove();
 
 
