@@ -1,0 +1,86 @@
+<html>
+
+<head>
+    <title>Prep</title>
+</head>
+<style>
+	rect.backround{
+		display:block;
+	}
+	.brush .extent {
+		stroke: lightgray;
+		fill: lightgray;
+		fill-opacity: .365;
+		display:block;
+	}
+	#click{
+		background-color: gray;
+		width:20px;
+		color:white;
+		padding:2px;
+	}
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    font-family: sans-serif;
+    font-size: 11px;
+}
+
+.container { 
+    width: 418px; 
+    height: 240px; 
+    overflow: hidden; 
+}
+.container img { 
+    width: 100%;
+}
+</style>
+<body>
+    <script src="d3.min.js" charset="utf-8"></script>
+    <script src="http://cdn.jsdelivr.net/sparkjs/0.4.2/spark.min.js"></script>
+    <script src="jquery.min.js"></script>
+    <div id="click">up</div>
+    <!-- <div i -->
+<svg>
+    <clipPath id="clipCircle">
+        <circle r="50" cx="50" cy="50"/>
+    </clipPath>
+</svg>
+<!-- circle.setAttributeNS(null, 'clip-path', 'url(#clip)'); -->
+
+<script type="text/javascript">
+var svg = d3.select("body")
+            .append("svg")
+            .attr("width", 900)
+            .attr("height", 800);
+// var svg = d3.select("body").append("svg").attr("width",900).attr("height",800)
+            var suns = svg.selectAll("container").data(d3.range(1));
+                suns.enter()
+                .append("image")
+                .attr("xlink:href", "testImg.jpg")
+                .attr("class","container")
+                .attr("x", 100)
+                .attr("y", 100)
+                .attr("url(#clipCircle)")
+                // .attr("width",200)
+                // .attr("height",200)
+            // var crops = svg.selectAll("image-cropper").data(d3.range(1));
+            //     crops.enter()
+            //     .append("circle")
+            //     .attr("class","image-cropper")
+            //     .attr("cx", 150)
+            //     .attr("cy", 150)
+            //     .attr("r",200)
+            //     .attr("fill","none")
+            //     .attr("stroke","white")
+            //     .attr("stroke-width",20)
+                // .attr("height",200)
+// 420038000547343232363230.button1.overview.11/22/58_26-08-2015
+</script>
+</body>
+</html>

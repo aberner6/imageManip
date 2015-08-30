@@ -31,7 +31,23 @@
     font-family: sans-serif;
     font-size: 11px;
 }
-
+.image-cropper {
+    width: 100px;
+    height: 100px;
+    position: relative;
+    overflow: hidden;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+    border-radius: 50%;
+}
+img {
+    display: inline;
+    margin: 0 auto;
+    height: 100%;
+    width: auto;
+}
 </style>
 <body>
     <script src="d3.min.js" charset="utf-8"></script>
@@ -61,9 +77,12 @@ var uniques = [];
 
 var totalPhotos = [];
 
+        var w = window.innerWidth-40;
+        var h = window.innerHeight - 40;
+
 var m = [20, 15, 15, 120], //top right bottom left
-	w = 960, //- m[1] - m[3],
-	h = 500 - m[0] - m[2],
+	// w = 960, 
+	// h = 500 - m[0] - m[2],
 	miniHeight = 10,
 	mainHeight = 300;
 
@@ -76,14 +95,17 @@ var y = d3.scale.linear()
 var x = d3.scale.linear()
 		.range([0, w]);
 var x1 = d3.scale.linear()
-		.range([0, w-m[1]]);	
+		.range([m[1], w-m[1]]);	
 
 var ySum = d3.scale.linear()
-		.range([h, h-m[0]]);	
+		.range([1, 10]);	
 
 var options = [];
 
 options.push("HUB", "BTN", "LED", "POT", "LDR", "TMP", "ACR", "UKN", "RLY", "PEZ", "RGB", "COL", "MTR", "ROT", "IF", "Interval", "Fade", "Swap", "Map", "Counter", "Trigger", "Note", "Random", "PONG", "SimonSays");
+
+var specialList = [];
+
 
 var oColor = d3.scale.ordinal()
 	.domain(options)
@@ -106,7 +128,7 @@ chart.append("defs").append("clipPath")
 	.attr("id", "clip")
 	.append("rect")
 	.attr("width", w)
-	.attr("height", mainHeight);
+	.attr("height", h);//mainHeight);
 
 var main = chart.append("g")
 			.attr("transform", "translate(" + m[3] + "," + m[0] + ")")
@@ -120,6 +142,11 @@ var mini = chart.append("g")
 			.attr("height", miniHeight)
 			.attr("class", "mini");
 
+var sumMain = chart.append("g")
+			.attr("transform", "translate(" + m[3] + "," + (mainHeight+(m[2]*2))+")")
+			.attr("width", w)
+			.attr("height", h/2)
+			.attr("class", "sum");
 
 var itemRectz = main.append("g")
 					.attr("clip-path", "url(#clip)");
@@ -132,6 +159,13 @@ var itemCircs = main.append("g")
 
 var itemArdz = main.append("g")
 					.attr("clip-path", "url(#clip)");
+
+var sumArdz = sumMain.append("g")
+					.attr("clip-path","url(#clip)");
+
+var itemLinks = main.append("g")
+					.attr("clip-path", "url(#clip)");
+
 getData();
 
 var uniques1, uniques2;
@@ -143,29 +177,40 @@ var ardUni = [];
 
 function getData(){
 
-	d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
-		for (var i= 0; i<data.length; i++){
-		    if (data[i]['Device'] == "420038000547343232363230") {  
-		    	entry1.push({
-		            "buttonIs": data[i]['button'],
-		            "timeIs": parseDate(data[i]['Timestamp']),
-		            "photO": data[i]['overview'],
-		            "photS": data[i]['screenshot']
-		        })
-		    }
-		}
+	// d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
+	// 	for (var i= 0; i<data.length; i++){
+	// 	    if (data[i]['Device'] == "420038000547343232363230") {  
+	// 	    	entry1.push({
+	// 	            "buttonIs": data[i]['button'],
+	// 	            "timeIs": parseDate(data[i]['Timestamp']),
+	// 	            "photO": data[i]['overview'],
+	// 	            "photS": data[i]['screenshot']
+	// 	        })
+	// 	    }
+	// 	}
 		uniques1 = unique(entry1);
-	})
-	d3.csv("https://dl.dropboxusercontent.com/s/t2vbg2tsdbord9w/events1.log?dl=0", function(ferror,arData){
+	// })
+
+
+
+
+
+
+// myurl = 'http://pelars.netne.net/eventsL.log';
+// $.getJSON( myurl + '&callback=?', function(dataAjax) {
+// })
+// console.log(dataAjax)
+d3.csv("eventsL-4.log",function(ferror,arData){
+	// d3.csv("https://dl.dropboxusercontent.com/s/t2vbg2tsdbord9w/events1.log?dl=0", function(ferror,arData){
 	// d3.csv("https://dl.dropboxusercontent.com/s/a6uni0ubw86wwe0/events2.log?dl=0", function(ferror,arData){
 		console.log(arData)
-		for (var i=0; i<arData.length; i++){
+		for (var i=0; i<arData.length-1; i++){
 			ardUni.push({
 				    "mod": arData[i]['mod'],
 				    "from":(arData[i]['fromType']),
 				})
 			ardAll.push({
-					"specialID": parseInt(arData[i]['timestamp']),
+					"specialID": parseInt(arData[i]['timestamp'])+parseInt(arData[i]['id']),
 					"id": parseInt(arData[i]['id']),
 				    "mod": arData[i]['mod'],
 				    "start": parseInt(arData[i]['timestamp']),
@@ -198,14 +243,17 @@ if(parseInt(arData[i+1]['sF'])==1){
 				    "sF": parseInt(arData[i]['sF'])
 				})
 } 
-
 				// ardEntry[i].end = parseInt(arData[i]['timestamp'])
 			} 			
 	})
+
+
+// });
 }
 setTimeout(function(){
-		if(uniques1.length>0){ // && ardEntry.length>0
-			console.log(uniques1.length+"button");
+		if(ardEntry.length>0){ // && ardEntry.length>0
+		// if(uniques1.length>0){ // && ardEntry.length>0
+			// console.log(uniques1.length+"button");
 			// console.log(ardEntry.length+"ard");
 
 			prepScales();
@@ -290,11 +338,23 @@ function prepScales(){
 	// console.log(uniques1.length)
     // mindate = uniques1[1].timeIs;
 
-	if(uniques1[uniques1.length - 1].timeIs>ardEntry[ardEntry.length-1].end){
+
+
+
+
+//ONCE BUTTON IS BACK
+	// if(uniques1[uniques1.length - 1].timeIs>ardEntry[ardEntry.length-1].end){
 	// maxdate = uniques1[uniques1.length - 1].timeIs;
-	}else{
+	// }else{
 	// maxdate = ardEntry[ardEntry.length-1].end;	
-	}
+	// }
+
+
+
+
+
+
+
 	// for (j = 0; j <= 24; j++) {
 	//     totalPhotos[j] = photoConsolidation(j)
 	// }
@@ -371,10 +431,20 @@ function display() {
 		maxExtent = brush.extent()[1],
 		visItems = uniques1.filter(function(d) {return d.timeIs < maxExtent && d.timeIs > minExtent;});
 
-		ardItems = ardEntry.filter(function(d) {return d.start < maxExtent && d.end > minExtent && d.sF==1;}); 
+		ardItems = ardEntry.filter(function(d) {return d.start < maxExtent && d.end > minExtent && d.sF==1 && d.mod == "BM";}); 
 		// ardItems = ardOne.filter(function(d) {return d.sF==1}); 
+		ardAllItems = ardEntry.filter(function(d) {return d.start < maxExtent && d.end > minExtent && d.mod == "BM";}); 
 
-		ardAllItems = ardEntry.filter(function(d) {return d.start < maxExtent && d.end > minExtent;}); 
+
+		mItems = ardEntry.filter(function(d) {return d.start < maxExtent && d.end > minExtent && d.sF==1 && d.mod == "M";}); 
+		mAllItems = ardEntry.filter(function(d) {return d.start < maxExtent && d.end > minExtent && d.mod == "M";}); 
+
+
+		lItems = ardEntry.filter(function(d) {return d.start < maxExtent && d.end > minExtent && d.sF==1 && d.mod == "L";}); 
+		lineAllItems = ardEntry.filter(function(d) {return d.start < maxExtent && d.end > minExtent && d.mod == "L";}); 
+
+// console.log(lItems);
+
 d3.selectAll(".wodry").remove();
 
 	mini.select(".brush")
@@ -399,28 +469,25 @@ var timeText = itemArdz.selectAll("wodry")
 		// timeText.exit().remove();
 
 /////////////summary view stuff
-			sumRects = itemArdz.selectAll("rect")
+// ///////////////////////////////
+
+var sumRects;
+			sumRects = sumArdz.selectAll("circle")
 		        .data(ardItems, function(d){ return d.specialID;})
-				.attr("x", function(d) {
-					return x1(d.start);
+				.attr("cx", function(d) {
+					return xis(d.from);
 				})
-				.attr("width", function(d,i) {
-					return x1(d.end)-x1(d.start);
-				})
-			sumRects.enter().append("rect")
+				.attr("cy", mainHeight)
+			sumRects.enter().append("circle")
 				.attr("class", function(d) {
 					return "sumRect" + d.specialID;
 				})
-				.attr("x", function(d,i){
+				.attr("cx", function(d,i){
 					return xis(d.from);
 				})
-				.attr("y", h+m[1]) //some height margin
-					// function(d,i){
-					// return yis(d.from);
-				// })
-				.attr("width", 10)
-				.attr("height", function(d) {
-					return ySum(d.end)-ySum(d.start);
+				.attr("cy", mainHeight) //some height margin
+				.attr("r", function(d) {
+					return (ySum(d.end)-ySum(d.start));
 				})
 				.attr("fill", function(d){
 					return oColor(d.from);
@@ -428,28 +495,7 @@ var timeText = itemArdz.selectAll("wodry")
 				.attr("stroke","none")
 				.attr("opacity",.4)
 			sumRects.exit().remove();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ///////////////////
-
-
-
 			ardRectz = itemArdz.selectAll("rect")
 		        .data(ardItems, function(d){ return d.specialID;})
 				.attr("x", function(d) {
@@ -479,8 +525,85 @@ var timeText = itemArdz.selectAll("wodry")
 				.attr("opacity",.4)
 
 			ardRectz.exit().remove();
-
 var r = 4;
+//////////////////////////////////
+var mRectz;
+			mRectz = itemArdz.selectAll("mrect")
+		        .data(mItems, function(d){ return d.specialID;})
+				.attr("x", function(d) {
+					return x1(d.start);
+				})
+				.attr("width", function(d,i) {
+					return x1(d.end)-x1(d.start);
+				});
+			mRectz.enter().append("rect")
+				.attr("class", "mrect")
+				.attr("x", function(d) {
+					return x1(d.start);
+				})
+				.attr("y", function(d,i){
+					return yis(d.from);
+				})
+				.attr("width", function(d) {
+					return x1(d.end)-x1(d.start);
+				})
+				.attr("height", 1)
+				.attr("fill", function(d){
+					return oColor(d.from);
+				})
+				.attr("stroke","none")
+				.attr("opacity",1)
+			mRectz.exit().remove();
+
+
+
+// ///////////////////
+var linez;
+			linez = itemArdz.selectAll("lLinez")
+		        .data(lItems, function(d){ return d.specialID;})
+				.attr("x", function(d) {
+					return x1(d.start);
+				})
+				.attr("width", function(d,i) {
+					return x1(d.end)-x1(d.start);
+				});
+			linez.enter().append("rect")
+				.attr("class", "lLinez")
+				.attr("x", function(d) {
+					return x1(d.start);
+				})
+				.attr("y", function(d,i){
+					return yis(d.from);
+				})
+				.attr("width", function(d) {
+					return x1(d.end)-x1(d.start);
+				})
+				.attr("height", 15)
+				.attr("fill", function(d){
+					return oColor(d.from);
+				})
+				.attr("stroke","none")
+				.attr("opacity",.1)
+			linez.exit().remove();
+
+
+
+
+
+
+
+
+
+
+
+
+
+console.log(lineAllItems)
+
+
+
+
+
 // ///////////////////////////////
 	circs = itemCircs.selectAll("circle")
 		        .data(ardAllItems, function(d){ return d.specialID;})
@@ -560,13 +683,13 @@ var r = 4;
 
 
 ///////////////////////////////
-	// rects = itemRects.selectAll("image")
+	// rects = itemRects.selectAll(".image-cropper")
 	//         .data(visItems)
 	// 	.attr("x", function(d) {return x1(d.timeIs);})
 	// 	.attr("width", 20);
 
 	// rects.enter().append("image")
-	// 	.attr("class", function(d) {return "miniItem" + d.timeIs;})
+	// 	.attr("class","image-cropper")
  //         .attr("xlink:href", function(d, i) {
  //                if (d.buttonIs == "button3") { //1 is bad 3 is good
  //                    return "idea.png";
