@@ -78,6 +78,9 @@ var x = d3.scale.linear()
 var x1 = d3.scale.linear()
 		.range([0, w-m[1]]);	
 
+var ySum = d3.scale.linear()
+		.range([h, h-m[0]]);	
+
 var options = [];
 
 options.push("HUB", "BTN", "LED", "POT", "LDR", "TMP", "ACR", "UKN", "RLY", "PEZ", "RGB", "COL", "MTR", "ROT", "IF", "Interval", "Fade", "Swap", "Map", "Counter", "Trigger", "Note", "Random", "PONG", "SimonSays");
@@ -90,6 +93,9 @@ var yis = d3.scale.ordinal()
           .domain(options)
           .rangePoints([50, mainHeight]);
 
+var xis = d3.scale.ordinal()
+          .domain(options)
+          .rangePoints([0, w]);
 var chart = d3.select("body")
 			.append("svg")
 			.attr("width", w + m[1] + m[3])
@@ -337,7 +343,7 @@ function autoMovement(){
 	var interval = ((maxdate+timevar)-(mindate))/amt;
 	autoMove = setInterval(function() {
 //going in little chunks where minimum date increases
-		var e = [+mindate-timevar+interval/1.1*index, +mindate+interval*index]; //set brush range
+		var e = [+mindate-timevar+interval/1.1*index, +mindate+interval*index];
 //going from 0 to full max date
 		// var e = [mindate-timevar, +mindate+interval*index]; //set brush range
 		brush.extent(e);    
@@ -376,6 +382,7 @@ d3.selectAll(".wodry").remove();
 
 	x1.domain([minExtent, maxExtent]);
 
+	ySum.domain([minExtent, maxExtent]);
 
 // var timeText;
 // console.log(minExtent+" min "+timeFormat(new Date(minExtent)));
@@ -386,12 +393,60 @@ var timeText = itemArdz.selectAll("wodry")
     .data(d3.range(1))
     .enter()
     .append("text").attr("class", "wodry")
-		.attr("x",100)
-		.attr("y",100)
+		.attr("x",20)
+		.attr("y",20)
 		.text(minExtTime+" - "+maxExtTime);
 		// timeText.exit().remove();
 
+/////////////summary view stuff
+			sumRects = itemArdz.selectAll("rect")
+		        .data(ardItems, function(d){ return d.specialID;})
+				.attr("x", function(d) {
+					return x1(d.start);
+				})
+				.attr("width", function(d,i) {
+					return x1(d.end)-x1(d.start);
+				})
+			sumRects.enter().append("rect")
+				.attr("class", function(d) {
+					return "sumRect" + d.specialID;
+				})
+				.attr("x", function(d,i){
+					return xis(d.from);
+				})
+				.attr("y", h+m[1]) //some height margin
+					// function(d,i){
+					// return yis(d.from);
+				// })
+				.attr("width", 10)
+				.attr("height", function(d) {
+					return ySum(d.end)-ySum(d.start);
+				})
+				.attr("fill", function(d){
+					return oColor(d.from);
+				})
+				.attr("stroke","none")
+				.attr("opacity",.4)
+			sumRects.exit().remove();
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///////////////////
 
 
 
