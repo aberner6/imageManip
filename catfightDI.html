@@ -145,7 +145,7 @@ var mini = chart.append("g")
 			.attr("class", "mini");
 
 var sumMain = chart.append("g")
-			.attr("transform", "translate(" + m[0] + "," + (mainHeight+m[3])+")")
+			.attr("transform", "translate(" + m[0] + "," + (mainHeight+m[3]/2)+")")
 			.attr("width", w)
 			.attr("height", h/2)
 			.attr("class", "sum");
@@ -407,7 +407,7 @@ var icons;
 	            return d.toLowerCase()+".png";
 	         })
 			.attr("y", function (d){
-				return yis(d)-10;
+				return yis(d)-12;
 			})
 			.attr("width", 20)
 			.attr("height", 20)
@@ -500,13 +500,16 @@ function display() {
 		visItems = uniques1.filter(function(d) {return d.timeIs < maxExtent && d.timeIs > minExtent;});
 
 		ardItems = ardEntry.filter(function(d) {return d.start < maxExtent && d.end > minExtent && d.sF==1 && d.mod == "BM";}); 
-		// ardItems = ardOne.filter(function(d) {return d.sF==1}); 
 		ardAllItems = ardEntry.filter(function(d) {return d.start < maxExtent && d.end > minExtent && d.mod == "BM";}); 
 
 
 		mItems = ardEntry.filter(function(d) {return d.start < maxExtent && d.end > minExtent && d.sF==1 && d.mod == "M";}); 
 		mAllItems = ardEntry.filter(function(d) {return d.start < maxExtent && d.end > minExtent && d.mod == "M";}); 
 
+
+
+		bItems = ardEntry.filter(function(d) {return d.start < maxExtent && d.end > minExtent && d.sF==1 && d.mod == "B";}); 
+		bAllItems = ardEntry.filter(function(d) {return d.start < maxExtent && d.end > minExtent && d.mod == "B";}); 
 
 		// lItems = ardEntry.filter(function(d) {return d.start < maxExtent && d.end > minExtent && d.sF==1 && d.mod == "L";}); 
 		lineAllItems = ardEntry.filter(function(d) {return d.start < maxExtent && d.end > minExtent && d.mod == "L";}); 
@@ -537,8 +540,6 @@ var timeText = itemArdz.selectAll("wodry")
 		// timeText.exit().remove();
 
 /////////////summary view stuff
-// ///////////////////////////////
-
 var sumRects;
 			sumRects = sumArdz.selectAll("circle")
 		        .data(ardItems, function(d){ return d.specialID;})
@@ -563,6 +564,8 @@ var sumRects;
 				.attr("stroke","none")
 				.attr("opacity",.4)
 			sumRects.exit().remove();
+
+
 ///////////////////
 			ardRectz = itemArdz.selectAll("rect")
 		        .data(ardItems, function(d){ return d.specialID;})
@@ -591,7 +594,6 @@ var sumRects;
 				})
 				.attr("stroke","none")
 				.attr("opacity",.4)
-
 			ardRectz.exit().remove();
 var r = 4;
 //////////////////////////////////
@@ -622,6 +624,36 @@ var mRectz;
 				.attr("stroke","none")
 				.attr("opacity",1)
 			mRectz.exit().remove();
+
+
+// ///////////////////////////////
+var bRectz;
+			bRectz = itemArdz.selectAll("brect")
+		        .data(bItems, function(d){ return d.specialID;})
+				.attr("x", function(d) {
+					return x1(d.start);
+				})
+				.attr("width", function(d,i) {
+					return x1(d.end)-x1(d.start);
+				});
+			bRectz.enter().append("rect")
+				.attr("class", "brect")
+				.attr("x", function(d) {
+					return x1(d.start);
+				})
+				.attr("y", function(d,i){
+					return yis(d.from);
+				})
+				.attr("width", function(d) {
+					return x1(d.end)-x1(d.start);
+				})
+				.attr("height", 20)
+				.attr("fill", function(d){
+					return oColor(d.from);
+				})
+				.attr("stroke","none")
+				.attr("opacity",1)
+			bRectz.exit().remove();
 
 
 // ///////////////////////////////
