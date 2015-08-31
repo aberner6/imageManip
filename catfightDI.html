@@ -1,0 +1,787 @@
+
+<html>
+
+<head>
+    <title>Prep</title>
+</head>
+<style>
+	rect.backround{
+		display:block;
+	}
+	.brush .extent {
+		stroke: lightgray;
+		fill: lightgray;
+		fill-opacity: .365;
+		display:block;
+	}
+	#click{
+		background-color: gray;
+		width:20px;
+		color:white;
+		padding:2px;
+	}
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    font-family: sans-serif;
+    font-size: 11px;
+}
+.icons{
+	background-color:black;
+}
+
+
+
+
+</style>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
+    <script src="http://cdn.jsdelivr.net/sparkjs/0.4.2/spark.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    <div id="click">up</div>
+<script type="text/javascript">
+var items = [
+{"component": 1, "start": 1439308645000, "end": 1439308645000+44762800},
+{"component": 2, "start": 1440156273000-100000000, "end": 1440156273000},
+{"component": 3, "start": 1440156273000-80000000, "end": 1440156273000},
+]
+$("#click").click(function(){
+	updateData();
+})
+
+// Timestamp,Device,button,overview,screenshot
+var entry1 = [];
+var prepped = false;
+
+// 15:00:07-314093466_12-08-2015
+var parseDate = d3.time.format('%X_%d-%m-%Y').parse;
+var mindate;
+var maxdate = "Fri Aug 01 2015 13:24:33 GMT+0200 (CEST)";
+
+var uniques = [];
+
+var totalPhotos = [];
+
+        var w = window.innerWidth-40;
+        var h = window.innerHeight - 40;
+
+var m = [20, 15, 15, 120], //top right bottom left
+	// w = 960, 
+	// h = 500 - m[0] - m[2],
+	miniHeight = 10,
+	mainHeight = 500;
+
+var xAxis = d3.svg.axis();
+var xAx = d3.scale.linear()
+		.range([0, w]);
+//scales
+var y = d3.scale.linear()
+		.range([50, h/2]);
+var x = d3.scale.linear()
+		.range([0, w]);
+var x1 = d3.scale.linear()
+		.range([m[1], w-m[1]]);	
+
+var ySum = d3.scale.linear()
+		.range([1, 10]);	
+
+var options = [];
+
+options.push("HUB", "BTN", "LED", "POT", "LDR", "TMP", "ACR", "UKN", "RLY", "PEZ", "RGB", "COL", "MTR", "ROT", "IF", "Interval", "Fade", "Swap", "Map", "Counter", "Trigger", "Note", "Random", "PONG", "SimonSays");
+
+var specialList = [];
+
+
+var oColor = d3.scale.ordinal()
+	.domain(options)
+    .range(d3.scale.category20c().range());
+
+var yis = d3.scale.ordinal()
+          .domain(options)
+          .rangePoints([50, mainHeight]);
+
+var xis = d3.scale.ordinal()
+          .domain(options)
+          .rangePoints([0, w]);
+var chart = d3.select("body")
+			.append("svg")
+			.attr("width", w + m[1] + m[3])
+			.attr("height", h + m[0] + m[2])
+			.attr("class", "chart");
+
+chart.append("defs").append("clipPath")
+	.attr("id", "clip")
+	.append("rect")
+	.attr("width", w)
+	.attr("height", h);//mainHeight);
+
+var main = chart.append("g")
+			.attr("transform", "translate(" + m[3] + "," + m[0] + ")")
+			.attr("width", w)
+			.attr("height", mainHeight)
+			.attr("class", "main");
+
+var mini = chart.append("g")
+			.attr("transform", "translate(" + m[3] + "," + (mainHeight + m[0]*3) + ")")
+			.attr("width", w)
+			.attr("height", miniHeight)
+			.attr("class", "mini");
+
+var sumMain = chart.append("g")
+			.attr("transform", "translate(" + m[3] + "," + (mainHeight+m[3])+")")
+			.attr("width", w)
+			.attr("height", h/2)
+			.attr("class", "sum");
+
+var itemRectz = main.append("g")
+					.attr("clip-path", "url(#clip)");
+
+var itemRects = main.append("g")
+					.attr("clip-path", "url(#clip)");
+
+var itemCircs = main.append("g")
+					.attr("clip-path", "url(#clip)");
+
+var itemArdz = main.append("g")
+					.attr("clip-path", "url(#clip)");
+
+var sumArdz = sumMain.append("g")
+					.attr("clip-path","url(#clip)");
+
+var itemLinks = main.append("g")
+					.attr("clip-path", "url(#clip)");
+
+getData();
+
+var uniques1, uniques2;
+var ardUniques1;
+var ardEntry = [];
+var ardExit = [];
+var ardAll = [];
+var ardUni = [];
+
+function getData(){
+
+	d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
+		for (var i= 0; i<data.length; i++){
+		    if (data[i]['Device'] == "420038000547343232363230") {  
+		    	entry1.push({
+		            "buttonIs": data[i]['button'],
+		            "timeIs": parseDate(data[i]['Timestamp']),
+		            "photO": data[i]['overview'],
+		            "photS": data[i]['screenshot']
+		        })
+		    }
+		}
+		uniques1 = unique(entry1);
+	})
+
+//  function read()
+// {
+//      var prearData = new XMLHttpRequest();
+//      prearData.open("GET", "http://localhost:8000/events1.log", true);
+//      prearData.onreadystatechange = function () 
+//      {
+//      if (prearData.readyState === 4) 
+//     {  
+//         // Makes sure the document is ready to parse.
+//         if (prearData.status === 200) 
+//         {  
+//              // Makes sure it's found the file.
+//              document.getElementById("div").innerHTML = prearData.responseText;  
+//         }
+//     }
+// }
+// prearData.send(null)
+// }
+
+
+
+
+
+// myurl = 'http://pelars.netne.net/eventsL.log';
+// $.getJSON( myurl + '&callback=?', function(dataAjax) {
+// })
+// console.log(dataAjax)
+
+	// d3.csv("https://dl.dropboxusercontent.com/s/t2vbg2tsdbord9w/events1.log?dl=0", function(ferror,arData){
+	// d3.csv("https://dl.dropboxusercontent.com/s/a6uni0ubw86wwe0/events2.log?dl=0", function(ferror,arData){
+//function parsingA(prearData) {
+// fh = fopen(getScriptPath(), 0);
+
+// var pattern=/(\d+),(L),(\d),(\d+),(\w+),(\d+),(\w+),(\d),(\d)/g;
+
+// var LvarA=read.replace(pattern,'\1,\2,\3,\8\9-\6\7-\4,\5\n\1,\2,\3,\8\9-\4\5-\6,\7');
+
+// //function parsingB(LvarA){
+// var LvarB=LvarA.replace(/(\d+,)B(,\d,)(.*\w[A-Z].*)/g,"\1BM\2\3");
+
+
+// var LvarC=LvarB.replace(/(\d+,)BM(,\d,)(\d+,IF,*)/g,"\1B\2\3");
+
+
+
+d3.csv("eventsL.log",function(error,arData){
+
+//		console.log(arData)
+		for (var i=0; i<arData.length-1; i++){
+			ardUni.push({
+				    "mod": arData[i]['mod'],
+				    "from":(arData[i]['fromType']),
+				})
+			ardAll.push({
+					"specialID": parseInt(arData[i]['timestamp'])+parseInt(arData[i]['id']),
+					"id": parseInt(arData[i]['id']),
+				    "mod": arData[i]['mod'],
+				    "start": parseInt(arData[i]['timestamp']),
+				    // "end": Date.now(),//parseInt(arData[i]['timestamp']),
+				    "from":(arData[i]['fromType']),
+				    "sF": parseInt(arData[i]['sF'])
+				})
+if(parseInt(arData[i+1]['sF'])==1){
+				ardEntry.push({
+					"specialID": parseInt(arData[i]['timestamp'])+parseInt(arData[i]['id']),
+					"id": parseInt(arData[i]['id']),
+				    "mod": arData[i]['mod'],
+				    "start": parseInt(arData[i]['timestamp']),
+				    "end": Date.now(),
+				    "from":(arData[i]['fromType']),
+				    "sF": parseInt(arData[i]['sF'])
+				})
+} else{
+				ardEntry.push({
+					"specialID": parseInt(arData[i]['timestamp'])+parseInt(arData[i]['id']),
+					"id": parseInt(arData[i]['id']),
+				    "mod": arData[i]['mod'],
+				    "start": parseInt(arData[i]['timestamp']),
+				    "end": parseInt(arData[i+1]['timestamp']),
+				    "from":(arData[i]['fromType']),
+				    "sF": parseInt(arData[i]['sF'])
+				})
+} 
+				// ardEntry[i].end = parseInt(arData[i]['timestamp'])
+			} 			
+
+	})
+	
+
+// });
+}
+setTimeout(function(){
+		if(ardEntry.length>0){ // && ardEntry.length>0
+		// if(uniques1.length>0){ // && ardEntry.length>0
+			// console.log(uniques1.length+"button");
+			// console.log(ardEntry.length+"ard");
+
+			prepScales();
+			console.log("prepped")
+			prepped = true;
+			if(prepped){
+				autoMovement();
+			}
+		}
+},3000)
+
+
+var i = 0;
+var entry2 = [];
+function updateData() {
+	d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
+		for (var i= 0; i<data.length; i++){
+		    if (data[i]['Device'] == "420038000547343232363230") {  
+		    	entry2.push({
+		            "buttonIs": data[i]['button'],
+		            "timeIs": parseDate(data[i]['Timestamp']),
+		            "photO": data[i]['overview'],
+		            "photS": data[i]['screenshot']
+		        })
+		    }
+		}
+		uniques1 = unique(entry2);
+	})
+}
+
+
+
+
+
+
+
+$(window).keypress(function(e) {
+  if (e.keyCode === 0 || e.keyCode === 32) {
+    console.log('Space pressed');
+    prepScales();
+  }
+});
+
+var timeFormat = d3.time.format("%a %H:%M");
+var brush = d3.svg.brush()
+var timevar = 60000;
+function prepScales(){
+	// var timeFormat = d3.time.format("%I:%M %p %a");
+	// find data range
+	var xMin = d3.min(ardEntry, function(d){ return Math.min(d.start); });
+	var xMax = d3.max(ardEntry, function(d){ return Math.max(d.start); });
+	console.log(xMin+"xmin")
+	console.log(xMax+"xmax")
+
+	// scale using ranges
+	var xAxisScale= d3.time.scale()
+		.domain([xMin-timevar, xMax+timevar])
+		.range([0, w]);
+
+	var xAxis = d3.svg.axis()
+	    .scale(xAxisScale)
+	    .orient("bottom")
+		.ticks(5)
+		.tickPadding(5)
+		.tickFormat(timeFormat);
+	mini.append('g').call(xAxis)
+		.attr("class", "axis")  //Assign "axis" class
+		.attr('transform', 'translate(0, ' + (10) + ')');
+
+
+
+
+
+
+	mindate = xMin;//ardEntry[0].start;
+	maxdate = xMax;
+
+		ardUniques1 = unique(ardUni);
+		console.log(ardUniques1+"arduni");
+
+	console.log("in prep scales")
+	// console.log(uniques1.length)
+    // mindate = uniques1[1].timeIs;
+
+
+
+
+
+//ONCE BUTTON IS BACK
+	// if(uniques1[uniques1.length - 1].timeIs>ardEntry[ardEntry.length-1].end){
+	// maxdate = uniques1[uniques1.length - 1].timeIs;
+	// }else{
+	// maxdate = ardEntry[ardEntry.length-1].end;	
+	// }
+
+
+
+
+
+
+
+	// for (j = 0; j <= 24; j++) {
+	//     totalPhotos[j] = photoConsolidation(j)
+	// }
+
+	y.domain([0, ardUniques1.length]);
+// console.log(mindate+"mindate"+)
+	x.domain([mindate-timevar, maxdate+timevar]);
+
+
+
+var icons;
+	icons = main.selectAll("icons")
+	        .data(options)
+		.enter().append("image")
+		.attr("class","icons")
+        .attr("xlink:href", function(d, i) {
+            return d.toLowerCase()+".png";
+         })
+		.attr("y", function (d){
+			return yis(d)+10;
+		})
+		.attr("width", 20)
+		.attr("height", 20)
+		.attr("opacity",.5)
+		.attr("x",-20);
+		// .attr("x", function(d) {return x1(d.timeIs);})
+
+
+
+
+
+	//brush
+	brush
+	.x(x)
+	.on("brush", display);
+
+	mini.append("g")
+	.attr("class", "x brush")
+	.call(brush)
+	.selectAll("rect")
+	.attr("y", 1)
+	.attr("stroke","lightgrey")
+	.attr("stroke-width",1)
+	.attr("fill","none")
+	.style("visibility", "visible")
+	.attr("height", miniHeight - 1);
+
+
+//THESE ARE FOR THE BUTTON PRESSES
+	//mini item lines
+	mini.append("g").selectAll(".linie")
+	.data(uniques1)
+	.enter().append("line")
+	.attr("class", "linie")
+	.attr("x1", function(d) {return x(d.timeIs);})
+	.attr("x2", function(d) {return x(d.timeIs);})
+	.attr("y1", 10)
+	.attr("y2", 15)
+	.attr("stroke","grey")
+	.attr("opacity",.5);
+	
+	display();
+}
+
+var index = 0;
+var autoMove;
+var amt = 6;
+function autoMovement(){
+	var interval = ((maxdate+timevar)-(mindate))/amt;
+	autoMove = setInterval(function() {
+//going in little chunks where minimum date increases
+		var e = [+mindate-timevar+interval/1.1*index, +mindate+interval*index];
+//going from 0 to full max date
+		// var e = [mindate-timevar, +mindate+interval*index]; //set brush range
+		brush.extent(e);    
+		mini.call(brush); 
+		display();
+		index++; 
+
+	if((+mindate+interval*(index-1))>= maxdate+timevar){
+		console.log(index+"index")
+		clearInterval(autoMove);
+		display();
+		console.log("stopping interval")
+	}
+
+	}, 1000);
+	console.log(index+"index");	
+}
+
+
+var rects;
+function display() {
+
+	var circs, rectz, ardRectz,
+		minExtent = brush.extent()[0],
+		maxExtent = brush.extent()[1],
+		visItems = uniques1.filter(function(d) {return d.timeIs < maxExtent && d.timeIs > minExtent;});
+
+		ardItems = ardEntry.filter(function(d) {return d.start < maxExtent && d.end > minExtent && d.sF==1 && d.mod == "BM";}); 
+		// ardItems = ardOne.filter(function(d) {return d.sF==1}); 
+		ardAllItems = ardEntry.filter(function(d) {return d.start < maxExtent && d.end > minExtent && d.mod == "BM";}); 
+
+
+		mItems = ardEntry.filter(function(d) {return d.start < maxExtent && d.end > minExtent && d.sF==1 && d.mod == "M";}); 
+		mAllItems = ardEntry.filter(function(d) {return d.start < maxExtent && d.end > minExtent && d.mod == "M";}); 
+
+
+		// lItems = ardEntry.filter(function(d) {return d.start < maxExtent && d.end > minExtent && d.sF==1 && d.mod == "L";}); 
+		lineAllItems = ardEntry.filter(function(d) {return d.start < maxExtent && d.end > minExtent && d.mod == "L";}); 
+
+// console.log(lItems);
+
+d3.selectAll(".wodry").remove();
+
+	mini.select(".brush")
+		.call(brush.extent([minExtent, maxExtent]));
+
+	x1.domain([minExtent, maxExtent]);
+
+	ySum.domain([minExtent, maxExtent]);
+
+// var timeText;
+// console.log(minExtent+" min "+timeFormat(new Date(minExtent)));
+var minExtTime = timeFormat(new Date(minExtent));
+var maxExtTime = timeFormat(new Date(maxExtent));
+
+var timeText = itemArdz.selectAll("wodry")
+    .data(d3.range(1))
+    .enter()
+    .append("text").attr("class", "wodry")
+		.attr("x",20)
+		.attr("y",20)
+		.text(minExtTime+" - "+maxExtTime);
+		// timeText.exit().remove();
+
+/////////////summary view stuff
+// ///////////////////////////////
+
+var sumRects;
+			sumRects = sumArdz.selectAll("circle")
+		        .data(ardItems, function(d){ return d.specialID;})
+				.attr("cx", function(d) {
+					return xis(d.from);
+				})
+				.attr("cy", 100)
+			sumRects.enter().append("circle")
+				.attr("class", function(d) {
+					return "sumRect" + d.specialID;
+				})
+				.attr("cx", function(d,i){
+					return xis(d.from);
+				})
+				.attr("cy", 100) //some height margin
+				.attr("r", function(d) {
+					return (ySum(d.end)-ySum(d.start));
+				})
+				.attr("fill", function(d){
+					return oColor(d.from);
+				})
+				.attr("stroke","none")
+				.attr("opacity",.4)
+			sumRects.exit().remove();
+///////////////////
+			ardRectz = itemArdz.selectAll("rect")
+		        .data(ardItems, function(d){ return d.specialID;})
+				.attr("x", function(d) {
+					return x1(d.start);
+				})
+				.attr("width", function(d,i) {
+					return x1(d.end)-x1(d.start);
+				})
+			ardRectz.enter().append("rect")
+				.attr("class", function(d) {
+					return "miniItemz" + d.specialID;
+				})
+				.attr("x", function(d) {
+					return x1(d.start);
+				})
+				.attr("y", function(d,i){
+					return yis(d.from);
+				})
+				.attr("width", function(d) {
+					return x1(d.end)-x1(d.start);
+				})
+				.attr("height", 5)
+				.attr("fill", function(d){
+					return oColor(d.from);
+				})
+				.attr("stroke","none")
+				.attr("opacity",.4)
+
+			ardRectz.exit().remove();
+var r = 4;
+//////////////////////////////////
+var mRectz;
+			mRectz = itemArdz.selectAll("mrect")
+		        .data(mItems, function(d){ return d.specialID;})
+				.attr("x", function(d) {
+					return x1(d.start);
+				})
+				.attr("width", function(d,i) {
+					return x1(d.end)-x1(d.start);
+				});
+			mRectz.enter().append("rect")
+				.attr("class", "mrect")
+				.attr("x", function(d) {
+					return x1(d.start);
+				})
+				.attr("y", function(d,i){
+					return yis(d.from);
+				})
+				.attr("width", function(d) {
+					return x1(d.end)-x1(d.start);
+				})
+				.attr("height", 1)
+				.attr("fill", function(d){
+					return oColor(d.from);
+				})
+				.attr("stroke","none")
+				.attr("opacity",1)
+			mRectz.exit().remove();
+
+
+// ///////////////////////////////
+	circs = itemCircs.selectAll("circle")
+		        .data(lineAllItems, function(d){ return d.specialID;})
+				.attr("cx", function(d) {
+					return x1(d.start);
+				})
+	circs.enter().append("circle")
+				.attr("class", function(d) {
+					return "circs" + d.from+d.start;
+				})
+				.attr("r", r)
+				.attr("cx", function(d) {
+					if(d.sF==1){
+						return x1(d.start);						
+					}
+					else{
+						return x1(d.end);
+					}
+				})
+				.attr("cy", function(d,i){
+					return yis(d.from)+r;
+				})
+				.attr("fill",function(d){
+					if(d.sF==1){
+						return "black"
+						// return oColor(d.from);
+					}else{
+						return "none";
+					}
+				})
+				.attr("opacity",0.5)
+	circs.exit().remove();
+// ///////////////////////////////
+	var circR;
+	circR = itemCircs.selectAll("rect")
+		        .data(lineAllItems, function(d){ return d.specialID;})
+				.attr("x", function(d) {
+					return x1(d.start);
+				})
+	circR.enter().append("rect")
+				.attr("class", function(d) {
+					return "circR" + d.from+d.start;
+				})
+				.attr("width", 7)
+				.attr("height",7)
+				.attr("x", function(d) {
+					if(d.sF==1){
+						return x1(d.start);						
+					}
+					else{
+						return x1(d.end);
+					}
+				})
+				.attr("y", function(d,i){
+					return yis(d.from);
+				})
+				.attr("fill","none")
+				.attr("stroke",function(d){
+					if(d.sF==1){
+						return "none";
+					}else{
+						return "black"
+						// return oColor(d.from);
+					}
+				})
+				.attr("opacity",1)
+	circR.exit().remove();
+
+///////////////////////////////
+	var linkL;
+	linkL = itemCircs.selectAll("line")
+		        .data(lineAllItems, function(d){ return d.specialID;})
+				.attr("x1", function(d) {
+					return x1(d.start);
+				})
+				.attr("x2", function(d) {
+					return x1(d.start);
+				})
+				.attr("fill","none")
+				.attr("stroke",function(d){
+						return oColor(d.from);
+				})
+	linkL.enter().append("line")
+				.attr("class", function(d) {
+					return "linkL" + d.from+d.start;
+				})
+				.attr("x1", function(d) {
+					if(d.sF==1){
+						return x1(d.start);						
+					}
+					else{
+						return x1(d.end);
+					}
+				})
+				.attr("x2", function(d) {
+					if(d.sF==1){
+						return x1(d.start);						
+					}
+					else{
+						return x1(d.end);
+					}
+				})
+				.attr("y1", function(d,i){
+					return yis(d.from);
+				})
+				.attr("y2", function(d,i){
+					return yis(d.from)+10;
+				})
+				.attr("stroke",function(d){
+						return oColor(d.from);
+				})
+				.attr("opacity",1)
+	linkL.exit().remove();
+///////////////////////////////
+	// rects = itemRects.selectAll(".image-cropper")
+	//         .data(visItems)
+	// 	.attr("x", function(d) {return x1(d.timeIs);})
+	// 	.attr("width", 20);
+
+	// rects.enter().append("image")
+	// 	.attr("class","image-cropper")
+ //         .attr("xlink:href", function(d, i) {
+ //                if (d.buttonIs == "button3") { //1 is bad 3 is good
+ //                    return "idea.png";
+ //                }
+ //            })
+	// 	.attr("y", 200)
+	// 	.attr("width", 20)
+	// 	.attr("height", 20)
+	// 	.attr("opacity",.5)
+	// 	.attr("x", function(d) {return x1(d.timeIs);})
+	// 		rects.exit().remove();
+///////////////////////////////
+}
+
+
+
+
+
+function getUnique(inputArray){
+	var outputArray = [];
+	for (var i = 0; i<inputArray.length; i++){
+		if(jQuery.inArray(inputArray[i], outputArray)==-1)
+		{
+			outputArray.push(inputArray[i]);
+		}
+	}
+	return outputArray;
+}
+
+
+function unique(obj) {
+    var uniques = [];
+    var stringify = {};
+    for (var i = 0; i < obj.length; i++) {
+        var keys = Object.keys(obj[i]);
+        keys.sort(function(a, b) {
+            return a - b
+        });
+        var str = '';
+        for (var j = 0; j < keys.length; j++) {
+            str += JSON.stringify(keys[j]);
+            str += JSON.stringify(obj[i][keys[j]]);
+        }
+        if (!stringify.hasOwnProperty(str)) {
+            uniques.push(obj[i]);
+            stringify[str] = true;
+        }
+    }
+    return uniques;
+}
+function photoConsolidation(index) {
+    var total = 0;
+    for (i = 0; i < uniques.length; i++) {
+        if (uniques[i].timeIs.getHours() == index) {
+            total++;
+        } else {}
+    }
+    return total;
+}
+</script>
+</body>
+</html>
