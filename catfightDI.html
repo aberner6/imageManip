@@ -446,23 +446,23 @@ var iconDelin;
 			.attr("stroke-width",.5)
 			.attr("stroke","lightgray")
 
-var iconDelin;
-	iconDelin = main.selectAll("yDelin")
-	        .data(d3.range(1))
-			.enter().append("line")
-			.attr("class","yDelin")
-			.attr("y1", function (d){
-				// if(options[options.length])
-				return yis(options[0]);
-			})
-			.attr("y2", function (d){
-				return yis(options[options.length-1]);
-			})
-			.attr("x1",m[3])
-			.attr("x2",m[3])
-            // .attr("stroke-dasharray", dashArray)
-			.attr("stroke-width",.5)
-			.attr("stroke","lightgray")
+// var iconDelin;
+// 	iconDelin = main.selectAll("yDelin")
+// 	        .data(d3.range(1))
+// 			.enter().append("line")
+// 			.attr("class","yDelin")
+// 			.attr("y1", function (d){
+// 				// if(options[options.length])
+// 				return yis(options[0]);
+// 			})
+// 			.attr("y2", function (d){
+// 				return yis(options[options.length-1]);
+// 			})
+// 			.attr("x1",m[3])
+// 			.attr("x2",m[3])
+//             // .attr("stroke-dasharray", dashArray)
+// 			.attr("stroke-width",.5)
+// 			.attr("stroke","lightgray")
 
 
 
@@ -474,16 +474,41 @@ var iconDelin;
 	.x(x)
 	.on("brush", display);
 
+
+
+
+
+// var mini = chart.append("g")
+// 			.attr("transform", "translate(" + m[0] + "," + (mainHeight + m[0]*2.2) + ")")
+// 			.attr("width", w)
+// 			.attr("height", miniHeight)
+// 			.attr("class", "mini");
 	mini.append("g")
 	.attr("class", "x brush")
 	.call(brush)
 	.selectAll("rect")
-	.attr("y", 1)
+	.attr("y", ((mainHeight + m[0]*2.2)*-1)+60)
+	// .attr("y", h/1.456*-1)//((h-m[0])*-1)+m[0]*10.2)//(h-(mainHeight + m[0]*2.2))*-1)//1)
 	.attr("stroke","lightgrey")
-	.attr("stroke-width",1)
+	.attr("stroke-width",.1)
 	.attr("fill","none")
+	// .attr("opacity",.2)
 	.style("visibility", "visible")
-	.attr("height", miniHeight - 1);
+	.attr("height", mainHeight-5);
+// .rangePoints([40, mainHeight]);
+//miniHeight - 1);
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //THESE ARE FOR THE BUTTON PRESSES
@@ -529,6 +554,7 @@ function autoMovement(){
 }
 
 var standardRect = 5;
+var r = 4;
 var rects;
 function display() {
 
@@ -555,6 +581,8 @@ function display() {
 // console.log(lItems);
 
 d3.selectAll(".wodry").remove();
+d3.selectAll(".trect").remove();
+
 
 	mini.select(".brush")
 		.call(brush.extent([minExtent, maxExtent]));
@@ -576,6 +604,30 @@ var timeText = itemArdz.selectAll("wodry")
 		.attr("y",20)
 		.text(minExtTime+" - "+maxExtTime);
 		// timeText.exit().remove();
+
+
+
+// console.log((maxExtent)-(minExtent));
+// console.log((+maxExtTime)-(+minExtTime));
+
+/////////////////////////////////
+// var tRectz = itemArdz.selectAll("trect")
+// 	.data(d3.range(1))
+// 	.enter()
+// 	.append("rect").attr("class","trect")
+// 	.attr("x", x1(minExtent))
+// 	.attr("y", 100)//yis(options[options.length-1]))				
+// 	.attr("width", x1(maxExtent)-x1(minExtent))
+// 	.attr("height", 50)//yis(options[options.length-1]-yis(options[0])))
+// 	.attr("fill", "lightgrey")
+// 	.attr("stroke","none")
+// 	.attr("opacity",.5)
+			// tRectz.exit().remove();
+
+
+
+
+
 
 /////////////summary view stuff
 d3.select("g.sum").attr("opacity",0)
@@ -634,7 +686,6 @@ var sumRects;
 				.attr("stroke","none")
 				.attr("opacity",.4)
 			ardRectz.exit().remove();
-var r = 4;
 //////////////////////////////////
 var mRectz;
 			mRectz = itemArdz.selectAll("mrect")
@@ -665,7 +716,7 @@ var mRectz;
 			mRectz.exit().remove();
 
 
-// ///////////////////////////////
+/////////////////////////////////
 var bRectz;
 			bRectz = itemArdz.selectAll("brect")
 		        .data(bItems, function(d){ return d.specialID;})
@@ -693,8 +744,6 @@ var bRectz;
 				.attr("stroke","none")
 				.attr("opacity",1)
 			bRectz.exit().remove();
-
-
 // ///////////////////////////////
 	circs = itemCircs.selectAll("circle")
 		        .data(lineAllItems, function(d){ return d.specialID;})
