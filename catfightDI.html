@@ -34,8 +34,15 @@
 .icons{
 	background-color:black;
 }
+.optionsText{
+    font-family: sans-serif;
+    font-size: 11px;
+}
 
-
+.wodry{
+    font-family: sans-serif;
+    font-size: 11px;	
+}
 
 
 </style>
@@ -68,7 +75,7 @@ var uniques = [];
 
 var totalPhotos = [];
 
-        var w = window.innerWidth-40;
+        var w = window.innerWidth-200;
         var h = window.innerHeight - 40;
 
 var m = [20, 15, 15, 120], //top right bottom left
@@ -78,15 +85,18 @@ var m = [20, 15, 15, 120], //top right bottom left
 	mainHeight = 500;
 
 var xAxis = d3.svg.axis();
-var xAx = d3.scale.linear()
-		.range([0, w]);
+
 //scales
 var y = d3.scale.linear()
 		.range([50, h/2]);
 var x = d3.scale.linear()
-		.range([0, w]);
+		.range([m[3], w]);
+
+var xAxisScale= d3.time.scale()
+		.range([m[3], w]);
+
 var x1 = d3.scale.linear()
-		.range([m[1], w-m[1]]);	
+		.range([m[3], w]);	
 
 var ySum = d3.scale.linear()
 		.range([1, 10]);	
@@ -97,18 +107,18 @@ options.push("HUB", "BTN", "LED", "POT", "LDR", "TMP", "ACR", "UKN", "RLY", "PEZ
 
 var specialList = [];
 
+var yis = d3.scale.ordinal()
+          .domain(options)
+          .rangePoints([40, mainHeight]);
+
+var xis = d3.scale.ordinal()
+          .domain(options)
+          .rangePoints([m[3], w]);
 
 var oColor = d3.scale.ordinal()
 	.domain(options)
     .range(d3.scale.category20c().range());
 
-var yis = d3.scale.ordinal()
-          .domain(options)
-          .rangePoints([50, mainHeight]);
-
-var xis = d3.scale.ordinal()
-          .domain(options)
-          .rangePoints([0, w]);
 var chart = d3.select("body")
 			.append("svg")
 			.attr("width", w + m[1] + m[3])
@@ -118,23 +128,24 @@ var chart = d3.select("body")
 chart.append("defs").append("clipPath")
 	.attr("id", "clip")
 	.append("rect")
-	.attr("width", w)
+	.attr("transform", "translate(" + m[3] + "," + m[0] + ")")
+	.attr("width", w-m[3])
 	.attr("height", h);//mainHeight);
 
 var main = chart.append("g")
-			.attr("transform", "translate(" + m[3] + "," + m[0] + ")")
+			.attr("transform", "translate(" + m[0] + "," + m[0] + ")")
 			.attr("width", w)
 			.attr("height", mainHeight)
 			.attr("class", "main");
 
 var mini = chart.append("g")
-			.attr("transform", "translate(" + m[3] + "," + (mainHeight + m[0]*3) + ")")
+			.attr("transform", "translate(" + m[0] + "," + (mainHeight + m[0]*2.2) + ")")
 			.attr("width", w)
 			.attr("height", miniHeight)
 			.attr("class", "mini");
 
 var sumMain = chart.append("g")
-			.attr("transform", "translate(" + m[3] + "," + (mainHeight+m[3])+")")
+			.attr("transform", "translate(" + m[0] + "," + (mainHeight+m[3])+")")
 			.attr("width", w)
 			.attr("height", h/2)
 			.attr("class", "sum");
@@ -332,9 +343,8 @@ function prepScales(){
 	console.log(xMax+"xmax")
 
 	// scale using ranges
-	var xAxisScale= d3.time.scale()
+	xAxisScale
 		.domain([xMin-timevar, xMax+timevar])
-		.range([0, w]);
 
 	var xAxis = d3.svg.axis()
 	    .scale(xAxisScale)
@@ -391,20 +401,32 @@ function prepScales(){
 var icons;
 	icons = main.selectAll("icons")
 	        .data(options)
-		.enter().append("image")
-		.attr("class","icons")
-        .attr("xlink:href", function(d, i) {
-            return d.toLowerCase()+".png";
-         })
-		.attr("y", function (d){
-			return yis(d)+10;
-		})
-		.attr("width", 20)
-		.attr("height", 20)
-		.attr("opacity",.5)
-		.attr("x",-20);
+			.enter().append("image")
+			.attr("class","icons")
+	        .attr("xlink:href", function(d, i) {
+	            return d.toLowerCase()+".png";
+	         })
+			.attr("y", function (d){
+				return yis(d)-10;
+			})
+			.attr("width", 20)
+			.attr("height", 20)
+			// .attr("opacity",.5)
+			.attr("x",m[3]-40);
 		// .attr("x", function(d) {return x1(d.timeIs);})
-
+var iconText;
+	iconText = main.selectAll("optionsText")
+	        .data(options)
+			.enter().append("text")
+			.attr("class","optionsText")
+			.attr("y", function (d){
+				return yis(d);
+			})
+			.attr("x",m[3]-50)
+			.attr("text-anchor","end")
+			.text(function(d){
+				return d;
+			})
 
 
 
