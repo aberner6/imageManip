@@ -41,13 +41,10 @@
     <div id="click">up</div>
  
     <!-- <div i -->
-<svg width="0" height="0">
-  <defs>
-    <clipPath id="myClip">
-      <circle cx="100" cy="100" r="40" />
-      <circle cx="60" cy="60" r="40" />
+  <svg>
+    <clipPath id="cut-off-bottom">
+      <circle cx="100" cy="100" r="50" />
     </clipPath>
-  </defs>
 </svg>
 <script type="text/javascript">
 var svg = d3.select("body")
@@ -55,13 +52,15 @@ var svg = d3.select("body")
             .attr("width", 900)
             .attr("height", 800);
 // var svg = d3.select("body").append("svg").attr("width",900).attr("height",800)
-            var suns = svg.selectAll("clip-svg").data(d3.range(1));
+            var suns = svg.selectAll("clip").data(d3.range(1));
                 suns.enter()
                 .append("image")
                 .attr("xlink:href", "testImg.jpg")
-                .attr("class","clip-svg")
-                // .attr("x", 100)
-                // .attr("y", 100)
+                .attr("clip-path","url(#cut-off-bottom)")
+                .attr("x", 200)
+                .attr("y", 200)
+                .attr("width",100)
+                .attr("height",100)
                 // .attr("url(#clipCircle)")
 
 </script>
