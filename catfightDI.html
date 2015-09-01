@@ -76,6 +76,8 @@
 
 
 
+        var amt = 6;
+        var index = 0;
 
 var calledAgain = false;
         $("#click").click(function() {
@@ -92,7 +94,7 @@ var calledAgain = false;
 			            console.log("prepped")
 			            prepped = true;
 			            if (prepped) {
-			                autoMovement(0, amt*2);
+			                autoMovement(0, amt*2, mindate);
 			            }
 			        }
 			    }, 3000)
@@ -215,19 +217,19 @@ var calledAgain = false;
 
         function getData() {
 
-            // d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
-            //     for (var i = 0; i < data.length; i++) {
-            //         if (data[i]['Device'] == "420038000547343232363230") {
-            //             entry1.push({
-            //                 "buttonIs": data[i]['button'],
-            //                 "timeIs": parseDate(data[i]['Timestamp']),
-            //                 "photO": data[i]['overview'],
-            //                 "photS": data[i]['screenshot']
-            //             })
-            //         }
-            //     }
+            d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i]['Device'] == "420038000547343232363230") {
+                        entry1.push({
+                            "buttonIs": data[i]['button'],
+                            "timeIs": parseDate(data[i]['Timestamp']),
+                            "photO": data[i]['overview'],
+                            "photS": data[i]['screenshot']
+                        })
+                    }
+                }
                 uniques1 = unique(entry1);
-            // })
+            })
 
             //  function read()
             // {
@@ -323,9 +325,10 @@ var calledAgain = false;
 
                 prepScales();
                 console.log("prepped")
+                console.log(mindate+"prepped mindate")
                 prepped = true;
                 if (prepped) {
-                    autoMovement(0, amt);
+                    autoMovement(0, amt, mindate);
                 }
             }
         }, 3000)
@@ -335,19 +338,19 @@ var calledAgain = false;
         var entry2 = [];
 
         function updateData() {
-            // d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
-            //     for (var i = 0; i < data.length; i++) {
-            //         if (data[i]['Device'] == "420038000547343232363230") {
-            //             entry2.push({
-            //                 "buttonIs": data[i]['button'],
-            //                 "timeIs": parseDate(data[i]['Timestamp']),
-            //                 "photO": data[i]['overview'],
-            //                 "photS": data[i]['screenshot']
-            //             })
-            //         }
-            //     }
+            d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i]['Device'] == "420038000547343232363230") {
+                        entry2.push({
+                            "buttonIs": data[i]['button'],
+                            "timeIs": parseDate(data[i]['Timestamp']),
+                            "photO": data[i]['overview'],
+                            "photS": data[i]['screenshot']
+                        })
+                    }
+                }
                 uniques1 = unique(entry2);
-            // })
+            })
 d3.csv("eventsL.log", function(error, arData){
             // d3.csv("https://dl.dropboxusercontent.com/s/r6rkot3hhskmf1e/eventsL.log?dl=0", function(error, arData) {
                 //		console.log(arData)
@@ -465,10 +468,47 @@ d3.csv("eventsL.log", function(error, arData){
             });
             console.log(xMin + "xmin")
             console.log(xMax + "xmax")
+///OLD WAY 
+            // // scale using ranges
+            // xAxisScale
+            //     .domain([xMin - timevar, xMax + timevar])
 
+            // xAxis
+            //     .scale(xAxisScale)
+            //     .orient("bottom")
+            //     .ticks(5)
+            //     .tickPadding(5)
+            //     .tickFormat(timeFormat);
+            // xAxisCall.call(xAxis)
+            //     .attr("class", "axis") //Assign "axis" class
+            //     .attr('transform', 'translate(0, ' + (10) + ')');
+///OLD WAY
+            ardUniques1 = unique(ardUni);
+            // console.log(ardUniques1 + "arduni");
+
+            console.log("in prep scales")
+                // console.log(uniques1.length)
+                // mindate = uniques1[1].timeIs;
+
+
+                //option 1
+            // mindate = xMin; //ardEntry[0].start;
+            // maxdate = xMax;
+            // mindate = +uniques1[0].timeIs;
+            //ONCE BUTTON IS BACK
+            if(uniques1[0].timeIs<ardEntry[0].end){
+                mindate = +uniques1[0].timeIs;
+            }else{
+                mindate = +ardEntry[0].end; 
+            }
+            if(uniques1[uniques1.length - 1].timeIs>ardEntry[ardEntry.length-1].end){
+            	maxdate = +uniques1[uniques1.length - 1].timeIs;
+            }else{
+            	maxdate = +ardEntry[ardEntry.length-1].end;	
+            }
             // scale using ranges
             xAxisScale
-                .domain([xMin - timevar, xMax + timevar])
+                .domain([mindate - timevar, maxdate + timevar])
 
             xAxis
                 .scale(xAxisScale)
@@ -479,25 +519,6 @@ d3.csv("eventsL.log", function(error, arData){
             xAxisCall.call(xAxis)
                 .attr("class", "axis") //Assign "axis" class
                 .attr('transform', 'translate(0, ' + (10) + ')');
-
-            ardUniques1 = unique(ardUni);
-            // console.log(ardUniques1 + "arduni");
-
-            console.log("in prep scales")
-                // console.log(uniques1.length)
-                // mindate = uniques1[1].timeIs;
-
-
-                //option 1
-            mindate = xMin; //ardEntry[0].start;
-            maxdate = xMax;
-            // mindate = +uniques1[0].timeIs;
-            //ONCE BUTTON IS BACK
-            // if(uniques1[uniques1.length - 1].timeIs>ardEntry[ardEntry.length-1].end){
-            // 	maxdate = +uniques1[uniques1.length - 1].timeIs;
-            // }else{
-            // 	maxdate = +ardEntry[ardEntry.length-1].end;	
-            // }
 
             // for (j = 0; j <= 24; j++) {
             //     totalPhotos[j] = photoConsolidation(j)
@@ -544,11 +565,9 @@ d3.csv("eventsL.log", function(error, arData){
             display();
         }
 
-        var index = 0;
         var autoMove;
-        var amt = 6;
 var autoMoving = true;
-        function autoMovement(index, amt) {
+        function autoMovement(index, amt, mindate) {
             var interval = ((maxdate + timevar) - (mindate)) / amt;
             autoMove = setInterval(function() {
                 //going in little chunks where minimum date increases
@@ -899,8 +918,11 @@ var autoMoving = true;
                            if (d.buttonIs == "button3") { //1 is bad 3 is good
                                return "idea.png";
                            }
+                           if (d.buttonIs == "button1") { //1 is bad 3 is good
+                               return "thunder.png";
+                           }
                        })
-            	.attr("y", 200)
+            	.attr("y", 20)
             	.attr("width", 20)
             	.attr("height", 20)
             	.attr("opacity",.5)
