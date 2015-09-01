@@ -52,9 +52,11 @@
 </style>
 
 <body>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script>
-    <script src="http://cdn.jsdelivr.net/sparkjs/0.4.2/spark.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <!-- // <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script> -->
+    <script src="d3.min.js"></script>
+    <script src="jquery.min.js"></script>
+    <!-- // <script src="http://cdn.jsdelivr.net/sparkjs/0.4.2/spark.min.js"></script> -->
+    <!-- // <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> -->
 
     <div id="click">up</div>
     <script type="text/javascript">
@@ -71,8 +73,15 @@
             "start": 1440156273000 - 80000000,
             "end": 1440156273000
         }, ]
+
+
+
+
+var calledAgain = false;
         $("#click").click(function() {
             updateData();
+            calledAgain = false;
+
 			    setTimeout(function() {
 			        if (ardEntry.length > 0) { 
 			        	console.log(uniques1)
@@ -83,7 +92,7 @@
 			            console.log("prepped")
 			            prepped = true;
 			            if (prepped) {
-			                autoMovement();
+			                autoMovement(0, amt*2);
 			            }
 			        }
 			    }, 3000)
@@ -96,7 +105,7 @@
         // 15:00:07-314093466_12-08-2015
         var parseDate = d3.time.format('%X_%d-%m-%Y').parse;
         var mindate;
-        var maxdate = "Fri Aug 01 2015 13:24:33 GMT+0200 (CEST)";
+        var maxdate; // = "Fri Aug 01 2015 13:24:33 GMT+0200 (CEST)";
 
         var uniques = [];
 
@@ -206,19 +215,19 @@
 
         function getData() {
 
-            d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
-                for (var i = 0; i < data.length; i++) {
-                    if (data[i]['Device'] == "420038000547343232363230") {
-                        entry1.push({
-                            "buttonIs": data[i]['button'],
-                            "timeIs": parseDate(data[i]['Timestamp']),
-                            "photO": data[i]['overview'],
-                            "photS": data[i]['screenshot']
-                        })
-                    }
-                }
+            // d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
+            //     for (var i = 0; i < data.length; i++) {
+            //         if (data[i]['Device'] == "420038000547343232363230") {
+            //             entry1.push({
+            //                 "buttonIs": data[i]['button'],
+            //                 "timeIs": parseDate(data[i]['Timestamp']),
+            //                 "photO": data[i]['overview'],
+            //                 "photS": data[i]['screenshot']
+            //             })
+            //         }
+            //     }
                 uniques1 = unique(entry1);
-            })
+            // })
 
             //  function read()
             // {
@@ -264,8 +273,8 @@
 
 
 
-            // d3.csv("eventsL.log",function(error,arData){
-            d3.csv("https://dl.dropboxusercontent.com/s/r6rkot3hhskmf1e/eventsL.log?dl=0", function(error, arData) {
+            d3.csv("eventsL.log",function(error,arData){
+            // d3.csv("https://dl.dropboxusercontent.com/s/r6rkot3hhskmf1e/eventsL.log?dl=0", function(error, arData) {
                 //		console.log(arData)
                 for (var i = 0; i < arData.length - 1; i++) {
                     ardUni.push({
@@ -316,7 +325,7 @@
                 console.log("prepped")
                 prepped = true;
                 if (prepped) {
-                    autoMovement();
+                    autoMovement(0, amt);
                 }
             }
         }, 3000)
@@ -326,20 +335,21 @@
         var entry2 = [];
 
         function updateData() {
-            d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
-                for (var i = 0; i < data.length; i++) {
-                    if (data[i]['Device'] == "420038000547343232363230") {
-                        entry2.push({
-                            "buttonIs": data[i]['button'],
-                            "timeIs": parseDate(data[i]['Timestamp']),
-                            "photO": data[i]['overview'],
-                            "photS": data[i]['screenshot']
-                        })
-                    }
-                }
+            // d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
+            //     for (var i = 0; i < data.length; i++) {
+            //         if (data[i]['Device'] == "420038000547343232363230") {
+            //             entry2.push({
+            //                 "buttonIs": data[i]['button'],
+            //                 "timeIs": parseDate(data[i]['Timestamp']),
+            //                 "photO": data[i]['overview'],
+            //                 "photS": data[i]['screenshot']
+            //             })
+            //         }
+            //     }
                 uniques1 = unique(entry2);
-            })
-            d3.csv("https://dl.dropboxusercontent.com/s/r6rkot3hhskmf1e/eventsL.log?dl=0", function(error, arData) {
+            // })
+d3.csv("eventsL.log", function(error, arData){
+            // d3.csv("https://dl.dropboxusercontent.com/s/r6rkot3hhskmf1e/eventsL.log?dl=0", function(error, arData) {
                 //		console.log(arData)
                 for (var i = 0; i < arData.length - 1; i++) {
                     ardUni.push({
@@ -471,7 +481,7 @@
                 .attr('transform', 'translate(0, ' + (10) + ')');
 
             ardUniques1 = unique(ardUni);
-            console.log(ardUniques1 + "arduni");
+            // console.log(ardUniques1 + "arduni");
 
             console.log("in prep scales")
                 // console.log(uniques1.length)
@@ -479,22 +489,22 @@
 
 
                 //option 1
-            // mindate = xMin; //ardEntry[0].start;
-            // maxdate = xMax;
-            mindate = +uniques1[0].timeIs;
+            mindate = xMin; //ardEntry[0].start;
+            maxdate = xMax;
+            // mindate = +uniques1[0].timeIs;
             //ONCE BUTTON IS BACK
-            if(uniques1[uniques1.length - 1].timeIs>ardEntry[ardEntry.length-1].end){
-            	maxdate = +uniques1[uniques1.length - 1].timeIs;
-            }else{
-            	maxdate = +ardEntry[ardEntry.length-1].end;	
-            }
+            // if(uniques1[uniques1.length - 1].timeIs>ardEntry[ardEntry.length-1].end){
+            // 	maxdate = +uniques1[uniques1.length - 1].timeIs;
+            // }else{
+            // 	maxdate = +ardEntry[ardEntry.length-1].end;	
+            // }
 
             // for (j = 0; j <= 24; j++) {
             //     totalPhotos[j] = photoConsolidation(j)
             // }
 
             y.domain([0, ardUniques1.length]);
-            // console.log(mindate+"mindate"+)
+            console.log(mindate+"mindate"+maxdate+"maxdate")
             x.domain([mindate - timevar, maxdate + timevar]);
 
             //brush
@@ -537,9 +547,8 @@
         var index = 0;
         var autoMove;
         var amt = 6;
-
 var autoMoving = true;
-        function autoMovement() {
+        function autoMovement(index, amt) {
             var interval = ((maxdate + timevar) - (mindate)) / amt;
             autoMove = setInterval(function() {
                 //going in little chunks where minimum date increases
@@ -562,6 +571,14 @@ var autoMoving = true;
             }, 1000);
             console.log(index + "index");
         }
+
+
+
+
+
+
+
+
 
         var standardRect = 5;
         var r = 4;
@@ -610,7 +627,6 @@ var autoMoving = true;
             d3.selectAll(".wodry").remove();
             d3.selectAll(".trect").remove();
 
-
             mini.select(".brush")
                 .call(brush.extent([minExtent, maxExtent]));
 
@@ -618,7 +634,6 @@ var autoMoving = true;
 
             ySum.domain([minExtent, maxExtent]);
 
-            // var timeText;
             // console.log(minExtent+" min "+timeFormat(new Date(minExtent)));
             var minExtTime = timeFormat(new Date(minExtent));
             var maxExtTime = timeFormat(new Date(maxExtent));
@@ -630,29 +645,9 @@ var autoMoving = true;
                 .attr("x", 20)
                 .attr("y", 20)
                 .text(minExtTime + " - " + maxExtTime);
-            // timeText.exit().remove();
-
-
 
             // console.log((maxExtent)-(minExtent));
             // console.log((+maxExtTime)-(+minExtTime));
-
-            /////////////////////////////////
-            // var tRectz = itemArdz.selectAll("trect")
-            // 	.data(d3.range(1))
-            // 	.enter()
-            // 	.append("rect").attr("class","trect")
-            // 	.attr("x", x1(minExtent))
-            // 	.attr("y", 100)//yis(options[options.length-1]))				
-            // 	.attr("width", x1(maxExtent)-x1(minExtent))
-            // 	.attr("height", 50)//yis(options[options.length-1]-yis(options[0])))
-            // 	.attr("fill", "lightgrey")
-            // 	.attr("stroke","none")
-            // 	.attr("opacity",.5)
-            // tRectz.exit().remove();
-
-
-
 
             /////////////summary view stuff
             d3.select("g.sum").attr("opacity", 0)
@@ -912,11 +907,26 @@ var autoMoving = true;
             	.attr("x", function(d) {return x1(d.timeIs);})
             		rects.exit().remove();
             ///////////////////////////////
- // if(autoMoving==false){
- // 	            mini.select(".brush")
- //                .call(brush.extent([mindate, maxdate]));
- // }
-        }
+    if(autoMoving==false && calledAgain == false){
+        console.log("HEY down here")
+        // callNewInterval();
+    }
+//                 // var interval = ((maxdate + timevar) - (mindate)) / amt;
+//         console.log(calledAgain)
+//                 e = [+mindate, +maxdate];
+
+//                 //
+//                 //going from 0 to full max date
+//                 // var e = [mindate-timevar, +mindate+interval*index]; //set brush range
+// //
+
+//                 brush.extent(e);
+//                 calledAgain = true;
+
+//  	            mini.select(".brush")
+//                 .call(brush.extent([mindate, maxdate]));
+//      }
+}
 
 
 
