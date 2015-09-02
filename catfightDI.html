@@ -32,7 +32,7 @@
     }
     
     .axis text {
-        font-family: sans-serif;
+        /*font-family: sans-serif;*/
         font-size: 11px;
     }
     
@@ -41,15 +41,32 @@
     }
     
     .optionsText {
-        font-family: sans-serif;
-        font-size: 11px;
+        /*font-family: sans-serif;*/
+        font-size: 12px;
     }
-    
+
+    .wodry1 {
+        /*font-family: sans-serif;*/
+        font-size: 18px;
+    }    
     .wodry {
-        font-family: sans-serif;
-        font-size: 11px;
+        /*font-family: sans-serif;*/
+        font-size: 18px;
+    }
+    .wodry2 {
+        /*font-family: Helvetica Neue;*/
+        font-size: 18px;
+    }
+    .title{
+        font-family:"Lato-Light";  
+                font-size: 24px;  
+                margin-left:40px;   
+    }
+    text{
+        font-family:"Lato-Light";
     }
 </style>
+    <div class="title">LEARNING DASHBOARD</div>
 
 <body>
     <!-- // <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script> -->
@@ -58,7 +75,6 @@
     <!-- // <script src="http://cdn.jsdelivr.net/sparkjs/0.4.2/spark.min.js"></script> -->
     <!-- // <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> -->
 
-    <div id="click">up</div>
     <script type="text/javascript">
         var items = [{
             "component": 1,
@@ -85,7 +101,7 @@ var calledAgain = false;
             calledAgain = false;
 
 			    setTimeout(function() {
-			        if (ardEntry.length > 0) { 
+			        if (ardEntry.length > 0 && uniques1.length>0) { 
 			        	console.log(uniques1)
 			            console.log(uniques1.length+"button");
 			            console.log(ardEntry.length+"ard");
@@ -112,29 +128,68 @@ var calledAgain = false;
         var uniques = [];
 
         var totalPhotos = [];
+//mine
+        // var w = window.innerWidth - 200;
+        // var h = window.innerHeight - 40;
 
-        var w = window.innerWidth - 200;
-        var h = window.innerHeight - 40;
-
+        // var m = [20, 15, 15, 120], //top right bottom left
+        //     miniHeight = 80,
+        //     mainHeight = 500;
+//mind
+//BUNKAT
         var m = [20, 15, 15, 120], //top right bottom left
-            // w = 960, 
-            // h = 500 - m[0] - m[2],
-            miniHeight = 10,
-            mainHeight = 500;
+            w = window.innerWidth - m[1] - m[3],
+            h = window.innerHeight - m[0] - m[2],
+            miniHeight = 80,//laneLength * 12 + 50,
+            mainHeight = h - miniHeight - 50;
 
+        var chart = d3.select("body")
+                    .append("svg")
+                    .attr("width", w + m[1] + m[3])
+                    .attr("height", h + m[0] + m[2])
+                    .attr("class", "chart");
+        chart.append("defs").append("clipPath")
+            .attr("id", "clip")
+            .append("rect")
+            .attr("width", w)
+            .attr("height", mainHeight);
+
+        var main = chart.append("g")
+                    .attr("transform", "translate(" + m[3] + "," + 0 + ")")
+                    .attr("width", w)
+                    .attr("height", mainHeight)
+                    .attr("class", "main");
+
+        var mini = chart.append("g")
+                    .attr("transform", "translate(" + m[3] + "," + (mainHeight + m[0]) + ")")
+                    .attr("width", w)
+                    .attr("height", miniHeight)
+                    .attr("class", "mini")
+            // .attr("clip-path", "url(#clip)");
+
+
+        // var headline = chart.append("g")
+        //     .attr("transform", "translate(" + m[3] + "," + 0 + ")")
+        //     .attr("width", w)
+        //     .attr("height", 50)
+
+        //scales
+        var x = d3.scale.linear()
+                // .domain([timeBegin, timeEnd])
+                .range([m[1], w]);
+        var x1 = d3.scale.linear()
+                .range([m[1]+10, w]);
         var xAxis = d3.svg.axis();
+        var xAxisScale = d3.time.scale()
+            .range([m[1], w]);
+            // .range([0, w+m[3]*1.1]);
+            // .range([m[3], w]);
 
         //scales
         var y = d3.scale.linear()
             .range([50, h / 2]);
-        var x = d3.scale.linear()
-            .range([m[3], w]);
 
-        var xAxisScale = d3.time.scale()
-            .range([m[3], w]);
 
-        var x1 = d3.scale.linear()
-            .range([m[3], w]);
 
         var ySum = d3.scale.linear()
             .range([1, 10]);
@@ -147,7 +202,11 @@ var calledAgain = false;
 
         var yis = d3.scale.ordinal()
             .domain(options)
-            .rangePoints([40, mainHeight]);
+            .rangePoints([100, mainHeight]);
+
+        var yOther = d3.scale.ordinal()
+            .domain(options)
+            .rangePoints([40, miniHeight]);
 
         var xis = d3.scale.ordinal()
             .domain(options)
@@ -157,30 +216,53 @@ var calledAgain = false;
             .domain(options)
             .range(d3.scale.category20c().range());
 
-        var chart = d3.select("body")
-            .append("svg")
-            .attr("width", w + m[1] + m[3])
-            .attr("height", h + m[0] + m[2])
-            .attr("class", "chart");
+//MINE OLD
+        // var headline = d3.select("body")
+        //     .append("svg")
+        //     .attr("transform", "translate(" + m[0] + "," + m[0] + ")")
+        //     .attr("width", w + m[3]+100)
+        //     .attr("height", 50)
+            // .attr("clip-path", "url(#clip)");
+//MINE
+        // var chart = d3.select("body")
+        //     .append("svg")
+        //     .attr("width", w + m[1] + m[3])
+        //     .attr("height", h + m[0] + m[2])
+        //     .attr("class", "chart");
 
-        chart.append("defs").append("clipPath")
-            .attr("id", "clip")
-            .append("rect")
-            .attr("transform", "translate(" + m[3] + "," + m[0] + ")")
-            .attr("width", w - m[3])
-            .attr("height", h); //mainHeight);
 
-        var main = chart.append("g")
-            .attr("transform", "translate(" + m[0] + "," + m[0] + ")")
-            .attr("width", w)
-            .attr("height", mainHeight)
-            .attr("class", "main");
+        // chart.append("defs").append("clipPath")
+        //     .attr("id", "clip")
+        //     .append("rect")
+        //     .attr("transform", "translate(" + m[3] + "," + m[0] + ")")
+        //     .attr("width", w - m[3])
+        //     .attr("height", h); //mainHeight);
 
-        var mini = chart.append("g")
-            .attr("transform", "translate(" + m[0] + "," + (mainHeight + m[0] * 2.2) + ")")
-            .attr("width", w)
-            .attr("height", miniHeight)
-            .attr("class", "mini");
+        // var headline = chart.append("g")
+        //     .attr("transform", "translate(" + m[0] + "," + 0 + ")")
+        //     .attr("width", w)
+        //     .attr("height", 50)
+//MINE
+        // var main = chart.append("g")
+        //     .attr("transform", "translate(" + m[0] + "," + m[0] + ")")
+        //     .attr("width", w)
+        //     .attr("height", mainHeight)
+        //     .attr("class", "main");
+
+        // var mini = chart.append("g") //m[0] ...... 2.2
+        //     .attr("transform", "translate(" + 0 + "," + (mainHeight + m[0] * 1.3) + ")")
+        //     .attr("width", w) //-m[3]
+        //     .attr("height", miniHeight) //100//miniHeight
+        //     .attr("class", "mini")
+        //     .attr("clip-path", "url(#clip)");
+
+
+
+
+
+
+
+
 
         var sumMain = chart.append("g")
             .attr("transform", "translate(" + m[0] + "," + (mainHeight + m[3] / 2) + ")")
@@ -228,6 +310,7 @@ var calledAgain = false;
                         })
                     }
                 }
+                // uniques1 = ["0","0"]
                 uniques1 = unique(entry1);
             })
 
@@ -318,7 +401,7 @@ var calledAgain = false;
             // });
         }
         setTimeout(function() {
-            if (ardEntry.length > 0) { // && ardEntry.length>0
+            if (ardEntry.length > 0) { //&& uniques1.length>0// && ardEntry.length>0
                 // if(uniques1.length>0){ // && ardEntry.length>0
                 // console.log(uniques1.length+"button");
                 // console.log(ardEntry.length+"ard");
@@ -349,9 +432,10 @@ var calledAgain = false;
                         })
                     }
                 }
+                // uniques1 = ["0","0"]
                 uniques1 = unique(entry2);
             })
-d3.csv("eventsL.log", function(error, arData){
+            d3.csv("eventsL.log", function(error, arData){
             // d3.csv("https://dl.dropboxusercontent.com/s/r6rkot3hhskmf1e/eventsL.log?dl=0", function(error, arData) {
                 //		console.log(arData)
                 for (var i = 0; i < arData.length - 1; i++) {
@@ -405,6 +489,12 @@ d3.csv("eventsL.log", function(error, arData){
 
         var dashArray = "3 3 3 3";
         var timeFormat = d3.time.format("%a %H:%M");
+
+        var timeFormat2 = d3.time.format("%H:%M");
+
+        var timeFormat1 = d3.time.format("%A");
+
+
         var brush = d3.svg.brush()
         var timevar = 60000;
 
@@ -422,8 +512,9 @@ d3.csv("eventsL.log", function(error, arData){
                 .attr("width", 20)
                 .attr("height", 20)
                 // .attr("opacity",.5)
-                .attr("x", m[3] - 40);
-            // .attr("x", function(d) {return x1(d.timeIs);})
+                // .attr("x", m[3] - 40);
+                .attr("x", x(mindate)-20)
+
             var iconText;
             iconText = main.selectAll("optionsText")
                 .data(options)
@@ -432,7 +523,7 @@ d3.csv("eventsL.log", function(error, arData){
                 .attr("y", function(d) {
                     return yis(d);
                 })
-                .attr("x", m[3] - 50)
+                .attr("x", x(mindate)-20)//m[3] - 50)
                 .attr("text-anchor", "end")
                 .text(function(d) {
                     return d;
@@ -449,7 +540,7 @@ d3.csv("eventsL.log", function(error, arData){
                 .attr("y2", function(d) {
                     return yis(d);
                 })
-                .attr("x1", m[3] - 25)
+                .attr("x1", x(mindate))
                 .attr("x2", w) //m[3]) //not w
                 .attr("stroke-dasharray", dashArray)
                 .attr("stroke-width", .5)
@@ -492,28 +583,29 @@ d3.csv("eventsL.log", function(error, arData){
 
 
                 //option 1
-            // mindate = xMin; //ardEntry[0].start;
-            // maxdate = xMax;
+            mindate = xMin; //ardEntry[0].start;
+            maxdate = xMax;
             // mindate = +uniques1[0].timeIs;
             //ONCE BUTTON IS BACK
-            if(uniques1[0].timeIs<ardEntry[0].end){
-                mindate = +uniques1[0].timeIs;
-            }else{
-                mindate = +ardEntry[0].end; 
-            }
-            if(uniques1[uniques1.length - 1].timeIs>ardEntry[ardEntry.length-1].end){
-            	maxdate = +uniques1[uniques1.length - 1].timeIs;
-            }else{
-            	maxdate = +ardEntry[ardEntry.length-1].end;	
-            }
+            // if(uniques1[0].timeIs<ardEntry[0].end){
+            //     mindate = +uniques1[0].timeIs;
+            // }else{
+            //     mindate = +ardEntry[0].end; 
+            // }
+            // if(uniques1[uniques1.length - 1].timeIs>ardEntry[ardEntry.length-1].end){
+            // 	maxdate = +uniques1[uniques1.length - 1].timeIs;
+            // }else{
+            // 	maxdate = +ardEntry[ardEntry.length-1].end;	
+            // }
             // scale using ranges
             xAxisScale
+                // .domain([mindate, maxdate])
                 .domain([mindate - timevar, maxdate + timevar])
 
             xAxis
                 .scale(xAxisScale)
                 .orient("bottom")
-                .ticks(5)
+                .ticks(15)
                 .tickPadding(5)
                 .tickFormat(timeFormat);
             xAxisCall.call(xAxis)
@@ -524,43 +616,91 @@ d3.csv("eventsL.log", function(error, arData){
             //     totalPhotos[j] = photoConsolidation(j)
             // }
 
-            y.domain([0, ardUniques1.length]);
+            // y.domain([0, ardUniques1.length]);
             console.log(mindate+"mindate"+maxdate+"maxdate")
             x.domain([mindate - timevar, maxdate + timevar]);
+            // x.domain([mindate, maxdate]);
+
 
             //brush
             brush
                 .x(x)
                 .on("brush", display);
 
+
             brushCall
                 .attr("class", "x brush")
                 .call(brush)
                 .selectAll("rect")
-                .attr("y", ((mainHeight + m[0] * 2.2) * -1) + 60)
-                .attr("stroke", "lightgrey")
-                .attr("stroke-width", .008)
-                .attr("fill", "none")
+                .attr("y", 40)
+                .attr("stroke","lightgrey")
+                .attr("stroke-width",1)
+                .attr("fill","none")
                 .style("visibility", "visible")
-                .attr("height", mainHeight - 5);
+                .attr("height", miniHeight - 1);
+
+            // brushCall
+            //     .attr("class", "x brush")
+            //     .call(brush)
+            //     .selectAll("rect")
+            //     .attr("y", ((mainHeight + m[0] * 2.2) * -1) + 60)
+            //     .attr("stroke", "lightgrey")
+            //     .attr("stroke-width", .008)
+            //     .attr("fill", "none")
+            //     .style("visibility", "visible")
+            //     .attr("height", mainHeight - 5);
 
 
             //THESE ARE FOR THE BUTTON PRESSES
             //mini item lines
-            mini.append("g").selectAll(".linie")
-                .data(uniques1)
-                .enter().append("line")
-                .attr("class", "linie")
-                .attr("x1", function(d) {
-                    return x(d.timeIs);
+            // mini.append("g").selectAll(".linie")
+            //     .data(uniques1)
+            //     .enter().append("line")
+            //     .attr("class", "linie")
+            //     .attr("x1", function(d) {
+            //         return x(d.timeIs);
+            //     })
+            //     .attr("x2", function(d) {
+            //         return x(d.timeIs);
+            //     })
+            //     .attr("y1", 10)
+            //     .attr("y2", 15)
+            //     .attr("stroke", "grey")
+            //     .attr("opacity", .5);
+
+
+
+
+            ///////////////////
+            mini.append("g").selectAll("rectie")
+                .data(ardEntry, function(d) {
+                        return d.specialID;                        
                 })
-                .attr("x2", function(d) {
-                    return x(d.timeIs);
+                .enter().append("rect")
+                .attr("class","rectie")
+                .attr("x", function(d) {
+                    if(d.sF ==1){
+                        return x(d.start);
+                    }else{}
                 })
-                .attr("y1", 10)
-                .attr("y2", 15)
-                .attr("stroke", "grey")
-                .attr("opacity", .5);
+                .attr("width", function(d, i) {
+                    if(d.sF==1){
+                        return x(d.end) - x(d.start);                        
+                    }else{}
+                })
+                .attr("y", function(d, i) {
+                    return yOther(d.from);
+                })
+                .attr("height", standardRect/2)
+                .attr("fill", function(d) {
+                    if(d.sF ==1){
+                        return oColor(d.from);
+                    }else{}
+                })
+                .attr("stroke", "none")
+                .attr("opacity", .4);
+
+
 
             display();
         }
@@ -568,18 +708,25 @@ d3.csv("eventsL.log", function(error, arData){
         var autoMove;
 var autoMoving = true;
         function autoMovement(index, amt, mindate) {
-            var interval = ((maxdate + timevar) - (mindate)) / amt;
+            var interval = ((maxdate) - (mindate)) / amt;
+            // var interval = ((maxdate + timevar) - (mindate)) / amt;
+
             autoMove = setInterval(function() {
                 //going in little chunks where minimum date increases
-                var e = [+mindate - timevar + interval / 1.1 * index, +mindate + interval * index];
+                // var e = [+mindate+ interval / 1.1 * index, +mindate + interval * index];
+                // var e = [+mindate - timevar + interval / 1.1 * index, +mindate + interval * index];
+
+
                 //going from 0 to full max date
-                // var e = [mindate-timevar, +mindate+interval*index]; //set brush range
+                var e = [mindate, +mindate+interval*index]; //set brush range
+
                 brush.extent(e);
                 mini.call(brush);
                 display();
                 index++;
 
-                if ((+mindate + interval * (index - 1)) >= maxdate + timevar) {
+                if ((+mindate + interval * (index - 1)) >= maxdate) {
+                // if ((+mindate + interval * (index - 1)) >= maxdate + timevar) {
                     console.log(index + "index");
                     autoMoving = false;
                     clearInterval(autoMove);
@@ -608,9 +755,9 @@ var autoMoving = true;
             var circs, rectz, ardRectz,
                 minExtent = brush.extent()[0],
                 maxExtent = brush.extent()[1],
-                visItems = uniques1.filter(function(d) {
-                    return d.timeIs < maxExtent && d.timeIs > minExtent;
-                });
+                // visItems = uniques1.filter(function(d) {
+                //     return d.timeIs < maxExtent && d.timeIs > minExtent;
+                // });
 
             ardItems = ardEntry.filter(function(d) {
                 return d.start < maxExtent && d.end > minExtent && d.sF == 1 && d.mod == "BM";
@@ -642,8 +789,10 @@ var autoMoving = true;
             });
 
             // console.log(lItems);
-
+            d3.selectAll(".wodry1").remove();
             d3.selectAll(".wodry").remove();
+            d3.selectAll(".wodry2").remove();
+
             d3.selectAll(".trect").remove();
 
             mini.select(".brush")
@@ -654,16 +803,6 @@ var autoMoving = true;
             ySum.domain([minExtent, maxExtent]);
 
             // console.log(minExtent+" min "+timeFormat(new Date(minExtent)));
-            var minExtTime = timeFormat(new Date(minExtent));
-            var maxExtTime = timeFormat(new Date(maxExtent));
-
-            var timeText = itemArdz.selectAll("wodry")
-                .data(d3.range(1))
-                .enter()
-                .append("text").attr("class", "wodry")
-                .attr("x", 20)
-                .attr("y", 20)
-                .text(minExtTime + " - " + maxExtTime);
 
             // console.log((maxExtent)-(minExtent));
             // console.log((+maxExtTime)-(+minExtTime));
@@ -696,6 +835,82 @@ var autoMoving = true;
                 .attr("stroke", "none")
                 .attr("opacity", .4)
             sumRects.exit().remove();
+
+//////////////
+            var minExtTime = timeFormat2(new Date(minExtent));
+            var maxExtTime = timeFormat2(new Date(maxExtent));
+
+            var minHeadline = timeFormat1(new Date(minExtent));
+// m[3], w
+            var timeText1 = main.selectAll("wodry1")
+                .data(d3.range(1))
+                .enter()
+                .append("text").attr("class", "wodry1")
+                .attr("x", x1(minExtent)-10)
+                .attr("y", yis(options[0])-60)
+                .attr("text-anchor","end")
+                .text(minHeadline);
+            var timeText = main.selectAll("wodry")
+                .data(d3.range(1))
+                .enter()
+                .append("text").attr("class", "wodry")
+                .attr("x", x1(minExtent))
+                .attr("y", yis(options[0])-20)
+                .attr("text-anchor","start")
+                .text(minExtTime+" - ");
+
+
+            var timeText2;
+            timeText2 = main.selectAll("wodry2")
+                .data(d3.range(1))
+                .attr("x", x1(maxExtent));
+                timeText2.enter().append("text")
+                .attr("class","wodry2")
+                .attr("x", x1(maxExtent))
+                .attr("y", yis(options[0])-20)
+                .attr("text-anchor","end")
+                .attr("opacity",function(d){
+                    if(x1(maxExtent)>x1(minExtent)){ 
+                        return 1; 
+                    }
+                    else{ 
+                        return 0; 
+                    }
+                })
+                .text(" - "+maxExtTime);
+
+
+
+            // var timeText2 = main.selectAll("wodry2")
+            //     .data(d3.range(1))
+            //     .enter()
+            //     .append("text").attr("class", "wodry2")
+            //     .attr("x", x1(maxExtent))
+            //     .attr("y", yis(options[0])-20)
+            //     .attr("text-anchor","end")
+            //     .attr("opacity",function(d){
+            //         if(x1(maxExtent)>x1(minExtent)){ 
+            //             return 1; 
+            //         }
+            //         else{ 
+            //             return 0; 
+            //         }
+            //     })
+            //     .text(" - "+maxExtTime);
+
+
+
+
+
+            // var line1 = main.selectAll("lineTime")
+            //     .data(d3.range(1))
+            //     .enter().append("line")
+            //     .attr("class", "lineTime")
+            //     .attr("x1", x1(minExtent)+50)
+            //     .attr("x2", x1(maxExtent)-40)
+            //     .attr("y1", yis(options[0])-10)
+            //     .attr("y2", yis(options[0])-10)
+            //     .attr("stroke","black")        
 
 
             ///////////////////
@@ -907,47 +1122,32 @@ var autoMoving = true;
                 .attr("opacity", 1)
             linkL.exit().remove();
             ///////////////////////////////
-            rects = itemRects.selectAll(".image-cropper")
-                    .data(visItems)
-            	.attr("x", function(d) {return x1(d.timeIs);})
-            	.attr("width", 20);
+            // rects = itemRects.selectAll(".image-cropper")
+            //         .data(visItems)
+            // 	.attr("x", function(d) {return x1(d.timeIs);})
+            // 	.attr("width", 20);
 
-            rects.enter().append("image")
-            	.attr("class","image-cropper")
-                    .attr("xlink:href", function(d, i) {
-                           if (d.buttonIs == "button3") { //1 is bad 3 is good
-                               return "idea.png";
-                           }
-                           if (d.buttonIs == "button1") { //1 is bad 3 is good
-                               return "thunder.png";
-                           }
-                       })
-            	.attr("y", 20)
-            	.attr("width", 20)
-            	.attr("height", 20)
-            	.attr("opacity",.5)
-            	.attr("x", function(d) {return x1(d.timeIs);})
-            		rects.exit().remove();
+            // rects.enter().append("image")
+            // 	.attr("class","image-cropper")
+            //         .attr("xlink:href", function(d, i) {
+            //                if (d.buttonIs == "button3") { //1 is bad 3 is good
+            //                    return "idea.png";
+            //                }
+            //                if (d.buttonIs == "button1") { //1 is bad 3 is good
+            //                    return "thunder.png";
+            //                }
+            //            })
+            // 	.attr("y", 20)
+            // 	.attr("width", 20)
+            // 	.attr("height", 20)
+            // 	.attr("opacity",.5)
+            // 	.attr("x", function(d) {return x1(d.timeIs);})
+            // 		rects.exit().remove();
             ///////////////////////////////
     if(autoMoving==false && calledAgain == false){
         console.log("HEY down here")
         // callNewInterval();
     }
-//                 // var interval = ((maxdate + timevar) - (mindate)) / amt;
-//         console.log(calledAgain)
-//                 e = [+mindate, +maxdate];
-
-//                 //
-//                 //going from 0 to full max date
-//                 // var e = [mindate-timevar, +mindate+interval*index]; //set brush range
-// //
-
-//                 brush.extent(e);
-//                 calledAgain = true;
-
-//  	            mini.select(".brush")
-//                 .call(brush.extent([mindate, maxdate]));
-//      }
 }
 
 
@@ -995,6 +1195,8 @@ var autoMoving = true;
             return total;
         }
     </script>
+    <div id="click">up</div>
+
 </body>
 
 </html>
