@@ -893,7 +893,7 @@ d3.selectAll(".ldtext").remove();
                 .enter()
                 .append("text").attr("class", "wodry1")
                 .attr("x", x1(minExtent)-10)
-                .attr("y", yis(options[0])-60)
+                .attr("y", yis(options[0])-70)
                 .attr("text-anchor","end")
                 .text(minHeadline);
             var timeText = main.selectAll("wodry")
@@ -901,7 +901,7 @@ d3.selectAll(".ldtext").remove();
                 .enter()
                 .append("text").attr("class", "wodry")
                 .attr("x", x1(minExtent)-10)
-                .attr("y", yis(options[0])-40)
+                .attr("y", yis(options[0])-50)
                 .attr("text-anchor","end")
                 .text("@"+minExtTime+" - ");
 
@@ -912,7 +912,7 @@ d3.selectAll(".ldtext").remove();
                 timeText2.enter().append("text")
                 .attr("class","wodry2")
                 .attr("x", x1(maxExtent))
-                .attr("y", yis(options[0])-40)
+                .attr("y", yis(options[0])-50)
                 .attr("text-anchor","end")
                 .attr("opacity",function(d){
                     if(x1(maxExtent)>x1(minExtent)){ 
@@ -1395,9 +1395,9 @@ var imgHeight = 20;
                 .append("rect").attr("class", "timeRects")
                     .attr("transform", "translate(" + 0 + "," + -imgHeight*2 + ")")
                 .attr("x", x1(minExtent))
-                .attr("y", yis(options[0])-imgHeight)
-                .attr("width", w-x1(minExtent)-timeWidth)
-                .attr("height",imgHeight*2)
+                .attr("y", yis(options[0])-2)
+                .attr("width", w-x1(minExtent)) //not -timeiwdth
+                .attr("height", imgHeight/4)//imgHeight/2)
                 .attr("fill","white")
                 .attr("opacity",extentsOpacity);
             ///////////////////////////////
@@ -1428,13 +1428,38 @@ var imgHeight = 20;
                 .attr("y", 50)
                 .attr("width", imgHeight)
                 .attr("height", imgHeight)
-                // .attr("opacity",.5)
                 .attr("x", function(d) {
-                    // if(d.timeIs.getHours())
                     return x1(d.timeIs);
                 })
             rects.exit().remove();
             ///////////////////////////////
+var sup;
+          sup = itemRects.selectAll(".conn")
+                .data(visItems, function(d) {
+                    return d.timeIs;
+                })
+                .attr("x1", function(d) {return x1(d.timeIs);})
+
+            sup.enter().append("line")
+                .attr("class",function(d){
+                   d3.select(this).each(moveToFront);
+                    return "conn";
+                })
+                .attr("y1", 50+imgHeight)
+                .attr("y2", mainHeight+m[0]) //or something
+                .attr("stroke",linkColor)
+                .attr("x1", function(d) {
+                    return x1(d.timeIs)+imgHeight;
+                })
+                 .attr("x2", function(d) {
+                    return x(d.timeIs);
+                })
+            sup.exit().remove();
+            ///////////////////////////////
+
+
+
+
                 // timeRect.exit.remove();
 // var overview;
 //     overview = itemRects.selectAll(".screen")
