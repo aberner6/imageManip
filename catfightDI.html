@@ -120,7 +120,7 @@ var linkColor = "white"; //not black
         var index = 0;
 
 var calledAgain = false;
-        $("#click").click(function() {
+        setInterval(function() {
             updateData();
             calledAgain = false;
 
@@ -138,7 +138,7 @@ var calledAgain = false;
 			            }
 			        }
 			    }, 3000)
-        })
+        }, 10000)
 
         // Timestamp,Device,button,overview,screenshot
         var entry1 = [];
@@ -402,7 +402,7 @@ var miniY = 40;
                     })
                     if (parseInt(arData[i + 1]['sF']) == 1) {
                         ardEntry.push({
-                            "specialID": parseInt(arData[i]['timestamp']) + parseInt(arData[i]['id']),
+                            "specialID": parseInt(arData[i]['timestamp']) + (arData[i]['id']),
                             "id": parseInt(arData[i]['id']),
                             "mod": arData[i]['mod'],
                             "start": parseInt(arData[i]['timestamp']),
@@ -412,7 +412,7 @@ var miniY = 40;
                         })
                     } else {
                         ardEntry.push({
-                            "specialID": parseInt(arData[i]['timestamp']) + parseInt(arData[i]['id']),
+                            "specialID": parseInt(arData[i]['timestamp']) + (arData[i]['id']),
                             "id": parseInt(arData[i]['id']),
                             "mod": arData[i]['mod'],
                             "start": parseInt(arData[i]['timestamp']),
@@ -598,28 +598,28 @@ var miniY = 40;
             // maxdate = xMax;
             // mindate = +uniques1[0].timeIs;
             // //ONCE BUTTON IS BACK
-            // if(uniques1[0].timeIs<ardEntry[0].end){
-            //     mindate = +uniques1[0].timeIs;
-            // }else{
-            //     mindate = +ardEntry[0].end; 
-            // }
-            // if(uniques1[uniques1.length - 1].timeIs>ardEntry[ardEntry.length-1].end){
-            // 	maxdate = +uniques1[uniques1.length - 1].timeIs;
-            // }else{
-            // 	maxdate = +ardEntry[ardEntry.length-1].end;	
-            // }
-            //ONCE BUTTON IS BACK
-
-            if(uniques1[Math.round(uniques1.length/2)].timeIs<ardEntry[0].end){
-                mindate = +uniques1[Math.round(uniques1.length/2)].timeIs;
+            if(uniques1[0].timeIs<ardEntry[0].end){
+                mindate = +uniques1[0].timeIs;
             }else{
                 mindate = +ardEntry[0].end; 
             }
-            if(uniques1[Math.round(uniques1.length/1.5)].timeIs>ardEntry[ardEntry.length-1].end){
-                maxdate = +uniques1[Math.round(uniques1.length/1.5)].timeIs;
+            if(uniques1[uniques1.length - 1].timeIs>ardEntry[ardEntry.length-1].end){
+            	maxdate = +uniques1[uniques1.length - 1].timeIs;
             }else{
-                maxdate = +ardEntry[ardEntry.length-1].end; 
+            	maxdate = +ardEntry[ardEntry.length-1].end;	
             }
+            //ONCE BUTTON IS BACK
+
+            // if(uniques1[Math.round(uniques1.length/2)].timeIs<ardEntry[0].end){
+            //     mindate = +uniques1[Math.round(uniques1.length/2)].timeIs;
+            // }else{
+            //     mindate = +ardEntry[0].end; 
+            // }
+            // if(uniques1[Math.round(uniques1.length/1.5)].timeIs>ardEntry[ardEntry.length-1].end){
+            //     maxdate = +uniques1[Math.round(uniques1.length/1.5)].timeIs;
+            // }else{
+            //     maxdate = +ardEntry[ardEntry.length-1].end; 
+            // }
 
 
 
@@ -818,7 +818,7 @@ var autoMoving = true;
             lineAllItems = ardEntry.filter(function(d) {
                 return d.start < maxExtent && d.end > minExtent && d.mod == "L";
             });
-
+console.log(lineAllItems);
             // console.log(lItems);
             d3.selectAll(".wodry1").remove();
             d3.selectAll(".wodry").remove();
@@ -1205,7 +1205,8 @@ var bRectText;
 
             // ///////////////////////////////
             circs = itemCircs.selectAll("circle")
-                .data(lineAllItems, function(d) {
+                .data(lineAllItems, function(d,i) {
+                    // console.log(d.specialID)
                     return d.specialID;
                 })
                 .attr("cx", function(d) {
@@ -1576,7 +1577,7 @@ var moveToFront = function() {
 
 
     </script>
-    <div id="click">up</div>
+    <!-- <div id="click">up</div> -->
 
 </body>
 
