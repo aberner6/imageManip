@@ -1408,7 +1408,6 @@ var imgHeight = 20;
 
                 .attr("x", function(d) {return x1(d.timeIs);})
                 .attr("width", 20);
-
             rects.enter().append("image")
                 .attr("class",function(d){
                                 d3.select(this).each(moveToFront);
@@ -1434,22 +1433,26 @@ var imgHeight = 20;
             rects.exit().remove();
             ///////////////////////////////
 var sup;
-          sup = itemRects.selectAll(".conn")
+          sup = main.selectAll(".conn")
                 .data(visItems, function(d) {
                     return d.timeIs;
                 })
-                .attr("x1", function(d) {return x1(d.timeIs);})
-
+                .attr("x1", function(d) {return x1(d.timeIs)+imgHeight/2;})
+                 .attr("x2", function(d) {
+                    return x(d.timeIs);
+                })
+                .attr("y1", 50+imgHeight)
+                .attr("y2", mainHeight+m[0]+miniY) //or something
             sup.enter().append("line")
                 .attr("class",function(d){
                    d3.select(this).each(moveToFront);
                     return "conn";
                 })
                 .attr("y1", 50+imgHeight)
-                .attr("y2", mainHeight+m[0]) //or something
+                .attr("y2", mainHeight+m[0]+miniY) //or something
                 .attr("stroke",linkColor)
                 .attr("x1", function(d) {
-                    return x1(d.timeIs)+imgHeight;
+                    return x1(d.timeIs)+imgHeight/2;
                 })
                  .attr("x2", function(d) {
                     return x(d.timeIs);
