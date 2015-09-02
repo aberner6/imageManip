@@ -154,7 +154,7 @@ var calledAgain = false;
 //mind
 //BUNKAT
         var m = [20, 15, 15, 120], //top right bottom left
-            w = window.innerWidth - m[1] - m[3],
+            w = window.innerWidth - m[1]*2 - m[3],
             h = window.innerHeight - m[0] - m[2],
             miniHeight = 80,//laneLength * 12 + 50,
             mainHeight = h - miniHeight - 50;
@@ -212,8 +212,8 @@ var calledAgain = false;
             .range([1, 10]);
 
         var options = [];
-
-        options.push("HUB", "BTN", "LED", "POT", "LDR", "TMP", "ACR", "UKN", "RLY", "PEZ", "RGB", "COL", "MTR", "ROT", "IF", "Interval", "Fade", "Swap", "Map", "Counter", "Trigger", "Note", "Random", "PONG", "SimonSays");
+//ldr is light sensor
+        options.push("HUB", "BTN", "LED", "POT", "LDR", "TMP", "ACR", "PEZ", "RGB", "COL", "ROT", "IF", "Interval", "Fade", "Swap", "Map", "Counter", "Trigger", "Note", "Random", "PONG", "SimonSays");
 
         var specialList = [];
 
@@ -221,9 +221,10 @@ var calledAgain = false;
             .domain(options)
             .rangePoints([100, mainHeight]);
 
+var miniY = 40;
         var yOther = d3.scale.ordinal()
             .domain(options)
-            .rangePoints([40, miniHeight]);
+            .rangePoints([miniY, miniHeight]);
 
         var xis = d3.scale.ordinal()
             .domain(options)
@@ -589,17 +590,34 @@ var calledAgain = false;
             // mindate = xMin; //ardEntry[0].start;
             // maxdate = xMax;
             // mindate = +uniques1[0].timeIs;
+            // //ONCE BUTTON IS BACK
+            // if(uniques1[0].timeIs<ardEntry[0].end){
+            //     mindate = +uniques1[0].timeIs;
+            // }else{
+            //     mindate = +ardEntry[0].end; 
+            // }
+            // if(uniques1[uniques1.length - 1].timeIs>ardEntry[ardEntry.length-1].end){
+            // 	maxdate = +uniques1[uniques1.length - 1].timeIs;
+            // }else{
+            // 	maxdate = +ardEntry[ardEntry.length-1].end;	
+            // }
             //ONCE BUTTON IS BACK
-            if(uniques1[0].timeIs<ardEntry[0].end){
-                mindate = +uniques1[0].timeIs;
+
+            if(uniques1[Math.round(uniques1.length/2)].timeIs<ardEntry[0].end){
+                mindate = +uniques1[Math.round(uniques1.length/2)].timeIs;
             }else{
                 mindate = +ardEntry[0].end; 
             }
-            if(uniques1[uniques1.length - 1].timeIs>ardEntry[ardEntry.length-1].end){
-            	maxdate = +uniques1[uniques1.length - 1].timeIs;
+            if(uniques1[Math.round(uniques1.length/1.5)].timeIs>ardEntry[ardEntry.length-1].end){
+                maxdate = +uniques1[Math.round(uniques1.length/1.5)].timeIs;
             }else{
-            	maxdate = +ardEntry[ardEntry.length-1].end;	
+                maxdate = +ardEntry[ardEntry.length-1].end; 
             }
+
+
+
+
+
             // scale using ranges
             xAxisScale
                 // .domain([mindate, maxdate])
@@ -646,17 +664,6 @@ var calledAgain = false;
                 .style("visibility", "visible")
                 .attr("height", miniHeight - 1);
 
-            // brushCall
-            //     .attr("class", "x brush")
-            //     .call(brush)
-            //     .selectAll("rect")
-            //     .attr("y", ((mainHeight + m[0] * 2.2) * -1) + 60)
-            //     .attr("stroke", "lightgrey")
-            //     .attr("stroke-width", .008)
-            //     .attr("fill", "none")
-            //     .style("visibility", "visible")
-            //     .attr("height", mainHeight - 5);
-
 
             //THESE ARE FOR THE BUTTON PRESSES
             //mini item lines
@@ -670,11 +677,21 @@ var calledAgain = false;
                 .attr("x2", function(d) {
                     return x(d.timeIs);
                 })
-                .attr("y1", 10)
-                .attr("y2", 15)
+                .attr("y1", miniY)
+                .attr("y2", miniY+10)
                 .attr("stroke", "grey")
                 .attr("opacity", .5);
 
+// .append("image")
+//                 .attr("class","image-cropper")
+//                     .attr("xlink:href", function(d, i) {
+//                            if (d.buttonIs == "button3") { //1 is bad 3 is good
+//                                return "idea.png";
+//                            }
+//                            if (d.buttonIs == "button1") { //1 is bad 3 is good
+//                                return "thunder.png";
+//                            }
+//                        })
 
 
 
@@ -873,10 +890,10 @@ var autoMoving = true;
                 .data(d3.range(1))
                 .enter()
                 .append("text").attr("class", "wodry")
-                .attr("x", x1(minExtent))
-                .attr("y", yis(options[0])-20)
-                .attr("text-anchor","start")
-                .text(minExtTime+" - ");
+                .attr("x", x1(minExtent)-10)
+                .attr("y", yis(options[0])-40)
+                .attr("text-anchor","end")
+                .text("@"+minExtTime+" - ");
 
 
             var timeText2;
@@ -886,7 +903,7 @@ var autoMoving = true;
                 timeText2.enter().append("text")
                 .attr("class","wodry2")
                 .attr("x", x1(maxExtent))
-                .attr("y", yis(options[0])-20)
+                .attr("y", yis(options[0])-40)
                 .attr("text-anchor","end")
                 .attr("opacity",function(d){
                     if(x1(maxExtent)>x1(minExtent)){ 
@@ -1302,6 +1319,7 @@ var bRectText;
 var linkText;
             linkText = itemArdz.selectAll("ltext")
                 .data(lineAllItems, function(d) {
+                    // return d.specialID;
                     return lineAllItems[0].specialID;
                 })
                 .attr("x", function(d) {
@@ -1338,10 +1356,20 @@ var linkText;
                 //         .attr("opacity",0)
                 //         .attr("font-size",12)
                 // })
-            // linkText.exit().remove();            
+            // linkText.exit().remove();
+  // bbox = d3.select(".ltext").getBBox();
+  // rectB = svg.insert('rect', 'text')
+  // .attr('x', bbox.x)
+  // .attr('y', bbox.y)
+  // .attr('width', bbox.width)
+  // .attr('height', bbox.height);
+
             ///////////////////////////////
             rects = itemRects.selectAll(".image-cropper")
-                    .data(visItems)
+                .data(visItems, function(d) {
+                    return d.timeIs;
+                })
+
             	.attr("x", function(d) {return x1(d.timeIs);})
             	.attr("width", 20);
 
@@ -1353,15 +1381,69 @@ var linkText;
                            }
                            if (d.buttonIs == "button1") { //1 is bad 3 is good
                                return "thunder.png";
-                           }
+                           } else{}
                        })
             	.attr("y", 10)
             	.attr("width", 20)
             	.attr("height", 20)
             	.attr("opacity",.5)
-            	.attr("x", function(d) {return x1(d.timeIs);})
-            		rects.exit().remove();
+            	.attr("x", function(d) {
+                    // if(d.timeIs.getHours())
+                    return x1(d.timeIs);
+                })
+            rects.exit().remove();
             ///////////////////////////////
+// var overview;
+//     overview = itemRects.selectAll(".screen")
+//         .data(visItems)
+//         .attr("x", function(d, i) {
+//             return x1(d.timeIs); //scale based on d.time
+//         })
+//     overview
+//         .enter()
+//         .append("image")
+//         // .attr("id","screen")
+//         .attr("class", "screen")
+//         // function(d,i){
+//             // return i;
+//         // })
+//         .attr("xlink:href", function(d, i) {
+//             if(i>0 && visItems[i].timeIs.getMinutes()!=visItems[i-1].timeIs.getMinutes()&&d.buttonIs=="button3"){
+//                 console.log(visItems[i].timeIs.getMinutes())
+//                 return d.photS;
+//             }else{}
+//             // return d.photS;
+//         })
+//         .attr("x", function(d, i) {
+//             return x1(d.timeIs); //scale based on d.time
+//         })
+//         .attr("y", function(d, i) {
+//             return 10;
+//         })
+//         .attr("width", 100)
+//         .attr("height", 100);
+//         overview.exit().remove();
+
+            ///////////////////////////////
+
+                            // if (i > 0) {
+                            //     if (parseDate(entry[i].timeIs).getHours() == parseDate(entry[i - 1].timeIs).getHours()) {
+                            //         return centerline + totalPhotos[parseDate(entry[i].timeIs).getHours()] * 45;
+                            //         // return scaleIt(parseDate(thisTime[i]).getHours());     
+                            //     } else {
+                            //         return centerline + 45;
+                            //     }
+                            // } else {
+                            //     return centerline + 45;
+                            // } 
+
+
+
+
+
+
+
+
     if(autoMoving==false && calledAgain == false){
         console.log("HEY down here")
         // callNewInterval();
