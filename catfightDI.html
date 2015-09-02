@@ -8,11 +8,15 @@
     rect.backround {
         display: block;
     }
-    
+    svg{
+        background-color:black;
+    }
     .brush .extent {
         stroke: lightgray;
-        fill: lightgray;
-        fill-opacity: .1;
+        fill:white;
+        /*fill: lightgray;*/
+        fill-opacity:.5;
+        /*fill-opacity: .1;*/
         /*.365;*/
         display: block;
     }
@@ -63,9 +67,11 @@
                 margin-left:40px;   
     }
     text{
+        fill:lightgray;
         font-family:"Lato-Light";
     }
     p{
+        color:white;
          font-family:"Lato-Light";       
     }
 #connections1{
@@ -106,8 +112,10 @@
             "end": 1440156273000
         }, ]
 
-
-
+var labelOpacity = 0;
+var opacity = .8;
+var extentsOpacity = .5;
+var linkColor = "white"; //not black
         var amt = 6;
         var index = 0;
 
@@ -213,7 +221,7 @@ var calledAgain = false;
 
         var options = [];
 //ldr is light sensor
-        options.push("HUB", "BTN", "LED", "POT", "LDR", "TMP", "ACR", "PEZ", "RGB", "COL", "ROT", "IF", "Interval", "Fade", "Swap", "Map", "Counter", "Trigger", "Note", "Random", "PONG", "SimonSays");
+        options.push("BTN", "LED", "POT", "LDR", "TMP", "ACR", "PEZ", "RGB", "COL", "ROT", "IF", "Interval", "Fade", "Swap", "Map", "Counter", "Trigger", "Note", "Random", "PONG", "SimonSays");
 
         var specialList = [];
 
@@ -291,9 +299,6 @@ var miniY = 40;
         var itemRectz = main.append("g")
             .attr("clip-path", "url(#clip)");
 
-        var itemRects = main.append("g")
-            .attr("clip-path", "url(#clip)");
-
         var itemCircs = main.append("g")
             .attr("clip-path", "url(#clip)");
 
@@ -306,6 +311,8 @@ var miniY = 40;
         var itemLinks = main.append("g")
             .attr("clip-path", "url(#clip)");
 
+        var itemRects = main.append("g")
+            .attr("clip-path", "url(#clip)");
         getData();
 
         var uniques1, uniques2;
@@ -504,7 +511,7 @@ var miniY = 40;
                 .enter().append("image")
                 .attr("class", "icons")
                 .attr("xlink:href", function(d, i) {
-                    return d.toLowerCase() + ".png";
+                    return "iconsWhite/"+d.toLowerCase() + ".png";
                 })
                 .attr("y", function(d) {
                     return yis(d) - 12;
@@ -679,8 +686,8 @@ var miniY = 40;
                 })
                 .attr("y1", miniY)
                 .attr("y2", miniY+10)
-                .attr("stroke", "grey")
-                .attr("opacity", .5);
+                .attr("stroke", linkColor)
+                .attr("opacity", opacity);
 
 // .append("image")
 //                 .attr("class","image-cropper")
@@ -722,7 +729,7 @@ var miniY = 40;
                     }else{}
                 })
                 .attr("stroke", "none")
-                .attr("opacity", .4);
+                .attr("opacity", opacity);
 
 
 
@@ -821,6 +828,9 @@ var autoMoving = true;
             d3.selectAll(".mtext").remove();
             d3.selectAll(".btext").remove();
             d3.selectAll(".ltext").remove();
+d3.selectAll(".ldtext").remove();
+
+            d3.selectAll(".timeRects").remove();
 
 // atext
 // mtext
@@ -869,7 +879,7 @@ var autoMoving = true;
                     return oColor(d.from);
                 })
                 .attr("stroke", "none")
-                .attr("opacity", .4)
+                .attr("opacity", opacity)
             sumRects.exit().remove();
 
 //////////////
@@ -894,7 +904,6 @@ var autoMoving = true;
                 .attr("y", yis(options[0])-40)
                 .attr("text-anchor","end")
                 .text("@"+minExtTime+" - ");
-
 
             var timeText2;
             timeText2 = main.selectAll("wodry2")
@@ -978,7 +987,7 @@ var autoMoving = true;
                     return oColor(d.from);
                 })
                 .attr("stroke", "none")
-                .attr("opacity", .4)
+                .attr("opacity", opacity)
             ardRectz.exit().remove();
 
 
@@ -1003,7 +1012,7 @@ var ardRectText;
                 .attr("y", function(d, i) {
                     return yis(d.from);
                 })
-                .attr("opacity",1)
+                .attr("opacity",labelOpacity)
                 .attr("font-size",12)
                 .text("Software Module Connected!")
                 // .transition()
@@ -1111,7 +1120,7 @@ var mRectText;
                 .attr("y", function(d, i) {
                     return yis(d.from);
                 })
-                .attr("opacity",1)
+                .attr("opacity",labelOpacity)
                 .attr("font-size",12)
                 .text("Hardware Module Connected!")
                 // .transition()
@@ -1177,7 +1186,7 @@ var bRectText;
                 .attr("y", function(d, i) {
                     return yis(d.from);
                 })
-                .attr("opacity",1)
+                .attr("opacity",labelOpacity)
                 .attr("font-size",12)
                 .text("S/M Connected!")
                 // .transition()
@@ -1215,17 +1224,17 @@ var bRectText;
                     }
                 })
                 .attr("cy", function(d, i) {
-                    return yis(d.from) + r;
+                    return yis(d.from) + r + standardRect;
                 })
                 .attr("fill", function(d) {
                     if (d.sF == 1) {
-                        return "black"
+                        return linkColor;
                             // return oColor(d.from);
                     } else {
                         return "none";
                     }
                 })
-                .attr("opacity", 0.5)
+                .attr("opacity", opacity)
             circs.exit().remove();
 
             // ///////////////////////////////
@@ -1251,14 +1260,14 @@ var bRectText;
                     }
                 })
                 .attr("y", function(d, i) {
-                    return yis(d.from);
+                    return yis(d.from)+standardRect;
                 })
                 .attr("fill", "none")
                 .attr("stroke", function(d) {
                     if (d.sF == 1) {
                         return "none";
                     } else {
-                        return "black"
+                        return linkColor;
                             // return oColor(d.from);
                     }
                 })
@@ -1303,7 +1312,7 @@ var bRectText;
                     return yis(d.from);
                 })
                 .attr("y2", function(d, i) {
-                    return yis(d.from) + 10;
+                    return yis(d.from) + standardRect*2;
                 })
                 .attr("stroke", function(d) {
                     return oColor(d.from);
@@ -1312,14 +1321,11 @@ var bRectText;
             linkL.exit().remove();
 
 
-
-
-
-
+var linkI;
+var linkD;
 var linkText;
             linkText = itemArdz.selectAll("ltext")
-                .data(lineAllItems, function(d) {
-                    // return d.specialID;
+                .data(lineAllItems, function(d,i) {
                     return lineAllItems[0].specialID;
                 })
                 .attr("x", function(d) {
@@ -1344,9 +1350,23 @@ var linkText;
                 .attr("y", function(d, i) {
                     return yis(d.from);
                 })
-                .attr("opacity",1)
+                .attr("opacity", labelOpacity)
+                // function(d) {
+                //     if (d.sF == 1) {
+                //         return 1;
+                //     } else {
+                //         return 0;
+                //     }
+                // })
                 .attr("font-size",12)
-                .text("Link Made!")
+                .text(function(d){
+                    if (d.sF==1){
+                        // linkI = i;
+                        return "Link Made!"
+                    } else{
+                        return "Link Disconnected"
+                    }
+                })
                 // .transition()
                 // .duration(1000)
                 // .attr("font-size",18)
@@ -1364,35 +1384,58 @@ var linkText;
   // .attr('width', bbox.width)
   // .attr('height', bbox.height);
 
+var imgHeight = 20;
+ var timeRect;
+ var timeWidth = $(".wodry2").width();
+            timeRect = itemRects.selectAll("timeRects")
+                .data(d3.range(1))
+                .attr("x", x1(minExtent))
+                                
+                timeRect.enter()
+                .append("rect").attr("class", "timeRects")
+                    .attr("transform", "translate(" + 0 + "," + -imgHeight*2 + ")")
+                .attr("x", x1(minExtent))
+                .attr("y", yis(options[0])-imgHeight)
+                .attr("width", w-x1(minExtent)-timeWidth)
+                .attr("height",imgHeight*2)
+                .attr("fill","white")
+                .attr("opacity",extentsOpacity);
             ///////////////////////////////
             rects = itemRects.selectAll(".image-cropper")
                 .data(visItems, function(d) {
                     return d.timeIs;
                 })
 
-            	.attr("x", function(d) {return x1(d.timeIs);})
-            	.attr("width", 20);
+                .attr("x", function(d) {return x1(d.timeIs);})
+                .attr("width", 20);
 
             rects.enter().append("image")
-            	.attr("class","image-cropper")
+                .attr("class",function(d){
+                                d3.select(this).each(moveToFront);
+                    return "image-cropper"
+                })
                     .attr("xlink:href", function(d, i) {
+                       // d3.select(this).each(moveToFront)();
                            if (d.buttonIs == "button3") { //1 is bad 3 is good
-                               return "idea.png";
+                               // return "idea.png";
+                               return "ideaWhite.png";
                            }
                            if (d.buttonIs == "button1") { //1 is bad 3 is good
-                               return "thunder.png";
+                               // return "thunder.png";
+                               return "thunderWhite.png";
                            } else{}
                        })
-            	.attr("y", 10)
-            	.attr("width", 20)
-            	.attr("height", 20)
-            	.attr("opacity",.5)
-            	.attr("x", function(d) {
+                .attr("y", 50)
+                .attr("width", imgHeight)
+                .attr("height", imgHeight)
+                // .attr("opacity",.5)
+                .attr("x", function(d) {
                     // if(d.timeIs.getHours())
                     return x1(d.timeIs);
                 })
             rects.exit().remove();
             ///////////////////////////////
+                // timeRect.exit.remove();
 // var overview;
 //     overview = itemRects.selectAll(".screen")
 //         .data(visItems)
@@ -1449,7 +1492,6 @@ var linkText;
         // callNewInterval();
     }
 }
-
 
 
 
