@@ -193,6 +193,7 @@ var calledAgain = false;
         var x = d3.scale.linear()
                 // .domain([timeBegin, timeEnd])
                 .range([m[1], w]);
+
         var x1 = d3.scale.linear()
                 .range([m[1]+10, w]);
         var xAxis = d3.svg.axis();
@@ -496,6 +497,54 @@ var calledAgain = false;
 
 
 
+            var icons = main.selectAll("icons");
+            icons = main.selectAll("icons")
+                .data(options)
+                .enter().append("image")
+                .attr("class", "icons")
+                .attr("xlink:href", function(d, i) {
+                    return d.toLowerCase() + ".png";
+                })
+                .attr("y", function(d) {
+                    return yis(d) - 12;
+                })
+                .attr("width", 20)
+                .attr("height", 20)
+                // .attr("x", m[3] - 40);
+                .attr("x", m[1]+10-20)
+
+            var iconText;
+            iconText = main.selectAll("optionsText")
+                .data(options)
+                .enter().append("text")
+                .attr("class", "optionsText")
+                .attr("y", function(d) {
+                    return yis(d);
+                })
+                .attr("x", m[1]+10-20)//m[3] - 50)
+                .attr("text-anchor", "end")
+                .text(function(d) {
+                    return d;
+                })
+
+            var iconDelin;
+            iconDelin = main.selectAll("optionsDelin")
+                .data(options)
+                .enter().append("line")
+                .attr("class", "xDelin")
+                .attr("y1", function(d) {
+                    return yis(d);
+                })
+                .attr("y2", function(d) {
+                    return yis(d);
+                })
+                .attr("x1", m[1]+10)
+                .attr("x2", w) //m[3]) //not w
+                .attr("stroke-dasharray", dashArray)
+                .attr("stroke-width", .5)
+                .attr("stroke", "lightgray")
+
+
         $(window).keypress(function(e) {
             if (e.keyCode === 0 || e.keyCode === 32) {
                 console.log('Space pressed');
@@ -514,54 +563,6 @@ var calledAgain = false;
         var brush = d3.svg.brush()
         var timevar = 60000;
 
-            var icons;
-            icons = main.selectAll("icons")
-                .data(options)
-                .enter().append("image")
-                .attr("class", "icons")
-                .attr("xlink:href", function(d, i) {
-                    return d.toLowerCase() + ".png";
-                })
-                .attr("y", function(d) {
-                    return yis(d) - 12;
-                })
-                .attr("width", 20)
-                .attr("height", 20)
-                // .attr("opacity",.5)
-                // .attr("x", m[3] - 40);
-                .attr("x", x(mindate)-20)
-
-            var iconText;
-            iconText = main.selectAll("optionsText")
-                .data(options)
-                .enter().append("text")
-                .attr("class", "optionsText")
-                .attr("y", function(d) {
-                    return yis(d);
-                })
-                .attr("x", x(mindate)-20)//m[3] - 50)
-                .attr("text-anchor", "end")
-                .text(function(d) {
-                    return d;
-                })
-
-            var iconDelin;
-            iconDelin = main.selectAll("optionsDelin")
-                .data(options)
-                .enter().append("line")
-                .attr("class", "xDelin")
-                .attr("y1", function(d) {
-                    return yis(d);
-                })
-                .attr("y2", function(d) {
-                    return yis(d);
-                })
-                .attr("x1", x(mindate))
-                .attr("x2", w) //m[3]) //not w
-                .attr("stroke-dasharray", dashArray)
-                .attr("stroke-width", .5)
-                .attr("stroke", "lightgray")
-
         var xAxisCall = mini.append('g');       
         var brushCall = mini.append("g");
        function prepScales() {
@@ -575,21 +576,7 @@ var calledAgain = false;
             });
             console.log(xMin + "xmin")
             console.log(xMax + "xmax")
-///OLD WAY 
-            // // scale using ranges
-            // xAxisScale
-            //     .domain([xMin - timevar, xMax + timevar])
 
-            // xAxis
-            //     .scale(xAxisScale)
-            //     .orient("bottom")
-            //     .ticks(5)
-            //     .tickPadding(5)
-            //     .tickFormat(timeFormat);
-            // xAxisCall.call(xAxis)
-            //     .attr("class", "axis") //Assign "axis" class
-            //     .attr('transform', 'translate(0, ' + (10) + ')');
-///OLD WAY
             ardUniques1 = unique(ardUni);
             // console.log(ardUniques1 + "arduni");
 
@@ -638,6 +625,10 @@ var calledAgain = false;
             // x.domain([mindate, maxdate]);
 
 
+
+
+
+
             //brush
             brush
                 .x(x)
@@ -669,20 +660,20 @@ var calledAgain = false;
 
             //THESE ARE FOR THE BUTTON PRESSES
             //mini item lines
-            // mini.append("g").selectAll(".linie")
-            //     .data(uniques1)
-            //     .enter().append("line")
-            //     .attr("class", "linie")
-            //     .attr("x1", function(d) {
-            //         return x(d.timeIs);
-            //     })
-            //     .attr("x2", function(d) {
-            //         return x(d.timeIs);
-            //     })
-            //     .attr("y1", 10)
-            //     .attr("y2", 15)
-            //     .attr("stroke", "grey")
-            //     .attr("opacity", .5);
+            mini.append("g").selectAll(".linie")
+                .data(uniques1)
+                .enter().append("line")
+                .attr("class", "linie")
+                .attr("x1", function(d) {
+                    return x(d.timeIs);
+                })
+                .attr("x2", function(d) {
+                    return x(d.timeIs);
+                })
+                .attr("y1", 10)
+                .attr("y2", 15)
+                .attr("stroke", "grey")
+                .attr("opacity", .5);
 
 
 
@@ -771,9 +762,9 @@ var autoMoving = true;
             var circs, rectz, ardRectz,
                 minExtent = brush.extent()[0],
                 maxExtent = brush.extent()[1],
-                // visItems = uniques1.filter(function(d) {
-                //     return d.timeIs < maxExtent && d.timeIs > minExtent;
-                // });
+                visItems = uniques1.filter(function(d) {
+                    return d.timeIs < maxExtent && d.timeIs > minExtent;
+                });
 
             ardItems = ardEntry.filter(function(d) {
                 return d.start < maxExtent && d.end > minExtent && d.sF == 1 && d.mod == "BM";
@@ -1349,27 +1340,27 @@ var linkText;
                 // })
             // linkText.exit().remove();            
             ///////////////////////////////
-            // rects = itemRects.selectAll(".image-cropper")
-            //         .data(visItems)
-            // 	.attr("x", function(d) {return x1(d.timeIs);})
-            // 	.attr("width", 20);
+            rects = itemRects.selectAll(".image-cropper")
+                    .data(visItems)
+            	.attr("x", function(d) {return x1(d.timeIs);})
+            	.attr("width", 20);
 
-            // rects.enter().append("image")
-            // 	.attr("class","image-cropper")
-            //         .attr("xlink:href", function(d, i) {
-            //                if (d.buttonIs == "button3") { //1 is bad 3 is good
-            //                    return "idea.png";
-            //                }
-            //                if (d.buttonIs == "button1") { //1 is bad 3 is good
-            //                    return "thunder.png";
-            //                }
-            //            })
-            // 	.attr("y", 20)
-            // 	.attr("width", 20)
-            // 	.attr("height", 20)
-            // 	.attr("opacity",.5)
-            // 	.attr("x", function(d) {return x1(d.timeIs);})
-            // 		rects.exit().remove();
+            rects.enter().append("image")
+            	.attr("class","image-cropper")
+                    .attr("xlink:href", function(d, i) {
+                           if (d.buttonIs == "button3") { //1 is bad 3 is good
+                               return "idea.png";
+                           }
+                           if (d.buttonIs == "button1") { //1 is bad 3 is good
+                               return "thunder.png";
+                           }
+                       })
+            	.attr("y", 10)
+            	.attr("width", 20)
+            	.attr("height", 20)
+            	.attr("opacity",.5)
+            	.attr("x", function(d) {return x1(d.timeIs);})
+            		rects.exit().remove();
             ///////////////////////////////
     if(autoMoving==false && calledAgain == false){
         console.log("HEY down here")
