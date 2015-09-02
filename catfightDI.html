@@ -65,8 +65,24 @@
     text{
         font-family:"Lato-Light";
     }
+    p{
+         font-family:"Lato-Light";       
+    }
+#connections1{
+    top:50%;
+    color:black;
+    border-bottom: 1px solid #777;
+    position:absolute;
+    left:45%;
+    border-radius: 10px;
+    padding: 2px 4px;
+    background-color:white;
+    /*opacity:0;*/
+    display:none;
+}
 </style>
     <div class="title">LEARNING DASHBOARD</div>
+  <div id = "connections1">Module Connected!</div>
 
 <body>
     <!-- // <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script> -->
@@ -793,6 +809,18 @@ var autoMoving = true;
             d3.selectAll(".wodry").remove();
             d3.selectAll(".wodry2").remove();
 
+            d3.selectAll(".atext").remove();
+            d3.selectAll(".mtext").remove();
+            d3.selectAll(".btext").remove();
+            d3.selectAll(".ltext").remove();
+
+// atext
+// mtext
+// btext
+// ltext
+
+
+
             d3.selectAll(".trect").remove();
 
             mini.select(".brush")
@@ -944,6 +972,83 @@ var autoMoving = true;
                 .attr("stroke", "none")
                 .attr("opacity", .4)
             ardRectz.exit().remove();
+
+
+
+
+var ardRectText;
+            ardRectText = itemArdz.selectAll("atext")
+                .data(ardItems, function(d) {
+                    return ardItems[0].specialID;
+                })
+                .attr("x", function(d) {
+                    return x1(d.start);
+                });
+            ardRectText.enter().append("text")
+                .attr("class", function(d) {
+                                d3.select(this).each(moveToFront);
+                    return "atext";
+                })
+                .attr("x", function(d) {
+                    return x1(d.start);
+                })
+                .attr("y", function(d, i) {
+                    return yis(d.from);
+                })
+                .attr("opacity",1)
+                .attr("font-size",12)
+                .text("Software Module Connected!")
+                // .transition()
+                // .duration(1000)
+                // .attr("font-size",18)
+                // .each("end", function(){
+                //     ardRectText
+                //         .transition()
+                //         .attr("opacity",0)
+                //         .attr("font-size",12)
+                // })
+            // ardRectText.exit().remove();
+// var textRect;
+// var thisWidth = $("text.textz").width();
+// var thisHeight = $("text.textz").height();
+
+//             textRect = itemArdz.selectAll("textzRect")
+//                 .data(ardItems, function(d) {
+//                     return ardItems[0].specialID;
+//                 })
+//                 .attr("x", function(d) {
+//                     return x1(d.start);
+//                 })
+//                 .attr("width", thisWidth)
+
+//             textRect.enter().append("rect")
+//                 .attr("class", "textzRect")
+//                    d3.select("text.textz").each(moveToFront);
+//                    // return "textzRect";
+//                 // })
+//                 .attr("x", function(d) {
+//                     return x1(d.start);
+//                 })
+//                 .attr("y", function(d, i) {
+//                     return yis(d.from)-thisHeight;
+//                 })
+//                 .attr("width", thisWidth)
+//                 .attr("height",thisHeight)
+//                 .attr("opacity",1)
+//                 .attr("fill","white")
+//                 .transition()
+//                 .duration(1000)
+//                 .attr("width", thisWidth*2)
+//                 .attr("height", thisHeight*2)
+//                 .each("end", function(){
+//                     textRect
+//                         .transition()
+//                         .attr("fill","none")
+//                         .attr("opacity",0)
+//                         .attr("width",thisWidth)
+//                         .attr("height",thisHeight)
+//                 })
+//             textRect.exit().remove();
             //////////////////////////////////
             var mRectz;
             mRectz = itemArdz.selectAll("mrect")
@@ -976,6 +1081,42 @@ var autoMoving = true;
             mRectz.exit().remove();
 
 
+
+
+
+var mRectText;
+            mRectText = itemArdz.selectAll("mtext")
+                .data(mItems, function(d) {
+                    return mItems[0].specialID;
+                })
+                .attr("x", function(d) {
+                    return x1(d.start);
+                });
+            mRectText.enter().append("text")
+                .attr("class", function(d) {
+                    d3.select(this).each(moveToFront);
+                    return "mtext";
+                })
+                .attr("x", function(d) {
+                    return x1(d.start);
+                })
+                .attr("y", function(d, i) {
+                    return yis(d.from);
+                })
+                .attr("opacity",1)
+                .attr("font-size",12)
+                .text("Hardware Module Connected!")
+                // .transition()
+                // .duration(1000)
+                // .attr("font-size",18)
+                // .each("end", function(){
+                //     mRectText
+                //         .transition()
+                //         .attr("opacity",0)
+                //         .attr("font-size",12)
+                // })
+            // mRectText.exit().remove();
+
             /////////////////////////////////
             var bRectz;
             bRectz = itemArdz.selectAll("brect")
@@ -1006,6 +1147,45 @@ var autoMoving = true;
                 .attr("stroke", "none")
                 .attr("opacity", 1)
             bRectz.exit().remove();
+
+
+
+var bRectText;
+            bRectText = itemArdz.selectAll("btext")
+                .data(bItems, function(d) {
+                    return bItems[0].specialID;
+                })
+                .attr("x", function(d) {
+                    return x1(d.start);
+                });
+            bRectText.enter().append("text")
+                .attr("class", function(d) {
+                    d3.select(this).each(moveToFront);
+                    return "btext";
+                })
+                .attr("x", function(d) {
+                    return x1(d.start);
+                })
+                .attr("y", function(d, i) {
+                    return yis(d.from);
+                })
+                .attr("opacity",1)
+                .attr("font-size",12)
+                .text("S/M Connected!")
+                // .transition()
+                // .duration(1000)
+                // .attr("font-size",18)
+                // .each("end", function(){
+                //     bRectText
+                //         .transition()
+                //         .attr("opacity",0)
+                //         .attr("font-size",12)
+                // })
+            // bRectText.exit().remove();
+
+
+
+
             // ///////////////////////////////
             circs = itemCircs.selectAll("circle")
                 .data(lineAllItems, function(d) {
@@ -1039,6 +1219,7 @@ var autoMoving = true;
                 })
                 .attr("opacity", 0.5)
             circs.exit().remove();
+
             // ///////////////////////////////
             var circR;
             circR = itemCircs.selectAll("rect")
@@ -1121,6 +1302,52 @@ var autoMoving = true;
                 })
                 .attr("opacity", 1)
             linkL.exit().remove();
+
+
+
+
+
+
+var linkText;
+            linkText = itemArdz.selectAll("ltext")
+                .data(lineAllItems, function(d) {
+                    return lineAllItems[0].specialID;
+                })
+                .attr("x", function(d) {
+                    if (d.sF == 1) {
+                        return x1(d.start);
+                    } else {
+                        return x1(d.end);
+                    }                
+                });
+            linkText.enter().append("text")
+                .attr("class", function(d) {
+                    d3.select(this).each(moveToFront);
+                    return "ltext";
+                })
+                .attr("x", function(d) {
+                    if (d.sF == 1) {
+                        return x1(d.start);
+                    } else {
+                        return x1(d.end);
+                    }
+                })
+                .attr("y", function(d, i) {
+                    return yis(d.from);
+                })
+                .attr("opacity",1)
+                .attr("font-size",12)
+                .text("Link Made!")
+                // .transition()
+                // .duration(1000)
+                // .attr("font-size",18)
+                // .each("end", function(){
+                //     linkText
+                //         .transition()
+                //         .attr("opacity",0)
+                //         .attr("font-size",12)
+                // })
+            // linkText.exit().remove();            
             ///////////////////////////////
             // rects = itemRects.selectAll(".image-cropper")
             //         .data(visItems)
@@ -1194,6 +1421,17 @@ var autoMoving = true;
             }
             return total;
         }
+
+
+//Move SVG elements to the end of their container,
+//so they appear "on top".
+var moveToFront = function() { 
+    this.parentNode.appendChild(this); 
+}
+
+
+
+
     </script>
     <div id="click">up</div>
 
