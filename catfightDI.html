@@ -586,20 +586,20 @@ var calledAgain = false;
 
 
                 //option 1
-            mindate = xMin; //ardEntry[0].start;
-            maxdate = xMax;
+            // mindate = xMin; //ardEntry[0].start;
+            // maxdate = xMax;
             // mindate = +uniques1[0].timeIs;
             //ONCE BUTTON IS BACK
-            // if(uniques1[0].timeIs<ardEntry[0].end){
-            //     mindate = +uniques1[0].timeIs;
-            // }else{
-            //     mindate = +ardEntry[0].end; 
-            // }
-            // if(uniques1[uniques1.length - 1].timeIs>ardEntry[ardEntry.length-1].end){
-            // 	maxdate = +uniques1[uniques1.length - 1].timeIs;
-            // }else{
-            // 	maxdate = +ardEntry[ardEntry.length-1].end;	
-            // }
+            if(uniques1[0].timeIs<ardEntry[0].end){
+                mindate = +uniques1[0].timeIs;
+            }else{
+                mindate = +ardEntry[0].end; 
+            }
+            if(uniques1[uniques1.length - 1].timeIs>ardEntry[ardEntry.length-1].end){
+            	maxdate = +uniques1[uniques1.length - 1].timeIs;
+            }else{
+            	maxdate = +ardEntry[ardEntry.length-1].end;	
+            }
             // scale using ranges
             xAxisScale
                 // .domain([mindate, maxdate])
