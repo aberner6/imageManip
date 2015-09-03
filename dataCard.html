@@ -8,8 +8,8 @@
     rect.backround {
         display: block;
     }
-    svg{
-        background-color:black;
+    body{
+        /*background-color:black;*/
     }
     .brush .extent {
         stroke: lightgray;
@@ -62,6 +62,7 @@
         font-size: 18px;
     }
     .title{
+        color:lightgray;
         font-family:"Lato-Light";  
                 font-size: 24px;  
                 margin-left:40px;   
@@ -71,7 +72,7 @@
         font-family:"Lato-Light";
     }
     p{
-        color:white;
+        color:black;
          font-family:"Lato-Light";       
     }
 #connections1{
@@ -94,8 +95,9 @@
     <!-- // <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script> -->
     <script src="d3.min.js"></script>
     <script src="jquery.min.js"></script>
+
     <!-- // <script src="http://cdn.jsdelivr.net/sparkjs/0.4.2/spark.min.js"></script> -->
-    <!-- // <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 
     <script type="text/javascript">
         var items = [{
@@ -115,12 +117,12 @@
 var labelOpacity = 0;
 var opacity = .8;
 var extentsOpacity = .5;
-var linkColor = "white"; //not black
+var linkColor = "black"; //not black
         var amt = 6;
         var index = 0;
 
 var calledAgain = false;
-        setInterval(function() {
+var startTime= setInterval(function() {
             updateData();
             calledAgain = false;
             prepped = false;
@@ -132,11 +134,11 @@ var calledAgain = false;
 			            prepScales();
 			            console.log("prepped")
 			            if (prepped && !autoMoving) {
-                            var e = [mindate, maxdate]; //set brush range
+                            // var e = [mindate, maxdate]; //set brush range
 
                             // var e = [maxdate-timevar*5, maxdate]; //set brush range
-                            brush.extent(e);
-                            mini.call(brush);
+                            // brush.extent(e);
+                            // mini.call(brush);
                             // display();
                             // brush.extent()
 			            }
@@ -146,11 +148,12 @@ var calledAgain = false;
 			        }
 			    }, 3000)
         }, 10000)
-
         // Timestamp,Device,button,overview,screenshot
         var entry1 = [];
         var prepped = false;
-
+// "2015/09/02 16:36:38"
+var parseSeshDate = d3.time.format('%Y/%m/%d %H:%M:%S').parse;
+var sessionData = [];
         // 15:00:07-314093466_12-08-2015
         var parseDate = d3.time.format('%X_%d-%m-%Y').parse;
         var mindate;
@@ -169,8 +172,8 @@ var calledAgain = false;
 //mind
 //BUNKAT
         var m = [20, 15, 15, 120], //top right bottom left
-            w = window.innerWidth - m[1]*2 - m[3],
-            h = window.innerHeight - m[0] - m[2],
+            w = 700 - m[1]*2 - m[3],
+            h = 500 - m[0] - m[2],
             miniHeight = 80,//laneLength * 12 + 50,
             mainHeight = h - miniHeight - 50;
 
@@ -249,54 +252,6 @@ var miniY = 40;
             .domain(options)
             .range(d3.scale.category20c().range());
 
-//MINE OLD
-        // var headline = d3.select("body")
-        //     .append("svg")
-        //     .attr("transform", "translate(" + m[0] + "," + m[0] + ")")
-        //     .attr("width", w + m[3]+100)
-        //     .attr("height", 50)
-            // .attr("clip-path", "url(#clip)");
-//MINE
-        // var chart = d3.select("body")
-        //     .append("svg")
-        //     .attr("width", w + m[1] + m[3])
-        //     .attr("height", h + m[0] + m[2])
-        //     .attr("class", "chart");
-
-
-        // chart.append("defs").append("clipPath")
-        //     .attr("id", "clip")
-        //     .append("rect")
-        //     .attr("transform", "translate(" + m[3] + "," + m[0] + ")")
-        //     .attr("width", w - m[3])
-        //     .attr("height", h); //mainHeight);
-
-        // var headline = chart.append("g")
-        //     .attr("transform", "translate(" + m[0] + "," + 0 + ")")
-        //     .attr("width", w)
-        //     .attr("height", 50)
-//MINE
-        // var main = chart.append("g")
-        //     .attr("transform", "translate(" + m[0] + "," + m[0] + ")")
-        //     .attr("width", w)
-        //     .attr("height", mainHeight)
-        //     .attr("class", "main");
-
-        // var mini = chart.append("g") //m[0] ...... 2.2
-        //     .attr("transform", "translate(" + 0 + "," + (mainHeight + m[0] * 1.3) + ")")
-        //     .attr("width", w) //-m[3]
-        //     .attr("height", miniHeight) //100//miniHeight
-        //     .attr("class", "mini")
-        //     .attr("clip-path", "url(#clip)");
-
-
-
-
-
-
-
-
-
         var sumMain = chart.append("g")
             .attr("transform", "translate(" + m[0] + "," + (mainHeight + m[3] / 2) + ")")
             .attr("width", w)
@@ -329,7 +284,36 @@ var miniY = 40;
         var ardAll = [];
         var ardUni = [];
 
+var oneThing = [];
         function getData() {
+// d3.json("pelars.sssup.it:8080/pelars/session", function(blah, dah){
+//     console.log(dah);
+// })
+// https://www.dropbox.com/s/hqnajrv8l2odhy9/session.json?dl=0
+d3.json("https://dl.dropboxusercontent.com/s/hqnajrv8l2odhy9/session.json?dl=0", function(blah, dah){
+    console.log(dah)
+                 for (var i = 0; i < dah.length; i++) {
+                    if (dah[i]['user'] == "126") { //SYNC with button press correct table
+                        // oneThing.push(dah[0]['end'])
+                        if(parseSeshDate(dah[i]['end'])!="undefined"){
+                            sessionData.push({
+                                "seshStart": parseSeshDate(dah[i]['start']),
+                                "seshEnd": parseSeshDate(dah[i]['end']), 
+                                "sesh": parseInt(dah[i]['session'])
+                            })
+                        } else{
+                             sessionData.push({
+                                "seshStart": parseSeshDate(dah[i]['start']),
+                                "seshEnd": Date.now(), 
+                                "sesh": parseInt(dah[i]['session'])
+                            })                           
+                        }
+
+                    }
+                }   
+})
+
+
 
             d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
                 for (var i = 0; i < data.length; i++) {
@@ -525,7 +509,7 @@ var miniY = 40;
                 .enter().append("image")
                 .attr("class", "icons")
                 .attr("xlink:href", function(d, i) {
-                    return "iconsWhite/"+d.toLowerCase() + ".png";
+                    return d.toLowerCase() + ".png";
                 })
                 .attr("y", function(d) {
                     return yis(d) - 12;
@@ -612,32 +596,19 @@ var miniY = 40;
             // maxdate = xMax;
             // mindate = +uniques1[0].timeIs;
             // //ONCE BUTTON IS BACK
-            if(uniques1[0].timeIs<ardEntry[0].end){
-                mindate = +uniques1[0].timeIs;
-            }else{
-                mindate = +ardEntry[0].end; 
-            }
-            if(uniques1[uniques1.length - 1].timeIs>ardEntry[ardEntry.length-1].end){
-            	maxdate = +uniques1[uniques1.length - 1].timeIs;
-            }else{
-            	maxdate = +ardEntry[ardEntry.length-1].end;	
-            }
-            //ONCE BUTTON IS BACK
-
-            // if(uniques1[Math.round(uniques1.length/2)].timeIs<ardEntry[0].end){
-            //     mindate = +uniques1[Math.round(uniques1.length/2)].timeIs;
+            // if(uniques1[0].timeIs<ardEntry[0].end){
+            //     mindate = +uniques1[0].timeIs;
             // }else{
             //     mindate = +ardEntry[0].end; 
             // }
-            // if(uniques1[Math.round(uniques1.length/1.5)].timeIs>ardEntry[ardEntry.length-1].end){
-            //     maxdate = +uniques1[Math.round(uniques1.length/1.5)].timeIs;
+            // if(uniques1[uniques1.length - 1].timeIs>ardEntry[ardEntry.length-1].end){
+            // 	maxdate = +uniques1[uniques1.length - 1].timeIs;
             // }else{
-            //     maxdate = +ardEntry[ardEntry.length-1].end; 
+            // 	maxdate = +ardEntry[ardEntry.length-1].end;	
             // }
 
-
-
-
+            maxdate = +sessionData[sessionData.length-1].seshEnd;
+            mindate = +sessionData[sessionData.length-1].seshStart;
 
             // scale using ranges
             xAxisScale
@@ -1431,12 +1402,12 @@ var imgHeight = 20;
                     .attr("xlink:href", function(d, i) {
                        // d3.select(this).each(moveToFront)();
                            if (d.buttonIs == "button3") { //1 is bad 3 is good
-                               // return "idea.png";
-                               return "ideaWhite.png";
+                               return "idea.png";
+                               // return "ideaWhite.png";
                            }
                            if (d.buttonIs == "button1") { //1 is bad 3 is good
-                               // return "thunder.png";
-                               return "thunderWhite.png";
+                               return "thunder.png";
+                               // return "thunderWhite.png";
                            } else{}
                        })
                 .attr("y", 50)
