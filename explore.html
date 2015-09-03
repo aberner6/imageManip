@@ -164,8 +164,8 @@ var sessionData = [];
         var parseDate = d3.time.format('%X_%d-%m-%Y').parse;
         var mindate; // = Date.now()-60000;
         var maxdate; // = "Fri Aug 01 2015 13:24:33 GMT+0200 (CEST)";
-    maxdate = Date.now()-5000;
-    mindate = Date.now()-6000000; //1440510048225;//
+    // maxdate = Date.now()-5000;
+    // mindate = Date.now()-6000000; //1440510048225;//
         var uniques = [];
 
         var totalPhotos = [];
@@ -464,8 +464,9 @@ d3.json("https://dl.dropboxusercontent.com/s/hqnajrv8l2odhy9/session.json?dl=0",
                     }
                 }
             })            
- 
-d3.json("https://dl.dropboxusercontent.com/s/hqnajrv8l2odhy9/session.json?dl=0", function(blah, dah){
+ // https://www.dropbox.com/s/sdeu5gp8m10fal4/testsession.json?dl=0
+// d3.json("https://dl.dropboxusercontent.com/s/hqnajrv8l2odhy9/session.json?dl=0", function(blah, dah){
+d3.json("https://dl.dropboxusercontent.com/s/sdeu5gp8m10fal4/testsession.json?dl=0", function(blah, dah){
     var thisData =(dah);
     // console.log(thisData.length+"sssa")
     // console.log(thisData[0]+"sssa")
@@ -568,6 +569,16 @@ d3.json("https://dl.dropboxusercontent.com/s/hqnajrv8l2odhy9/session.json?dl=0",
         var xAxisCall = mini.append('g');       
         var brushCall = mini.append("g");
        function prepScales() {
+var button1 = 0;
+var button2 = 0;
+for (i=0; i<uniques1.length; i++){
+    if(uniques1[i].buttonIs==button1){
+        button1++;
+    }
+    if(uniques1[i].buttonIs==button2){
+        button2++;
+    }
+}
             // var timeFormat = d3.time.format("%I:%M %p %a");
             // find data range
             var xMin = d3.min(ardEntry, function(d) {
@@ -588,8 +599,8 @@ d3.json("https://dl.dropboxusercontent.com/s/hqnajrv8l2odhy9/session.json?dl=0",
 
 
                 //option 1
-            // mindate = xMin; //ardEntry[0].start;
-            // maxdate = xMax;
+            mindate = xMin; //ardEntry[0].start;
+            maxdate = xMax;
             // mindate = +uniques1[0].timeIs;
             // //ONCE BUTTON IS BACK
             // if(uniques1[0].timeIs<ardEntry[0].end){
@@ -630,9 +641,16 @@ d3.json("https://dl.dropboxusercontent.com/s/hqnajrv8l2odhy9/session.json?dl=0",
                 .attr("class", "axis") //Assign "axis" class
                 .attr('transform', 'translate(0, ' + (10) + ')');
 
-            // for (j = 0; j <= 24; j++) {
-            //     totalPhotos[j] = photoConsolidation(j)
-            // }
+// //WILL THIS WORK FOR BUTTON PRESSES
+//             for (j = 0; j <= 24; j++) {
+//                 totalButtons[j] = buttonConsolidation(j)
+//             }
+
+// for(i=0; i<uniques2.length; i++){
+
+// }
+
+
 
             // y.domain([0, ardUniques1.length]);
             // console.log(mindate+"mindate"+maxdate+"maxdate")
@@ -957,36 +975,36 @@ d3.selectAll(".ldtext").remove();
                 .text(" - "+maxExtTime);
             ///////////////////
             /////////WHAT IS WRONG
-            // ardRectz = itemArdz.selectAll("rect")
-            //     .data(ardItems, function(d) {
-            //         return d.specialID;
-            //     })
-            //     .attr("x", function(d) {
-            //         return x1(d.start);
-            //     })
-            //     .attr("width", function(d, i) {
-            //         return x1(d.end) - x1(d.start);
-            //     })
-            // ardRectz.enter().append("rect")
-            //     .attr("class", function(d) {
-            //         return "miniItemz" + d.specialID;
-            //     })
-            //     .attr("x", function(d) {
-            //         return x1(d.start);
-            //     })
-            //     .attr("y", function(d, i) {
-            //         return yis(d.from);
-            //     })
-            //     .attr("width", function(d) {
-            //         return x1(d.end) - x1(d.start);
-            //     })
-            //     .attr("height", standardRect)
-            //     .attr("fill", function(d) {
-            //         return oColor(d.from);
-            //     })
-            //     .attr("stroke", "none")
-            //     .attr("opacity", opacity)
-            // ardRectz.exit().remove();
+            ardRectz = itemArdz.selectAll("rect")
+                .data(ardItems, function(d) {
+                    return d.specialID;
+                })
+                .attr("x", function(d) {
+                    return x1(d.start);
+                })
+                .attr("width", function(d, i) {
+                    return x1(d.end) - x1(d.start);
+                })
+            ardRectz.enter().append("rect")
+                .attr("class", function(d) {
+                    return "miniItemz" + d.specialID;
+                })
+                .attr("x", function(d) {
+                    return x1(d.start);
+                })
+                .attr("y", function(d, i) {
+                    return yis(d.from);
+                })
+                .attr("width", function(d) {
+                    return x1(d.end) - x1(d.start);
+                })
+                .attr("height", standardRect)
+                .attr("fill", function(d) {
+                    return oColor(d.from);
+                })
+                .attr("stroke", "none")
+                .attr("opacity", opacity)
+            ardRectz.exit().remove();
 
 
 
@@ -1512,8 +1530,8 @@ var sup;
 
         function photoConsolidation(index) {
             var total = 0;
-            for (i = 0; i < uniques.length; i++) {
-                if (uniques[i].timeIs.getHours() == index) {
+            for (i = 0; i < uniques1.length; i++) {
+                if (uniques1[i].timeIs.getHours() == index) {
                     total++;
                 } else {}
             }
