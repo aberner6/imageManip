@@ -238,7 +238,7 @@ var sessionData = [];
 
         var options = [];
 //ldr is light sensor
-        options.push("BTN", "LED", "POT", "LDR", "TMP", "ACR", "PEZ", "RGB", "COL", "ROT", "IF", "Interval", "Fade", "Swap", "Map", "Counter", "Trigger", "Note", "Random", "PONG", "SimonSays");
+        options.push("BTN","RLY", "LED", "POT", "LDR", "TMP", "ACR", "PEZ", "RGB", "COL", "ROT", "IF", "Interval", "Fade", "Swap", "Map", "Counter", "Trigger", "Note", "Random", "PONG", "SimonSays");
 
         var specialList = [];
 
@@ -879,7 +879,7 @@ var autoMoving = true;
             d3.selectAll(".ltext").remove();
 d3.selectAll(".ldtext").remove();
 
-            d3.selectAll(".timeRects").remove();
+            // d3.selectAll(".timeRects").remove();
 
 // atext
 // mtext
@@ -987,7 +987,7 @@ d3.selectAll(".ldtext").remove();
                 })
             ardRectz.enter().append("rect")
                 .attr("class", function(d) {
-                    return "miniItemz" + d.specialID;
+                    return "miniItemz" + d.from;
                 })
                 .attr("x", function(d) {
                     return x1(d.start);
@@ -1003,7 +1003,7 @@ d3.selectAll(".ldtext").remove();
                     return oColor(d.from);
                 })
                 .attr("stroke", "none")
-                .attr("opacity", opacity)
+                .attr("opacity", opacity/6)
             ardRectz.exit().remove();
 
 
@@ -1360,19 +1360,19 @@ var linkText;
 var imgHeight = 20;
  var timeRect;
  var timeWidth = $(".wodry2").width();
-            timeRect = itemRects.selectAll("timeRects")
-                .data(d3.range(1))
-                .attr("x", x1(minExtent))
+            // timeRect = itemRects.selectAll("timeRects")
+            //     .data(d3.range(1))
+            //     .attr("x", x1(minExtent))
                                 
-                timeRect.enter()
-                .append("rect").attr("class", "timeRects")
-                    .attr("transform", "translate(" + 0 + "," + -imgHeight*2 + ")")
-                .attr("x", x1(minExtent))
-                .attr("y", yis(options[0])-2)
-                .attr("width", w-x1(minExtent)) //not -timeiwdth
-                .attr("height", imgHeight/4)//imgHeight/2)
-                .attr("fill","white")
-                .attr("opacity",extentsOpacity);
+            //     timeRect.enter()
+            //     .append("rect").attr("class", "timeRects")
+            //         .attr("transform", "translate(" + 0 + "," + -imgHeight*2 + ")")
+            //     .attr("x", x1(minExtent))
+            //     .attr("y", yis(options[0])-2)
+            //     .attr("width", w-x1(minExtent)) //not -timeiwdth
+            //     .attr("height", imgHeight/4)//imgHeight/2)
+            //     .attr("fill","white")
+            //     .attr("opacity",extentsOpacity);
             ///////////////////////////////
             rects = itemRects.selectAll(".image-cropper")
                 .data(visItems, function(d) {
