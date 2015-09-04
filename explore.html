@@ -128,27 +128,6 @@
 //         });
 // })
 
-
-
-
-
-
-
-
-        var items = [{
-            "component": 1,
-            "start": 1439308645000,
-            "end": 1439308645000 + 44762800
-        }, {
-            "component": 2,
-            "start": 1440156273000 - 100000000,
-            "end": 1440156273000
-        }, {
-            "component": 3,
-            "start": 1440156273000 - 80000000,
-            "end": 1440156273000
-        }, ]
-
         var labelOpacity = 0;
         var opacity = .8;
         var extentsOpacity = .5;
@@ -164,8 +143,16 @@
         // var startTime = setTimeout(function() {
         //     prepData();
         // }, 10)
+
+
+
+
+var startTime;
 prepData();
-        var startTime = setTimeout(function() { // var startTime = setInterval(function() {
+// startTimer();
+function startTimer(){
+        // var startTime = setTimeout(function() { 
+        startTime = setInterval(function() {
             if (prepdData) {
                     updateData();
                     calledAgain = false;
@@ -175,9 +162,9 @@ prepData();
 
                     console.log(uniques1.length + "button");
                     console.log(ardEntry.length + "ard");
+
                     setTimeout(function() {
                         if (ardEntry.length > 0 && uniques1.length > 0) {
-                            // console.log(uniques1)
                             console.log(uniques1.length + "button");
                             console.log(ardEntry.length + "ard");
                             prepScales();
@@ -190,7 +177,7 @@ prepData();
                     }, 1000)
                 }
             }, 10000)
-        // }
+}
                 // Timestamp,Device,button,overview,screenshot
             var entry1 = [];
             var prepped = false;
@@ -317,10 +304,18 @@ prepData();
             var oneThing = [];
 
 var whatIs = [];
-            function prepData() {
+var onlyArd;
+function prepData() {
                 d3.csv("https://dl.dropboxusercontent.com/s/gucv71ip6w71mib/testarsdb2?dl=0", function(error, arData) {
-                    for (var i = 0; i < arData.length - 1; i++) {
+                    onlyArd = arData.filter(function(d){
+                        if(d.mod!="UI"){
+                            return d;
+                        }
+                    })
+                    for (var i = 0; i < arData.length; i++) {
+
                         if (arData[i]['sF'] == "CLOSED") {
+                            //this is also where the mindate is working
                             sessionUI.push(parseInt(arData[i]['timestamp']));
                             prepdData = true;
                             // console.log(prepdData+"prepData")
@@ -348,61 +343,29 @@ var whatIs = [];
                     uniques1 = unique(entry2);
                 })
 
-                d3.csv("https://dl.dropboxusercontent.com/s/gucv71ip6w71mib/testarsdb2?dl=0", function(error, arData) {
+                // d3.csv("https://dl.dropboxusercontent.com/s/gucv71ip6w71mib/testarsdb2?dl=0", function(error, arData) {
                     //call one and then the other and then the other
-                    for (var i = 0; i < arData.length - 1; i++) {
+                    for (var i = 0; i < onlyArd.length; i++) {
                         ardUni.push({
-                            "mod": arData[i]['mod'],
-                            "from": (arData[i]['fromType']),
+                            "mod": onlyArd[i]['mod'],
+                            "from": (onlyArd[i]['fromType']),
                         })
-                        if (parseInt(arData[i + 1]['sF']) == "1") {
+                        if (parseInt(onlyArd[i + 1]['sF']) == "1") {
 var matchedEnd;
                             ardEntry.push({
-                                "specialID": parseInt(arData[i]['timestamp']) + (arData[i]['id']),
-                                "id": parseInt(arData[i]['id']),
-                                "mod": arData[i]['mod'],
-                                "start": parseInt(arData[i]['timestamp']),
-"fuck": sessionUI.filter(function(d) { 
-    if(d > parseInt(arData[i]['timestamp'])){
+                                "specialID": parseInt(onlyArd[i]['timestamp']) + (onlyArd[i]['id']),
+                                "id": parseInt(onlyArd[i]['id']),
+                                "mod": onlyArd[i]['mod'],
+                                "start": parseInt(onlyArd[i]['timestamp']),
+"fk": sessionUI.filter(function(d) { 
+    if(d > parseInt(onlyArd[i]['timestamp'])){
         matchedEnd = d;
     }
 }),
 "end":Math.min(matchedEnd),
-                                "from": (arData[i]['fromType']),
-                                "sF": (arData[i]['sF'])
+                                "from": (onlyArd[i]['fromType']),
+                                "sF": (onlyArd[i]['sF'])
                             })
-
-
-
-
-
-
-
-
-
-
-// ardEntry[i].end = 
-
-
-// visItems = uniques1.filter(function(d) {
-//     return d.timeIs < maxExtent && d.timeIs > minExtent;
-// });
-
-//filter the speical UI by those who are greater than
-//the index number of ardata's timestamp
-//then take the min of those filtered special UI
-
-
-
-
-                            // ardEntry.filter(function(d){
-                                // for(i=0; i<sessionUI.length; i++){
-                                    // if(d.start<sessionUI[i].end){
-                                    //     d.end = sessionUI[i].end;
-                                    // }
-                                    // return d.en < maxExtent && d.timeIs > minExtent;
-                                // }
-                            // })
                         } 
 
 
@@ -410,50 +373,54 @@ var matchedEnd;
 
 
                         else {
-                            ardEntry.push({
-                                "specialID": parseInt(arData[i]['timestamp']) + (arData[i]['id']),
-                                "id": parseInt(arData[i]['id']),
-                                "mod": arData[i]['mod'],
-                                "start": parseInt(arData[i]['timestamp']),
-                                "end": parseInt(arData[i + 1]['timestamp']),
-                                "from": (arData[i]['fromType']),
-                                "sF": (arData[i]['sF'])
-                            })
+                            // ardEntry.push({
+                            //     "specialID": parseInt(onlyArd[i]['timestamp']) + (onlyArd[i]['id']),
+                            //     "id": parseInt(onlyArd[i]['id']),
+                            //     "mod": onlyArd[i]['mod'],
+                            //     "start": parseInt(onlyArd[i]['timestamp']),
+                            //     "end": parseInt(onlyArd[i + 1]['timestamp']),
+                            //     "from": (onlyArd[i]['fromType']),
+                            //     "sF": (onlyArd[i]['sF'])
+                            // })
                         }
                     }
-                })
+                // })
+
+
+
 
                 // https://www.dropbox.com/s/sdeu5gp8m10fal4/testsession.json?dl=0
                 // d3.json("https://dl.dropboxusercontent.com/s/hqnajrv8l2odhy9/session.json?dl=0", function(blah, dah){
-                d3.json("https://dl.dropboxusercontent.com/s/sdeu5gp8m10fal4/testsession.json?dl=0", function(blah, dah) {
-                    var thisData = (dah);
-                    // console.log(thisData.length+"sssa")
-                    // console.log(thisData[0]+"sssa")
-                    // if(thisData.length>0){
-                    if (typeof(thisData.length) !== "undefined") {
-                        console.log(dah.length)
-                        for (var i = 0; i < dah.length - 1; i++) {
-                            if (dah[i]['user'] == "126") { //SYNC with button press correct table
-                                // oneThing.push(dah[0]['end'])
-                                if (typeof(dah[i]['end']) !== "undefined") {
-                                    console.log("yes")
-                                    sessionData.push({
-                                        "seshStart": parseSeshDate(dah[i]['start']),
-                                        "seshEnd": parseSeshDate(dah[i]['end']),
-                                        "sesh": parseInt(dah[i]['session'])
-                                    })
-                                } else {
-                                    sessionData.push({
-                                        "seshStart": parseSeshDate(dah[i]['start']),
-                                        "seshEnd": Date.now(),
-                                        "sesh": parseInt(dah[i]['session'])
-                                    })
-                                }
+                    //SSSSSA DATA
+                // d3.json("https://dl.dropboxusercontent.com/s/sdeu5gp8m10fal4/testsession.json?dl=0", function(blah, dah) {
+                //     var thisData = (dah);
+                //     // console.log(thisData.length+"sssa")
+                //     // console.log(thisData[0]+"sssa")
+                //     // if(thisData.length>0){
+                //     if (typeof(thisData.length) !== "undefined") {
+                //         console.log(dah.length)
+                //         for (var i = 0; i < dah.length - 1; i++) {
+                //             if (dah[i]['user'] == "126") { //SYNC with button press correct table
+                //                 // oneThing.push(dah[0]['end'])
+                //                 if (typeof(dah[i]['end']) !== "undefined") {
+                //                     console.log("yes")
+                //                     sessionData.push({
+                //                         "seshStart": parseSeshDate(dah[i]['start']),
+                //                         "seshEnd": parseSeshDate(dah[i]['end']),
+                //                         "sesh": parseInt(dah[i]['session'])
+                //                     })
+                //                 } else {
+                //                     sessionData.push({
+                //                         "seshStart": parseSeshDate(dah[i]['start']),
+                //                         "seshEnd": Date.now(),
+                //                         "sesh": parseInt(dah[i]['session'])
+                //                     })
+                //                 }
 
-                            }
-                        }
-                    } else {}
-                })
+                //             }
+                //         }
+                //     } else {}
+                // })
             }
 
 
@@ -620,58 +587,26 @@ var newItems = [];
                 //                        })
 
                 ///////////////////
-                // mini.append("g").selectAll("rectie")
-                //     .data(ardEntry, function(d) {
-                //             return d.specialID;                        
-                //     })
-                //     .enter().append("rect")
-                //     .attr("class","rectie")
-                //     .attr("x", function(d) {
-                //         if(d.sF ==1){
-                //             return x(d.start);
-                //         }else{}
-                //     })
-                //     .attr("width", function(d, i) {
-                //     // if(d.mod == "BM" || d.mod == "M" || d.mod=="BM" || d.mod=="B" &&d.sF==1){
-                //         if(d.sF ==1 && typeof(d.end!=="undefined")){
-                //             return x(d.end) - x(d.start);                        
-                //         }else{ return 0 }
-                //     })
-                //     .attr("y", function(d, i) {
-                //             if(typeof(d.from)!=="undefined"){
-                //                 return yOther(d.from);
-                //             }
-                //             else{
-                //                 return 0;
-                //             }
-                //     })
-                //     .attr("height", standardRect/2)
-                //     .attr("fill", function(d) {
-                //         if(d.sF ==1 && typeof((d.from)!=="undefined")){
-                //             return oColor(d.from);
-                //         }else{
-                //              return "none"
-                //      }
-                //     })
-                //     .attr("stroke", "none")
-                //     .attr("opacity", opacity);
-
-                ///////////////////
                 mini.append("g").selectAll("rectie")
                     .data(ardEntry, function(d) {
                         return d.specialID;
                     })
                     .enter().append("rect")
-                    .attr("class", "rectie")
+                    .attr("class", function(d){ return "speci"+d.mod+d.start +"start "+d.end+" end"})
                     .attr("x", function(d) {
                         if (d.sF == "1") {
                             return x(d.start);
-                        } else {}
+                        } else { return 0 }
                     })
                     .attr("width", function(d, i) {
                         if (d.sF == "1") {
-                            return x(d.end) - x(d.start);
-                        } else {}
+                            if((x(d.end)-x(d.start))>0){
+                                return x(d.end) - x(d.start);
+                            }else{ 
+console.log("speci"+d.mod+d.start +"start "+d.end+" end");
+                                // return 0;
+                            }
+                        } else { return 0 }
                     })
                     .attr("y", function(d, i) {
                         return yOther(d.from);
@@ -680,7 +615,7 @@ var newItems = [];
                     .attr("fill", function(d) {
                         if (d.sF == "1") {
                             return oColor(d.from);
-                        } else {}
+                        } else { return 0 }
                     })
                     .attr("stroke", "none")
                     .attr("opacity", opacity);
