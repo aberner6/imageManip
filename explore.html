@@ -317,14 +317,14 @@ function prepData() {
                     for (var i = 0; i < arData.length; i++) {
 
 
-// if (arData[arData.length-1]['mod'] == "UI" && arData[arData.length-1]['sF']=="CLOSED"){
-//     mindate = arData[i-2]['timestamp'];
-//     maxdate = arData[i-1]['timestamp'];
-// } 
-// if (arData[arData.length-1]['mod'] == "UI" && arData[arData.length-1]['sF']=="OPEN"){
-//     mindate = arData[i-1]['timestamp'];
-//     maxdate = Date.now();
-// } 
+if (arData[arData.length-1]['mod'] == "UI" && arData[arData.length-1]['sF']=="CLOSED"){
+    mindate = parseInt(arData[arData.length-2]['timestamp']);
+    maxdate = parseInt(arData[arData.length-1]['timestamp']);
+} 
+if (arData[arData.length-1]['mod'] == "UI" && arData[arData.length-1]['sF']=="OPEN"){
+    mindate = parseInt(arData[arData.length-1]['timestamp']);
+    maxdate = Date.now();
+} 
 
 
 ////if last line in data set is closed that is max time
@@ -567,8 +567,8 @@ var newItems = [];
 
 
             //hardcode?
-            maxdate =1441369066161;    //Math.min(sessionUI);
-            mindate =1441234966973;//1441368912917; 
+            // maxdate =1441369066161;    //Math.min(sessionUI);
+            // mindate =1441234966973;//1441368912917; 
             // 1441234980307;// Math.max(sessionUI);
              // .Date.now()-6000000; //1440510048225;//
 
