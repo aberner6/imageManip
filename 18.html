@@ -140,17 +140,18 @@
 
 
         var prepdData = false;
-        // var startTime = setTimeout(function() {
-        //     prepData();
-        // }, 10)
-prepData();
-        var startTime = setTimeout(function() { // var startTime = setInterval(function() {
-            if (prepdData) {
+
+        var startTime = setInterval(function() {
+            prepData();
+        }, 500)
+
+        if (prepdData) {
+            var startTime = setInterval(function() {
                     updateData();
                     calledAgain = false;
                     prepped = false;
 
-                    // prepdData = false;
+                    prepdData = false;
 
                     console.log(uniques1.length + "button");
                     console.log(ardEntry.length + "ard");
@@ -162,14 +163,19 @@ prepData();
                             prepScales();
                             console.log("prepped")
                             if (prepped && !autoMoving) {
+                                // var e = [mindate, maxdate]; //set brush range
+
+                                // var e = [maxdate-timevar*5, maxdate]; //set brush range
+                                // brush.extent(e);
+                                // mini.call(brush);
+                                // display();
+                                // brush.extent()
                             } else {
                                 autoMovement(0, amt, mindate); //not amt*2
                             }
                         }
-                    }, 1000)
-                }
-            }, 10000)
-        // }
+                    }, 3000)
+                }, 5000)
                 // Timestamp,Device,button,overview,screenshot
             var entry1 = [];
             var prepped = false;
@@ -185,7 +191,15 @@ prepData();
             var uniques = [];
 
             var totalPhotos = [];
+            //mine
+            // var w = window.innerWidth - 200;
+            // var h = window.innerHeight - 40;
 
+            // var m = [20, 15, 15, 120], //top right bottom left
+            //     miniHeight = 80,
+            //     mainHeight = 500;
+            //mind
+            //BUNKAT
             var m = [20, 15, 15, 120], //top right bottom left
                 w = window.innerWidth - m[1] * 2 - m[3],
                 h = window.innerHeight - m[0] - m[2],
@@ -216,6 +230,12 @@ prepData();
                 .attr("class", "mini")
                 .attr("clip-path", "url(#clip)");
 
+
+            // var headline = chart.append("g")
+            //     .attr("transform", "translate(" + m[3] + "," + 0 + ")")
+            //     .attr("width", w)
+            //     .attr("height", 50)
+
             //scales
             var x = d3.scale.linear()
                 .domain([mindate, maxdate])
@@ -226,6 +246,8 @@ prepData();
             var xAxis = d3.svg.axis();
             var xAxisScale = d3.time.scale()
                 .range([m[1], w]);
+            // .range([0, w+m[3]*1.1]);
+            // .range([m[3], w]);
 
             //scales
             var y = d3.scale.linear()
@@ -294,6 +316,123 @@ prepData();
             var ardMin = [];
 
             var oneThing = [];
+            // function getData() {
+            // d3.json("https://dl.dropboxusercontent.com/s/hqnajrv8l2odhy9/session.json?dl=0", function(blah, dah){
+            //     if(typeof(dah.length)!=="undefined"){
+            //     console.log(dah.length)
+            //                  for (var i = 0; i < dah.length-1; i++) {
+            //                     if (dah[i]['user'] == "126") { //SYNC with button press correct table
+            //                         // oneThing.push(dah[0]['end'])
+            //                         if(typeof(dah[i]['end'])!=="undefined"){
+            //                             console.log("yes"+dah[i]['end'])
+            //                             sessionData.push({
+            //                                 "seshStart": parseSeshDate(dah[i]['start']),
+            //                                 "seshEnd": parseSeshDate(dah[i]['end']), 
+            //                                 "sesh": parseInt(dah[i]['session'])
+            //                             })
+            //                         } else{
+            //                              sessionData.push({
+            //                                 "seshStart": parseSeshDate(dah[i]['start']),
+            //                                 "seshEnd": Date.now(), 
+            //                                 "sesh": parseInt(dah[i]['session'])
+            //                             })                           
+            //                         }
+
+            //                     }
+            //                 }   
+            //     }else{
+
+            //     }
+            // })
+
+            //             d3.csv("https://dl.dropboxusercontent.com/s/iz6mkdrd5z4wvvc/db2?dl=0", function(error, data) {
+            //                 console.log(data[0]['Device']+"button");
+            //                 console.log(data[0]['Timestamp']+"button");
+            //                 console.log(data[0]['button']+"button");
+            //                 console.log(data.length)
+            //                 for (var i = 0; i < data.length; i++) {
+
+            //                     if (data[i]['Device'] =="400025000c47343432313031"){
+            //                     // if (data[i]['Device'] == "420038000547343232363230") {
+            //                         entry1.push({
+            //                             "buttonIs": data[i]['button'],
+            //                             "timeIs": parseDate(data[i]['Timestamp']),
+            //                             "photO": data[i]['overview'],
+            //                             "photS": data[i]['screenshot']
+            //                         })
+            //                     }
+            //                 }
+            //             if (entry1.length > 0) { 
+            //                                 // uniques1 = (entry1);
+            //                 console.log(entry1.length+"length")
+            //                 console.log(uniques1.length+"length")
+            //                 uniques1 = unique(entry1);
+            //             }
+            //             })
+            //             // d3.csv("https://dl.dropboxusercontent.com/s/19izw72cww803ll/arsdb?dl=0",function(error,arData){
+            //             // d3.csv("https://dl.dropboxusercontent.com/s/r6rkot3hhskmf1e/eventsL.log?dl=0", function(error, arData) {
+            //                 //       console.log(arData)
+            //             d3.csv("https://dl.dropboxusercontent.com/s/gucv71ip6w71mib/testarsdb2?dl=0", function(error, arData) {
+            //                 for (var i = 0; i < arData.length - 1; i++) {
+            //                         if(arData[i]['sF']=="CLOSED"){
+            //                             sessionUI.push({
+            //                                 "end": arData[i]['timestamp'],
+            //                             })                            
+            //                         }
+            //                     }
+            //                 if(sessionUI.length>0){
+            //                 for (var i = 0; i < arData.length - 1; i++) {
+            //                         // if(arData[i]['sF']=="CLOSED"){
+            //                         //     sessionUI.push({
+            //                         //         "end": arData[i]['timestamp'],
+            //                         //     })                            
+            //                         // }
+            //                     // }
+            //                     ardUni.push({
+            //                         "mod": arData[i]['mod'],
+            //                         "from": (arData[i]['fromType']),
+            //                     })
+            //                     // ardMin.push({
+            //                     //     "mod": arData[i]['mod'],
+            //                     //     "time": (arData[i]['timestamp']),
+            //                     // })
+            //                     // if((arData[i]['fromType'])!=="undefined")
+            //                     ardAll.push({
+            //                         "specialID": parseInt(arData[i]['timestamp']) + parseInt(arData[i]['id']),
+            //                         "id": parseInt(arData[i]['id']),
+            //                         "mod": arData[i]['mod'],
+            //                         "start": parseInt(arData[i]['timestamp']),
+            //                         // "end": Date.now(),//parseInt(arData[i]['timestamp']),
+            //                         "from": (arData[i]['fromType']),
+            //                         "sF": parseInt(arData[i]['sF'])
+            //                     })
+            //                     if (parseInt(arData[i + 1]['sF']) == 1) {
+            //                         ardEntry.push({
+            //                             "specialID": parseInt(arData[i]['timestamp']) + (arData[i]['id']),
+            //                             "id": parseInt(arData[i]['id']),
+            //                             "mod": arData[i]['mod'],
+            //                             "start": parseInt(arData[i]['timestamp']),
+            //                             "end": parseInt(sessionUI[i].end),
+            //                             "from": (arData[i]['fromType']),
+            //                             "sF": parseInt(arData[i]['sF'])
+            //                         })
+            //                     } else {
+            //                         ardEntry.push({
+            //                             "specialID": parseInt(arData[i]['timestamp']) + (arData[i]['id']),
+            //                             "id": parseInt(arData[i]['id']),
+            //                             "mod": arData[i]['mod'],
+            //                             "start": parseInt(arData[i]['timestamp']),
+            //                             "end": parseInt(arData[i + 1]['timestamp']),
+            //                             "from": (arData[i]['fromType']),
+            //                             "sF": parseInt(arData[i]['sF'])
+            //                         })
+            //                     }
+            //                 }
+            //                 }
+            //             })
+            //             // });
+            //         }
+
 
             function prepData() {
                 d3.csv("https://dl.dropboxusercontent.com/s/gucv71ip6w71mib/testarsdb2?dl=0", function(error, arData) {
@@ -303,11 +442,16 @@ prepData();
                                 "end": arData[i]['timestamp'],
                             })
                             prepdData = true;
-                            // console.log(prepdData+"prepData")
                         }
                     }
                 })
             }
+
+
+            // sessionui
+
+
+
 
             var i = 0;
             var entry2 = [];
@@ -329,70 +473,39 @@ prepData();
                 })
 
                 d3.csv("https://dl.dropboxusercontent.com/s/gucv71ip6w71mib/testarsdb2?dl=0", function(error, arData) {
-                    //call one and then the other and then the other
+                    // for (var i = 0; i < arData.length - 1; i++) {
+                    //         if(arData[i]['sF']=="CLOSED"){
+                    //             sessionUI.push({
+                    //                 "end": arData[i]['timestamp'],
+                    //             })                            
+                    //         }
+                    // }
+                    // if(sessionUI.length>0){
                     for (var i = 0; i < arData.length - 1; i++) {
                         ardUni.push({
                             "mod": arData[i]['mod'],
                             "from": (arData[i]['fromType']),
                         })
-                        // ardAll.push({
-                        //     "specialID": parseInt(arData[i]['timestamp']) + parseInt(arData[i]['id']),
-                        //     "id": parseInt(arData[i]['id']),
-                        //     "mod": arData[i]['mod'],
-                        //     "start": parseInt(arData[i]['timestamp']),
-                        //     "end": Date.now(), //parseInt(arData[i]['timestamp']),
-                        //     "from": (arData[i]['fromType']),
-                        //     "sF": (arData[i]['sF'])
-                        // })
-                        if (parseInt(arData[i + 1]['sF']) == "1") {
-                            // if()
-                            // ardEntry['end'] = "WTF";
+                        ardAll.push({
+                            "specialID": parseInt(arData[i]['timestamp']) + parseInt(arData[i]['id']),
+                            "id": parseInt(arData[i]['id']),
+                            "mod": arData[i]['mod'],
+                            "start": parseInt(arData[i]['timestamp']),
+                            "end": Date.now(), //parseInt(arData[i]['timestamp']),
+                            "from": (arData[i]['fromType']),
+                            "sF": parseInt(arData[i]['sF'])
+                        })
+                        if (parseInt(arData[i + 1]['sF']) == 1) {
                             ardEntry.push({
                                 "specialID": parseInt(arData[i]['timestamp']) + (arData[i]['id']),
                                 "id": parseInt(arData[i]['id']),
                                 "mod": arData[i]['mod'],
                                 "start": parseInt(arData[i]['timestamp']),
-"end": sessionUI.filter(function(d) { 
-    if(d.end > parseInt(arData[i]['timestamp'])){
-        return d.end;
-    }
-    // return d.end > parseInt(arData[i]['timestamp']);
-}),
+                                "end": Date.now(),
                                 "from": (arData[i]['fromType']),
-                                "sF": (arData[i]['sF'])
+                                "sF": parseInt(arData[i]['sF'])
                             })
-                 // sessionUI.filter(function(d) { 
-                    // return d.end > ardEntry[i]['timestamp'];
-                // });
-
-
-
-
-                    // visItems = uniques1.filter(function(d) {
-                    //     return d.timeIs < maxExtent && d.timeIs > minExtent;
-                    // });
-                                //filter the speical UI by those who are greater than
-                                //the index number of ardata's timestamp
-                                //then take the min of those filtered special UI
-
-
-
-
-                            // ardEntry.filter(function(d){
-                                // for(i=0; i<sessionUI.length; i++){
-                                    // if(d.start<sessionUI[i].end){
-                                    //     d.end = sessionUI[i].end;
-                                    // }
-                                    // return d.en < maxExtent && d.timeIs > minExtent;
-                                // }
-                            // })
-                        } 
-
-
-
-
-
-                        else {
+                        } else {
                             ardEntry.push({
                                 "specialID": parseInt(arData[i]['timestamp']) + (arData[i]['id']),
                                 "id": parseInt(arData[i]['id']),
@@ -400,7 +513,7 @@ prepData();
                                 "start": parseInt(arData[i]['timestamp']),
                                 "end": parseInt(arData[i + 1]['timestamp']),
                                 "from": (arData[i]['fromType']),
-                                "sF": (arData[i]['sF'])
+                                "sF": parseInt(arData[i]['sF'])
                             })
                         }
                     }
@@ -489,6 +602,14 @@ prepData();
                 .attr("stroke-width", .5)
                 .attr("stroke", "lightgray")
 
+
+            $(window).keypress(function(e) {
+                if (e.keyCode === 0 || e.keyCode === 32) {
+                    console.log('Space pressed');
+                    prepScales();
+                }
+            });
+
             var dashArray = "3 3 3 3";
             var timeFormat = d3.time.format("%a %H:%M");
 
@@ -505,16 +626,8 @@ prepData();
             //AND THEN EVERY SESSION, THESE GO BACK TO ZERO...
             var button1 = 0;
             var button2 = 0;
-var newItems = [];
+
             function prepScales() {
-// car.wheels = 4;
-                // for(i=0; i<ardEntry.length; i++){
-                //     if(ardEntry[i].start<sessionUI[i].end){
-                //         ardEntry[i].end = sessionUI[i].end;
-                //     }
-                // }
-                //     return d.end < maxExtent && d.timeIs > minExtent;
-                // }
                 for (i = 0; i < uniques1.length; i++) {
                     if (uniques1[i].buttonIs == "button1") {
                         button1++;
@@ -534,12 +647,44 @@ var newItems = [];
                 console.log(xMin + "xmin")
                 console.log(xMax + "xmax")
 
+                // ardUniques1 = unique(ardUni);
+                // console.log(ardUniques1 + "arduni");
+
                 console.log("in prep scales")
+                    // console.log(uniques1.length)
+                    // mindate = uniques1[1].timeIs;
+
 
                 //option 1
                 mindate = xMin; //ardEntry[0].start;
                 maxdate = xMax;
+                // mindate = +uniques1[0].timeIs;
+                // maxdate = +uniques1[uniques1.length-1].timeIs;
+                // //ONCE BUTTON IS BACK
+                // if(uniques1[0].timeIs<ardEntry[0].end){
+                //     mindate = +uniques1[0].timeIs;
+                // }else{
+                //     mindate = +ardEntry[0].end; 
+                // }
+                // if(uniques1[uniques1.length - 1].timeIs>ardEntry[ardEntry.length-1].end){
+                //  maxdate = +uniques1[uniques1.length - 1].timeIs;
+                // }else{
+                //  maxdate = +ardEntry[ardEntry.length-1].end; 
+                // }
 
+
+
+                ////DEALING WITH SESSION PROBLEMS
+                // if(sessionData.length>0){
+                //             maxdate = sessionData[sessionData.length-1].seshEnd;
+                //             mindate = sessionData[sessionData.length-1].seshStart;
+                //                 console.log(mindate+"minDEF"+maxdate+"maxDEF")
+                // }else{
+                //     maxdate = Date.now()-5000;
+                //     mindate = Date.now()-60000;
+                //                 console.log(mindate+"minUND"+maxdate+"maxUND")
+                // }
+                // scale using ranges
                 xAxisScale
                 // .domain([mindate, maxdate])
                     .domain([mindate - timevar, maxdate + timevar])
@@ -554,7 +699,25 @@ var newItems = [];
                     .attr("class", "axis") //Assign "axis" class
                     .attr('transform', 'translate(0, ' + (10) + ')');
 
+                // //WILL THIS WORK FOR BUTTON PRESSES
+                //             for (j = 0; j <= 24; j++) {
+                //                 totalButtons[j] = buttonConsolidation(j)
+                //             }
+
+                // for(i=0; i<uniques2.length; i++){
+
+                // }
+
+
+
+                // y.domain([0, ardUniques1.length]);
+                // console.log(mindate+"mindate"+maxdate+"maxdate")
+                // x.domain([mindate - timevar, maxdate + timevar]);
+                // if(mindate!=="undefined")
                 x.domain([mindate, maxdate]);
+
+
+
 
                 //brush
                 brush
@@ -647,12 +810,12 @@ var newItems = [];
                     .enter().append("rect")
                     .attr("class", "rectie")
                     .attr("x", function(d) {
-                        if (d.sF == "1") {
+                        if (d.sF == 1) {
                             return x(d.start);
                         } else {}
                     })
                     .attr("width", function(d, i) {
-                        if (d.sF == "1") {
+                        if (d.sF == 1) {
                             return x(d.end) - x(d.start);
                         } else {}
                     })
@@ -661,7 +824,7 @@ var newItems = [];
                     })
                     .attr("height", standardRect / 2)
                     .attr("fill", function(d) {
-                        if (d.sF == "1") {
+                        if (d.sF == 1) {
                             return oColor(d.from);
                         } else {}
                     })
@@ -722,15 +885,15 @@ var newItems = [];
                     });
 
                 ardItems = ardEntry.filter(function(d) {
-                    return d.start < maxExtent && d.end > minExtent && d.sF == "1" && d.mod == "BM";
+                    return d.start < maxExtent && d.end > minExtent && d.sF == 1 && d.mod == "BM";
                 });
-                //
-                // ardAllItems = ardEntry.filter(function(d) {
-                //     return d.start < maxExtent && d.end > minExtent && d.mod == "BM";
-                // });
+                ardAllItems = ardEntry.filter(function(d) {
+                    return d.start < maxExtent && d.end > minExtent && d.mod == "BM";
+                });
+
 
                 mItems = ardEntry.filter(function(d) {
-                    return d.start < maxExtent && d.end > minExtent && d.sF == "1" && d.mod == "M";
+                    return d.start < maxExtent && d.end > minExtent && d.sF == 1 && d.mod == "M";
                 });
                 mAllItems = ardEntry.filter(function(d) {
                     return d.start < maxExtent && d.end > minExtent && d.mod == "M";
@@ -739,7 +902,7 @@ var newItems = [];
 
 
                 bItems = ardEntry.filter(function(d) {
-                    return d.start < maxExtent && d.end > minExtent && d.sF == "1" && d.mod == "B";
+                    return d.start < maxExtent && d.end > minExtent && d.sF == 1 && d.mod == "B";
                 });
                 bAllItems = ardEntry.filter(function(d) {
                     return d.start < maxExtent && d.end > minExtent && d.mod == "B";
@@ -1142,14 +1305,14 @@ var newItems = [];
                         return "linkL" + d.from + d.start;
                     })
                     .attr("x1", function(d) {
-                        if (d.sF == "1") {
+                        if (d.sF == 1) {
                             return x1(d.start);
                         } else {
                             return x1(d.end);
                         }
                     })
                     .attr("x2", function(d) {
-                        if (d.sF == "1") {
+                        if (d.sF == 1) {
                             return x1(d.start);
                         } else {
                             return x1(d.end);
@@ -1188,7 +1351,7 @@ var newItems = [];
                         return lineAllItems[0].specialID;
                     })
                     .attr("x", function(d) {
-                        if (d.sF == "1") {
+                        if (d.sF == 1) {
                             return x1(d.start);
                         } else {
                             return x1(d.end);
@@ -1200,7 +1363,7 @@ var newItems = [];
                         return "ltext";
                     })
                     .attr("x", function(d) {
-                        if (d.sF == "1") {
+                        if (d.sF == 1) {
                             return x1(d.start);
                         } else {
                             return x1(d.end);
@@ -1219,7 +1382,7 @@ var newItems = [];
                     // })
                     .attr("font-size", 12)
                     .text(function(d) {
-                        if (d.sF == "1") {
+                        if (d.sF == 1) {
                             // linkI = i;
                             return "Link Made!"
                         } else {
