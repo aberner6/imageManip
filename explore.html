@@ -106,14 +106,35 @@
 </div> -->
 
 <body>
-    <!-- // <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script> -->
     <script src="d3.min.js"></script>
-    <script src="jquery.min.js"></script>
-
-    <!-- // <script src="http://cdn.jsdelivr.net/sparkjs/0.4.2/spark.min.js"></script> -->
+    <!-- // <script src="jquery.min.js"></script> -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 
+    <!-- // <script src="http://cdn.jsdelivr.net/sparkjs/0.4.2/spark.min.js"></script> -->
+    <!-- // <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script> -->
+
     <script type="text/javascript">
+
+//     $(window).load(function() {
+// jQuery.ajax({
+//             timeout : 1000,
+//             type : "GET",
+//             url : "http://pelars.sssup.it:8080/pelars/session",            
+//             success : function(jqXHR, status) {
+//                 console.log(jqXHR);
+//             },
+//             error : function(jqXHR, status) {
+//             }
+//         });
+// })
+
+
+
+
+
+
+
+
         var items = [{
             "component": 1,
             "start": 1439308645000,
@@ -354,26 +375,27 @@ prepData();
                                 "start": parseInt(arData[i]['timestamp']),
 "end": sessionUI.filter(function(d) { 
     if(d.end > parseInt(arData[i]['timestamp'])){
-        return d.end;
+        var thisEnd = Math.min(d.end);
+        return thisEnd;
+        // return Math.min(d.end);
+        // d3.min(d.end, function(d) {
+            // return Math.min(d.end);
+        // });
     }
-    // return d.end > parseInt(arData[i]['timestamp']);
 }),
                                 "from": (arData[i]['fromType']),
                                 "sF": (arData[i]['sF'])
                             })
-                 // sessionUI.filter(function(d) { 
-                    // return d.end > ardEntry[i]['timestamp'];
-                // });
 
 
 
+// visItems = uniques1.filter(function(d) {
+//     return d.timeIs < maxExtent && d.timeIs > minExtent;
+// });
 
-                    // visItems = uniques1.filter(function(d) {
-                    //     return d.timeIs < maxExtent && d.timeIs > minExtent;
-                    // });
-                                //filter the speical UI by those who are greater than
-                                //the index number of ardata's timestamp
-                                //then take the min of those filtered special UI
+//filter the speical UI by those who are greater than
+//the index number of ardata's timestamp
+//then take the min of those filtered special UI
 
 
 
