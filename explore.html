@@ -315,12 +315,40 @@ function prepData() {
                         }
                     })
                     for (var i = 0; i < arData.length; i++) {
-                        if (arData[i]['mod'] == "UI") {
+
+
+// if (arData[arData.length-1]['mod'] == "UI" && arData[arData.length-1]['sF']=="CLOSED"){
+//     mindate = arData[i-2]['timestamp'];
+//     maxdate = arData[i-1]['timestamp'];
+// } 
+// if (arData[arData.length-1]['mod'] == "UI" && arData[arData.length-1]['sF']=="OPEN"){
+//     mindate = arData[i-1]['timestamp'];
+//     maxdate = Date.now();
+// } 
+
+
+////if last line in data set is closed that is max time
+// min time is the one before
+//if the last line is open then that is mindate
+//and max date is now
+
+
+
+
+                        if (arData[i]['mod'] == "UI"&&arData[i]['sF']=="OPEN") {
                             sessionDates.push({
                                 startSesh: arData[i]['timestamp'],
-                                endSesh: arData[i]['timestamp']
+                                // endSesh: arData[i]['timestamp']
                             })
                         }
+                        if (arData[i]['mod'] == "UI"&&arData[i]['sF']=="CLOSED") {
+                            sessionDates.push({
+                                endSesh: arData[i]['timestamp'],
+                                // endSesh: arData[i]['timestamp']
+                            })                            
+                        }
+
+
                         if (arData[i]['sF'] == "CLOSED") {
                             //this is also where the mindate is working
                             sessionUI.push(parseInt(arData[i]['timestamp']));
@@ -335,8 +363,9 @@ function prepData() {
             var entry2 = [];
 
             function updateData() {
-                    mindate = parseInt(sessionDates[sessionDates.length-1].startSesh);
-                    maxdate = Date.now();
+                    // mindate = 
+                    // parseInt(sessionDates[sessionDates.length-1].startSesh);
+                    // maxdate = Date.now();
                 d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
                     for (var i = 0; i < data.length; i++) {
                         if (data[i]['Device'] == "420038000547343232363230") {
@@ -506,9 +535,7 @@ function prepData() {
 
             var xAxisCall = mini.append('g');
             var brushCall = mini.append("g");
-            //AND THEN EVERY SESSION, THESE GO BACK TO ZERO...
-            var button1 = 0;
-            var button2 = 0;
+
 var newItems = [];
             function prepScales() {
 // car.wheels = 4;
@@ -519,14 +546,7 @@ var newItems = [];
                 // }
                 //     return d.end < maxExtent && d.timeIs > minExtent;
                 // }
-                for (i = 0; i < uniques1.length; i++) {
-                    if (uniques1[i].buttonIs == "button1") {
-                        button1++;
-                    }
-                    if (uniques1[i].buttonIs == "button2") {
-                        button2++;
-                    }
-                }
+
                 // var timeFormat = d3.time.format("%I:%M %p %a");
                 // find data range
                 var xMin = d3.min(ardEntry, function(d) {
@@ -547,8 +567,9 @@ var newItems = [];
 
 
             //hardcode?
-            // maxdate =1441369066161;    //Math.min(sessionUI);
-            // mindate = 1441234980307;// Math.max(sessionUI);
+            maxdate =1441369066161;    //Math.min(sessionUI);
+            mindate =1441234966973;//1441368912917; 
+            // 1441234980307;// Math.max(sessionUI);
              // .Date.now()-6000000; //1440510048225;//
 
                 xAxisScale
@@ -671,12 +692,12 @@ console.log("speci"+d.mod+d.start +"start "+d.end+" end");
                     display();
                     index++;
 
-                    if ((+mindate + interval * index) == maxdate) {
+                    if ((+mindate + interval * (index)) >= maxdate) {
                         // if ((+mindate + interval * (index - 1)) >= maxdate + timevar) {
                         console.log(index + "index");
                         autoMoving = false;
                         clearInterval(autoMove);
-                        display();
+                        // display();
                         console.log("stopping interval")
                     }
 
@@ -691,7 +712,10 @@ console.log("speci"+d.mod+d.start +"start "+d.end+" end");
             var r = 4;
             var rects;
 
+
             function display() {
+            var button1 = 0;
+            var button2 = 0;
 
                 var circs, rectz, ardRectz,
                     minExtent = brush.extent()[0],
@@ -700,7 +724,16 @@ console.log("speci"+d.mod+d.start +"start "+d.end+" end");
                     visItems = uniques1.filter(function(d) {
                         return d.timeIs < maxExtent && d.timeIs > minExtent;
                     });
+            //AND THEN EVERY SESSION, THESE GO BACK TO ZERO...
 
+                for (i = 0; i < visItems.length; i++) {
+                    if (visItems[i].buttonIs == "button1") {
+                        button1++;
+                    }
+                    if (visItems[i].buttonIs == "button2") {
+                        button2++;
+                    }
+                }
                 ardItems = ardEntry.filter(function(d) {
                     return d.start < maxExtent && d.end > minExtent && d.sF == "1" && d.mod == "BM";
                 });
@@ -1273,6 +1306,44 @@ console.log("speci"+d.mod+d.start +"start "+d.end+" end");
                     })
                 rects.exit().remove();
                 ///////////////////////////////
+                ///////////////////////////////
+                var sumButs;
+var sumXScale = d3.scale.linear()
+    .domain([0, button1])
+    .range([w/2, w])
+                sumButs = itemRects.selectAll(".sumButs")
+                    .data(button1)
+                    .attr("x", function(d) {
+                            return sumXScale(d);
+                        })
+                .attr("width", 20);
+                sumButs.enter().append("image")
+                    .attr("class","sumButs")
+                    .attr("xlink:href", "ideaWhite.png")
+                    .attr("y", 50)
+                    .attr("width", imgHeight)
+                    .attr("height", imgHeight)
+                    .attr("x", function(d) {
+                        return sumXScale(d);
+                    })
+                sumButs.exit().remove();
+//////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 var sup;
                 sup = main.selectAll(".conn")
                     .data(visItems, function(d) {
