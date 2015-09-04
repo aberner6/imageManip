@@ -345,6 +345,8 @@ function prepData() {
                 // d3.csv("https://dl.dropboxusercontent.com/s/gucv71ip6w71mib/testarsdb2?dl=0", function(error, arData) {
                     //call one and then the other and then the other
                     for (var i = 0; i < onlyArd.length; i++) {
+                        var blah = [];
+
                         ardUni.push({
                             "mod": onlyArd[i]['mod'],
                             "from": (onlyArd[i]['fromType']),
@@ -356,7 +358,6 @@ function prepData() {
 
 
                         if ((onlyArd[i + 1]['sF']) == "1") {
-var matchedEnd;
                             ardEntry.push({
                                 "specialID": parseInt(onlyArd[i]['timestamp']) + (onlyArd[i]['id']),
                                 "id": parseInt(onlyArd[i]['id']),
@@ -364,10 +365,13 @@ var matchedEnd;
                                 "start": parseInt(onlyArd[i]['timestamp']),
 "fk": sessionUI.filter(function(d) { 
     if(d > parseInt(onlyArd[i]['timestamp'])){
-        matchedEnd = d;
+        // console.log(d[0]);
+        blah.push(d);
+        return 0;
+        // return 0;
     }
 }),
-"end":Math.min(matchedEnd),
+"end": blah[0],
                                 "from": (onlyArd[i]['fromType']),
                                 "sF": (onlyArd[i]['sF'])
                             })
@@ -613,7 +617,7 @@ var newItems = [];
                                 return x(d.end) - x(d.start);
                             }else{ 
 console.log("speci"+d.mod+d.start +"start "+d.end+" end");
-                                // return 0;
+                                return 0;
                             }
                         } else { return 0 }
                     })
@@ -678,6 +682,7 @@ console.log("speci"+d.mod+d.start +"start "+d.end+" end");
                 var circs, rectz, ardRectz,
                     minExtent = brush.extent()[0],
                     maxExtent = brush.extent()[1],
+
                     visItems = uniques1.filter(function(d) {
                         return d.timeIs < maxExtent && d.timeIs > minExtent;
                     });
