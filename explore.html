@@ -316,13 +316,12 @@ prepData();
 
             var oneThing = [];
 
+var whatIs = [];
             function prepData() {
                 d3.csv("https://dl.dropboxusercontent.com/s/gucv71ip6w71mib/testarsdb2?dl=0", function(error, arData) {
                     for (var i = 0; i < arData.length - 1; i++) {
                         if (arData[i]['sF'] == "CLOSED") {
-                            sessionUI.push({
-                                "end": arData[i]['timestamp'],
-                            })
+                            sessionUI.push(parseInt(arData[i]['timestamp']));
                             prepdData = true;
                             // console.log(prepdData+"prepData")
                         }
@@ -356,37 +355,33 @@ prepData();
                             "mod": arData[i]['mod'],
                             "from": (arData[i]['fromType']),
                         })
-                        // ardAll.push({
-                        //     "specialID": parseInt(arData[i]['timestamp']) + parseInt(arData[i]['id']),
-                        //     "id": parseInt(arData[i]['id']),
-                        //     "mod": arData[i]['mod'],
-                        //     "start": parseInt(arData[i]['timestamp']),
-                        //     "end": Date.now(), //parseInt(arData[i]['timestamp']),
-                        //     "from": (arData[i]['fromType']),
-                        //     "sF": (arData[i]['sF'])
-                        // })
                         if (parseInt(arData[i + 1]['sF']) == "1") {
-                            // if()
-                            // ardEntry['end'] = "WTF";
+var matchedEnd;
                             ardEntry.push({
                                 "specialID": parseInt(arData[i]['timestamp']) + (arData[i]['id']),
                                 "id": parseInt(arData[i]['id']),
                                 "mod": arData[i]['mod'],
                                 "start": parseInt(arData[i]['timestamp']),
-"end": sessionUI.filter(function(d) { 
-    if(d.end > parseInt(arData[i]['timestamp'])){
-        var thisEnd = Math.min(d.end);
-        return thisEnd;
-        // return Math.min(d.end);
-        // d3.min(d.end, function(d) {
-            // return Math.min(d.end);
-        // });
+"fuck": sessionUI.filter(function(d) { 
+    if(d > parseInt(arData[i]['timestamp'])){
+        matchedEnd = d;
     }
 }),
+"end":Math.min(matchedEnd),
                                 "from": (arData[i]['fromType']),
                                 "sF": (arData[i]['sF'])
                             })
 
+
+
+
+
+
+
+
+
+
+// ardEntry[i].end = 
 
 
 // visItems = uniques1.filter(function(d) {
