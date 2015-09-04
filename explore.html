@@ -151,30 +151,32 @@ var startTime;
 prepData();
 startTimer();
 function startTimer(){
+    console.log("timer")
         // var startTime = setTimeout(function() { 
         startTime = setInterval(function() {
             if (prepdData) {
+                    console.log("updateData")
                     updateData();
                     calledAgain = false;
                     prepped = false;
 
-                    // prepdData = false;
-
                     console.log(uniques1.length + "button");
                     console.log(ardEntry.length + "ard");
-                    // setTimeout(function() {
-                    if (ardEntry.length > 0 && uniques1.length > 0) {
-                            console.log(uniques1.length + "button");
-                            console.log(ardEntry.length + "ard");
-                            prepScales();
-                            console.log("prepped")
-                            // if (prepped && !autoMoving) {
-                            // } else {
-                                autoMovement(0, amt, mindate); //not amt*2
-                            // }
-                        // }
-                    // }, 1000)
+                setTimeout(function() {
+                    // if (ardEntry.length > 0 && uniques1.length > 0) {
+                prepScales();
+                console.log("prepped")
+                if (prepped && !autoMoving) {
+                            // var e = [mindate, maxdate]; //set brush range
+                            // var e = [maxdate-timevar*5, maxdate]; //set brush range
+                            // brush.extent(e);
+                            // mini.call(brush);                             
+                } else {
+                    autoMovement(0, amt, mindate); //not amt*2
                 }
+                        // }
+                    }, 3000)
+                // }
             }
         }, 10000)
 }
@@ -304,6 +306,7 @@ function startTimer(){
 
 var whatIs = [];
 var onlyArd;
+var sessionDates = [];
 function prepData() {
                 d3.csv("https://dl.dropboxusercontent.com/s/gucv71ip6w71mib/testarsdb2?dl=0", function(error, arData) {
                     onlyArd = arData.filter(function(d){
@@ -312,7 +315,12 @@ function prepData() {
                         }
                     })
                     for (var i = 0; i < arData.length; i++) {
-
+                        if (arData[i]['mod'] == "UI") {
+                            sessionDates.push({
+                                startSesh: arData[i]['timestamp'],
+                                endSesh: arData[i]['timestamp']
+                            })
+                        }
                         if (arData[i]['sF'] == "CLOSED") {
                             //this is also where the mindate is working
                             sessionUI.push(parseInt(arData[i]['timestamp']));
@@ -327,6 +335,8 @@ function prepData() {
             var entry2 = [];
 
             function updateData() {
+                    mindate = parseInt(sessionDates[sessionDates.length-1].startSesh);
+                    maxdate = Date.now();
                 d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
                     for (var i = 0; i < data.length; i++) {
                         if (data[i]['Device'] == "420038000547343232363230") {
@@ -341,10 +351,9 @@ function prepData() {
                     // uniques1 = ["0","0"]
                     uniques1 = unique(entry2);
                 })
-
                 // d3.csv("https://dl.dropboxusercontent.com/s/gucv71ip6w71mib/testarsdb2?dl=0", function(error, arData) {
                     //call one and then the other and then the other
-                    for (var i = 0; i < onlyArd.length; i++) {
+                    for (var i = 0; i < onlyArd.length-1; i++) {
                         var blah = [];
 
                         ardUni.push({
@@ -491,7 +500,9 @@ function prepData() {
 
 
             var brush = d3.svg.brush()
-            var timevar = 60000;
+            // var timevar = 60000;
+            var timevar = 0;
+
 
             var xAxisCall = mini.append('g');
             var brushCall = mini.append("g");
@@ -533,8 +544,11 @@ var newItems = [];
                 // mindate = xMin; //ardEntry[0].start;
                 // maxdate = xMax;
             
-            maxdate =1441369066161;    //Math.min(sessionUI);
-            mindate = 1441234980307;// Math.max(sessionUI);
+
+
+            //hardcode?
+            // maxdate =1441369066161;    //Math.min(sessionUI);
+            // mindate = 1441234980307;// Math.max(sessionUI);
              // .Date.now()-6000000; //1440510048225;//
 
                 xAxisScale
@@ -657,7 +671,7 @@ console.log("speci"+d.mod+d.start +"start "+d.end+" end");
                     display();
                     index++;
 
-                    if ((+mindate + interval * (index - 1)) >= maxdate) {
+                    if ((+mindate + interval * index) == maxdate) {
                         // if ((+mindate + interval * (index - 1)) >= maxdate + timevar) {
                         console.log(index + "index");
                         autoMoving = false;
