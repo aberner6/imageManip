@@ -10,6 +10,7 @@
     }
     
     body {
+        font-family: 'Lato', sans-serif;
         background-color: black;
     }
     
@@ -47,28 +48,33 @@
     }
     
     .optionsText {
+        font-family: 'Lato', sans-serif;
         /*font-family: sans-serif;*/
         font-size: 12px;
     }
     
     .wodry1 {
+        font-family: 'Lato', sans-serif;
         /*font-family: sans-serif;*/
         font-size: 18px;
     }
     
     .wodry {
+        font-family: 'Lato', sans-serif;
         /*font-family: sans-serif;*/
         font-size: 18px;
     }
     
     .wodry2 {
+        font-family: 'Lato', sans-serif;
         /*font-family: Helvetica Neue;*/
         font-size: 18px;
     }
     
     .title {
+        font-family: 'Lato-Light', sans-serif;
         color: white;
-        font-family: "Lato-Light";
+        /*font-family: "Lato-Light";*/
         font-size: 24px;
         margin-left: 40px;
     }
@@ -78,7 +84,8 @@ left: 110px;
     top: 13px;
     position: absolute;
 
-        fill: lightgray;
+        fill: white;
+
         font-family: "Lato-Light";
     }
     
@@ -104,13 +111,15 @@ left: 110px;
         width: 100px;
     }
 </style>
-<div class="title">LEARNING DASHBOARD</div>
+<div class="title">LEARNING DASHBOARD: TABLE 1</div>
 <div class="logo">
     <img src="Pelars_logos.png"></img>
 </div>
 
 
 <body>
+<!--     <link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'> -->
+<link href='https://fonts.googleapis.com/css?family=Lato:400,300' rel='stylesheet' type='text/css'>
     <script src="d3.min.js"></script>
     <!-- // <script src="jquery.min.js"></script> -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
@@ -132,6 +141,17 @@ left: 110px;
 //             }
 //         });
 // })
+var whatsthis = Date.now();
+mindate = +(new Date(whatsthis-8000000+4000000-5000000));
+// new Date(mindate-5000000)
+// Sat Sep 05 2015 13:33:44 GMT+0200 (CEST)
+// mindate = 1441440000; //thisDate; //Date.now().getHours()
+maxdate = Date.now();
+
+
+
+
+
 
         var labelOpacity = 0;
         var opacity = .8;
@@ -173,7 +193,7 @@ function startTimer(){
                 console.log("prepped")
                 if (prepped && !autoMoving) {
                             // var e = [mindate, maxdate]; //set brush range
-                            // var e = [maxdate-timevar*5, maxdate]; //set brush range
+                            // // var e = [maxdate-timevar*5, maxdate]; //set brush range
                             // brush.extent(e);
                             // mini.call(brush);                             
                 } else {
@@ -189,6 +209,13 @@ function startTimer(){
             var entry1 = [];
             var prepped = false;
             // "2015/09/02 16:36:38"
+
+
+
+// "Sat Sep 05 2015 13:50:28 GMT+0200 (CEST)"
+            // var parseTime = d3.time.format('%a %b %d %Y %H:%M:%S').parse;
+
+
             var parseSeshDate = d3.time.format('%Y/%m/%d %H:%M:%S').parse;
             var sessionData = [];
             // 15:00:07-314093466_12-08-2015
@@ -202,7 +229,7 @@ function startTimer(){
 
             var m = [20, 15, 15, 120], //top right bottom left
                 w = window.innerWidth - m[1] * 2 - m[3],
-                h = window.innerHeight - m[0] - m[2],
+                h = window.innerHeight - m[3],//m[0] - m[2],
                 miniHeight = 80, //laneLength * 12 + 50,
                 mainHeight = h - miniHeight - 50;
 
@@ -224,7 +251,7 @@ function startTimer(){
                 .attr("class", "main");
 
             var mini = chart.append("g")
-                .attr("transform", "translate(" + m[3] + "," + (mainHeight + m[0]) + ")")
+                .attr("transform", "translate(" + m[3] + "," + (mainHeight + m[0]-30) + ")")
                 .attr("width", w)
                 .attr("height", miniHeight)
                 .attr("class", "mini")
@@ -233,13 +260,17 @@ function startTimer(){
             //scales
             var x = d3.scale.linear()
                 .domain([mindate, maxdate])
-                .range([m[1], w]);
+                .range([-10, w]);
+                // .range([m[1], w]);
 
             var x1 = d3.scale.linear()
+                .domain([mindate, maxdate])
                 .range([m[1] + 10, w]);
             var xAxis = d3.svg.axis();
             var xAxisScale = d3.time.scale()
-                .range([m[1], w]);
+                // .range([m[1], w]);
+                .range([-10, w]);
+
 
             //scales
             var y = d3.scale.linear()
@@ -313,7 +344,6 @@ var whatIs = [];
 var onlyArd;
 var sessionDates = [];
 function prepData() {
-    // https://www.dropbox.com/s/a32v02txwd0bns0/arsdb2?dl=0
                 d3.csv("https://dl.dropboxusercontent.com/s/a32v02txwd0bns0/arsdb2?dl=0", function(error, arData) {
                     onlyArd = arData.filter(function(d){
                         if(d.mod!="UI"){
@@ -331,21 +361,17 @@ function prepData() {
 //     mindate = parseInt(arData[arData.length-1]['timestamp']);
 //     maxdate = Date.now();
 // } 
-
-// var thisDate = Date.now();
-// thisDate.getHours();
-
-mindate = 1441440000; //thisDate; //Date.now().getHours()
-maxdate = Date.now();
+// var whatsthis = Date.now();
+// mindate = +(new Date(whatsthis-5000000));
+// // mindate = 1441440000; //thisDate; //Date.now().getHours()
+// maxdate = Date.now();
 
 
 ////if last line in data set is closed that is max time
 // min time is the one before
 //if the last line is open then that is mindate
 //and max date is now
-
-
-
+                            prepdData = true;
 
                         if (arData[i]['mod'] == "UI"&&arData[i]['sF']=="OPENED") {
                             sessionDates.push({
@@ -360,11 +386,9 @@ maxdate = Date.now();
                             })                            
                         }
 
-
                         if (arData[i]['sF'] == "CLOSED") {
                             //this is also where the mindate is working
                             sessionUI.push(parseInt(arData[i]['timestamp']));
-                            prepdData = true;
                             // console.log(prepdData+"prepData")
                         }
                     }
@@ -373,27 +397,34 @@ maxdate = Date.now();
 
             var i = 0;
             var entry2 = [];
-
+var buttonData = [];
             function updateData() {
                     // mindate = 
                     // parseInt(sessionDates[sessionDates.length-1].startSesh);
                     // maxdate = Date.now();
-                d3.csv("https://dl.dropboxusercontent.com/s/a32v02txwd0bns0/arsdb2?dl=0", function(error, data) {
+                        // https://www.dropbox.com/s/iz6mkdrd5z4wvvc/db2?dl=0
+
+                d3.csv("https://dl.dropboxusercontent.com/s/iz6mkdrd5z4wvvc/db2?dl=0", function(error, data) {
+                    // console.log("buttondata")
+                        // buttonData.push(data);
+
                     for (var i = 0; i < data.length; i++) {
-                        if (data[i]['Device'] == "400025000c47343432313031") {
+                        // console.log(data[i][0])
+                        // if (data[i]['Device'] == "400025000c47343432313031") {
                             entry2.push({
                                 "buttonIs": data[i]['button'],
                                 "timeIs": parseDate(data[i]['Timestamp']),
                                 "photO": data[i]['overview'],
                                 "photS": data[i]['screenshot']
                             })
-                        }
+                        // }
                     }
                     // uniques1 = ["0","0"]
                     uniques1 = unique(entry2);
                 })
                 // d3.csv("https://dl.dropboxusercontent.com/s/gucv71ip6w71mib/testarsdb2?dl=0", function(error, arData) {
                     //call one and then the other and then the other
+                    //FOR ARDUINO DATA
                     for (var i = 0; i < onlyArd.length-1; i++) {
                         var blah = [];
 
@@ -413,15 +444,15 @@ maxdate = Date.now();
                                 "id": parseInt(onlyArd[i]['id']),
                                 "mod": onlyArd[i]['mod'],
                                 "start": parseInt(onlyArd[i]['timestamp']),
-"fk": sessionUI.filter(function(d) { 
-    if(d > parseInt(onlyArd[i]['timestamp'])){
-        // console.log(d[0]);
-        blah.push(d);
-        return 0;
-        // return 0;
-    }
-}),
-"end": blah[0],
+                                "fk": sessionUI.filter(function(d) { 
+                                    if(d > parseInt(onlyArd[i]['timestamp'])){
+                                        // console.log(d[0]);
+                                        blah.push(d);
+                                        return 0;
+                                        // return 0;
+                                    }
+                                }),
+                                "end": blah[0],
                                 "from": (onlyArd[i]['fromType']),
                                 "sF": (onlyArd[i]['sF'])
                             })
@@ -445,41 +476,6 @@ maxdate = Date.now();
                     }
                 // })
 
-
-
-
-                // https://www.dropbox.com/s/sdeu5gp8m10fal4/testsession.json?dl=0
-                // d3.json("https://dl.dropboxusercontent.com/s/hqnajrv8l2odhy9/session.json?dl=0", function(blah, dah){
-                    //SSSSSA DATA
-                // d3.json("https://dl.dropboxusercontent.com/s/sdeu5gp8m10fal4/testsession.json?dl=0", function(blah, dah) {
-                //     var thisData = (dah);
-                //     // console.log(thisData.length+"sssa")
-                //     // console.log(thisData[0]+"sssa")
-                //     // if(thisData.length>0){
-                //     if (typeof(thisData.length) !== "undefined") {
-                //         console.log(dah.length)
-                //         for (var i = 0; i < dah.length - 1; i++) {
-                //             if (dah[i]['user'] == "126") { //SYNC with button press correct table
-                //                 // oneThing.push(dah[0]['end'])
-                //                 if (typeof(dah[i]['end']) !== "undefined") {
-                //                     console.log("yes")
-                //                     sessionData.push({
-                //                         "seshStart": parseSeshDate(dah[i]['start']),
-                //                         "seshEnd": parseSeshDate(dah[i]['end']),
-                //                         "sesh": parseInt(dah[i]['session'])
-                //                     })
-                //                 } else {
-                //                     sessionData.push({
-                //                         "seshStart": parseSeshDate(dah[i]['start']),
-                //                         "seshEnd": Date.now(),
-                //                         "sesh": parseInt(dah[i]['session'])
-                //                     })
-                //                 }
-
-                //             }
-                //         }
-                //     } else {}
-                // })
             }
 
 
@@ -498,8 +494,9 @@ maxdate = Date.now();
                 })
                 .attr("width", 20)
                 .attr("height", 20)
+                    // .attr("x", x1(mindate));
                 // .attr("x", m[3] - 40);
-                .attr("x", m[1] + 10 - 20)
+                .attr("x", -45)
 
             var iconText;
             iconText = main.selectAll("optionsText")
@@ -509,7 +506,7 @@ maxdate = Date.now();
                 .attr("y", function(d) {
                     return yis(d);
                 })
-                .attr("x", m[1] + 10 - 20) //m[3] - 50)
+                .attr("x", -55)//m[1] + 10 - 20) //m[3] - 50)
                 .attr("text-anchor", "end")
                 .text(function(d) {
                     return d;
@@ -526,7 +523,7 @@ maxdate = Date.now();
                 .attr("y2", function(d) {
                     return yis(d);
                 })
-                .attr("x1", m[1] + 10)
+                .attr("x1", 0)//m[1] + 10)
                 .attr("x2", w) //m[3]) //not w
                 .attr("stroke-dasharray", dashArray)
                 .attr("stroke-width", .5)
@@ -579,14 +576,13 @@ var newItems = [];
 
 
             //hardcode?
-            maxdate =1441369066161;    //Math.min(sessionUI);
-            mindate =1441234966973;//1441368912917; 
+            // maxdate =1441369066161;    //Math.min(sessionUI);
+            // mindate =1441234966973;//1441368912917; 
             // 1441234980307;// Math.max(sessionUI);
              // .Date.now()-6000000; //1440510048225;//
 
                 xAxisScale
-                // .domain([mindate,maxdate])
-                // .domain([1441234966973, Date.now()])
+                // .domain([mindate, maxdate])
                     .domain([mindate - timevar, maxdate + timevar])
 
                 xAxis
@@ -750,6 +746,12 @@ console.log("speci"+d.mod+d.start +"start "+d.end+" end");
                 ardItems = ardEntry.filter(function(d) {
                     return d.start < maxExtent && d.end > minExtent && d.sF == "1" && d.mod == "BM";
                 });
+
+                ccItems = ardEntry.filter(function(d) {
+                    return d.start < maxExtent && d.sF == "1" && d.mod == "CC";
+                });
+
+
                 //
                 // ardAllItems = ardEntry.filter(function(d) {
                 //     return d.start < maxExtent && d.end > minExtent && d.mod == "BM";
@@ -850,18 +852,18 @@ console.log("speci"+d.mod+d.start +"start "+d.end+" end");
                     .data(d3.range(1))
                     .enter()
                     .append("text").attr("class", "wodry1")
-                    .attr("x", x1(minExtent) - 10)
-                    .attr("y", yis(options[0]) - 70)
+                    .attr("x", 0)//x1(minExtent) - 10)
+                    .attr("y", yis(options[0]) - 67)
                     .attr("text-anchor", "end")
                     .text(minHeadline);
                 var timeText = main.selectAll("wodry")
                     .data(d3.range(1))
                     .enter()
                     .append("text").attr("class", "wodry")
-                    .attr("x", x1(minExtent) - 10)
+                    .attr("x", 0)//-45//x1(minExtent) - 10)
                     .attr("y", yis(options[0]) - 50)
                     .attr("text-anchor", "end")
-                    .text("@" + minExtTime + " - ");
+                    .text("@" + minExtTime);
 
                 var timeText2;
                 timeText2 = main.selectAll("wodry2")
@@ -879,7 +881,7 @@ console.log("speci"+d.mod+d.start +"start "+d.end+" end");
                             return 0;
                         }
                     })
-                    .text(" - " + maxExtTime);
+                    .text(maxExtTime);
                 ///////////////////
                 /////////WHAT IS WRONG
                 ardRectz = itemArdz.selectAll("rect")
@@ -969,6 +971,46 @@ console.log("speci"+d.mod+d.start +"start "+d.end+" end");
                                 .attr("stroke", "none")
                                 .attr("opacity", 1)
                             mRectz.exit().remove();
+
+
+
+
+
+
+                            // var ccLinez;
+                            // ccLinez = itemArdz.selectAll("ccline")
+                            //     .data(ccItems, function(d) {
+                            //         return d.specialID;
+                            //     })
+                            //     .attr("x1", function(d) {
+                            //         return x1(d.start);
+                            //     })
+                            //     .attr("x2", function(d) {
+                            //         return x1(d.start);
+                            //     })
+                            // ccLinez.enter().append("line")
+                            //     .attr("class", "ccline")
+                            //     .attr("x1", function(d) {
+                            //         return x1(d.start);
+                            //     })
+                            //     .attr("x2", function(d) {
+                            //         return x1(d.start);
+                            //     })
+                            //     .attr("y1", function(d, i) {
+                            //         return yis(d.from);
+                            //     })
+                            //     .attr("y2", function(d, i) {
+                            //         return yis(d.from)+10;
+                            //     })
+                            //     .attr("fill", function(d) {
+                            //         return oColor(d.from);
+                            //     })
+                            //     .attr("stroke", function(d) {
+                            //         return oColor(d.from);
+                            //     })
+                            //     .attr("stroke-width",2)
+                            //     .attr("opacity", 1)
+                            // ccLinez.exit().remove();
 
 
 
@@ -1148,62 +1190,62 @@ console.log("speci"+d.mod+d.start +"start "+d.end+" end");
                 circR.exit().remove();
 
                 ///////////////////////////////
-                var linkL;
-                linkL = itemCircs.selectAll("line")
-                    .data(lineAllItems, function(d) {
-                        return d.specialID;
-                    })
-                    .attr("x1", function(d) {
-                        return x1(d.start);
-                    })
-                    .attr("x2", function(d) {
-                        return x1(d.start);
-                    })
-                    .attr("fill", "none")
-                    .attr("stroke", function(d) {
-                        return oColor(d.from);
-                    })
-                linkL.enter().append("line")
-                    .attr("class", function(d) {
-                        return "linkL" + d.from + d.start;
-                    })
-                    .attr("x1", function(d) {
-                        if (d.sF == "1") {
-                            return x1(d.start);
-                        } else {
-                            return x1(d.end);
-                        }
-                    })
-                    .attr("x2", function(d) {
-                        if (d.sF == "1") {
-                            return x1(d.start);
-                        } else {
-                            return x1(d.end);
-                        }
-                    })
-                    .attr("y1", function(d, i) {
-                        if (typeof(d.from) !== "undefined") {
-                            return yis(d.from);
-                        } else {
-                            return 0
-                        }
-                    })
-                    .attr("y2", function(d, i) {
-                        if (typeof(d.from) !== "undefined") {
-                            return yis(d.from) + standardRect * 2;
-                        } else {
-                            return 0
-                        }
-                    })
-                    .attr("stroke", function(d) {
-                        if (typeof(d.from) !== "undefined") {
-                            return oColor(d.from);
-                        } else {
-                            return "none";
-                        }
-                    })
-                    .attr("opacity", 1)
-                linkL.exit().remove();
+                // var linkL;
+                // linkL = itemCircs.selectAll("line")
+                //     .data(lineAllItems, function(d) {
+                //         return d.specialID;
+                //     })
+                //     .attr("x1", function(d) {
+                //         return x1(d.start);
+                //     })
+                //     .attr("x2", function(d) {
+                //         return x1(d.start);
+                //     })
+                //     .attr("fill", "none")
+                //     .attr("stroke", function(d) {
+                //         return oColor(d.from);
+                //     })
+                // linkL.enter().append("line")
+                //     .attr("class", function(d) {
+                //         return "linkL" + d.from + d.start;
+                //     })
+                //     .attr("x1", function(d) {
+                //         if (d.sF == "1") {
+                //             return x1(d.start);
+                //         } else {
+                //             return x1(d.end);
+                //         }
+                //     })
+                //     .attr("x2", function(d) {
+                //         if (d.sF == "1") {
+                //             return x1(d.start);
+                //         } else {
+                //             return x1(d.end);
+                //         }
+                //     })
+                //     .attr("y1", function(d, i) {
+                //         if (typeof(d.from) !== "undefined") {
+                //             return yis(d.from);
+                //         } else {
+                //             return 0
+                //         }
+                //     })
+                //     .attr("y2", function(d, i) {
+                //         if (typeof(d.from) !== "undefined") {
+                //             return yis(d.from) + standardRect * 2;
+                //         } else {
+                //             return 0
+                //         }
+                //     })
+                //     .attr("stroke", function(d) {
+                //         if (typeof(d.from) !== "undefined") {
+                //             return oColor(d.from);
+                //         } else {
+                //             return "none";
+                //         }
+                //     })
+                //     .attr("opacity", 1)
+                // linkL.exit().remove();
 
 
                 var linkI;
@@ -1272,19 +1314,20 @@ console.log("speci"+d.mod+d.start +"start "+d.end+" end");
                 var imgHeight = 20;
                 var timeRect;
                 var timeWidth = $(".wodry2").width();
-                // timeRect = itemRects.selectAll("timeRects")
-                //     .data(d3.range(1))
-                //     .attr("x", x1(minExtent))
+                timeRect = itemRects.selectAll("timeRects")
+                    .data(d3.range(1))
+                    .attr("x", x1(minExtent))
 
-                //     timeRect.enter()
-                //     .append("rect").attr("class", "timeRects")
-                //         .attr("transform", "translate(" + 0 + "," + -imgHeight*2 + ")")
-                //     .attr("x", x1(minExtent))
-                //     .attr("y", yis(options[0])-2)
-                //     .attr("width", w-x1(minExtent)) //not -timeiwdth
-                //     .attr("height", imgHeight/4)//imgHeight/2)
-                //     .attr("fill","white")
-                //     .attr("opacity",extentsOpacity);
+                    timeRect.enter()
+                    .append("rect").attr("class", "timeRects")
+                        .attr("transform", "translate(" + 0 + "," + -imgHeight*2.5 + ")")
+                    .attr("x", -10)//x1(minExtent))
+                    .attr("y", yis(options[0])-5)
+                    .attr("width", w-timeWidth) //not -timeiwdth
+                    .attr("height", 1)//imgHeight/2)
+                    .attr("fill","white")
+                    .attr("stroke-dasharray",dashArray)
+                    .attr("opacity",extentsOpacity);
                 ///////////////////////////////
                 rects = itemRects.selectAll(".image-cropper")
                     .data(visItems, function(d) {
@@ -1311,7 +1354,7 @@ console.log("speci"+d.mod+d.start +"start "+d.end+" end");
                             return "thunderWhite.png";
                         } else {}
                     })
-                    .attr("y", 50)
+                    .attr("y", imgHeight)
                     .attr("width", imgHeight)
                     .attr("height", imgHeight)
                     .attr("x", function(d) {
@@ -1342,55 +1385,40 @@ console.log("speci"+d.mod+d.start +"start "+d.end+" end");
 //                 sumButs.exit().remove();
 //////////////////////////
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                var sup;
-                sup = main.selectAll(".conn")
-                    .data(visItems, function(d) {
-                        return d.timeIs;
-                    })
-                    .attr("x1", function(d) {
-                        return x1(d.timeIs) + imgHeight / 2;
-                    })
-                    .attr("x2", function(d) {
-                        return x(d.timeIs);
-                    })
-                    .attr("y1", 50 + imgHeight)
-                    .attr("y2", mainHeight + m[0] + miniY) //or something
-                sup.enter().append("line")
-                    .attr("class", function(d) {
-                        d3.select(this).each(moveToFront);
-                        return "conn";
-                    })
-                    .attr("y1", 50 + imgHeight)
-                    .attr("y2", mainHeight + m[0] + miniY) //or something
-                    .attr("stroke", linkColor)
-                    .attr("x1", function(d) {
-                        return x1(d.timeIs) + imgHeight / 2;
-                    })
-                    .attr("x2", function(d) {
-                        return x(d.timeIs);
-                    })
-                sup.exit().remove();
+                // var sup;
+                // sup = main.selectAll(".conn")
+                //     .data(visItems, function(d) {
+                //         return d.timeIs;
+                //     })
+                //     .attr("x1", function(d) {
+                //         return x1(d.timeIs) + imgHeight / 2;
+                //     })
+                //     .attr("x2", function(d) {
+                //         return x(d.timeIs);
+                //     })
+                //     .attr("y1", imgHeight*2)
+                //     .attr("y2", yis(options[0])-50)
+                //     // .attr("y2", mainHeight + m[0] + miniY) //or something
+                // sup.enter().append("line")
+                //     .attr("class", function(d) {
+                //         d3.select(this).each(moveToFront);
+                //         return "conn";
+                //     })
+                //     .attr("y1", imgHeight*2)
+                //     .attr("y2",yis(options[0])-50)
+                //     // .attr("y2", mainHeight + m[0] + miniY) //or something
+                //     .attr("stroke", linkColor)
+                //     .attr("x1", function(d) {
+                //         return x1(d.timeIs) + imgHeight / 2;
+                //     })
+                //     .attr("x2", function(d) {
+                //         return x(d.timeIs);
+                //     })
+                //     .attr("stroke-width",1)
+                // sup.exit().remove();
                 ///////////////////////////////
 
 
-
-
-                // timeRect.exit.remove();
                 // var overview;
                 //     overview = itemRects.selectAll(".screen")
                 //         .data(visItems)
@@ -1400,29 +1428,63 @@ console.log("speci"+d.mod+d.start +"start "+d.end+" end");
                 //     overview
                 //         .enter()
                 //         .append("image")
-                //         // .attr("id","screen")
                 //         .attr("class", "screen")
-                //         // function(d,i){
-                //             // return i;
-                //         // })
                 //         .attr("xlink:href", function(d, i) {
-                //             if(i>0 && visItems[i].timeIs.getMinutes()!=visItems[i-1].timeIs.getMinutes()&&d.buttonIs=="button3"){
-                //                 console.log(visItems[i].timeIs.getMinutes())
-                //                 return d.photS;
-                //             }else{}
-                //             // return d.photS;
+                //             // if(i>0 && visItems[i].timeIs.getMinutes()!=visItems[i-1].timeIs.getMinutes()){
+                //             //     console.log(visItems[i].timeIs.getMinutes())
+                //             //     return d.photS;
+                //             // }else{}
+                //             return d.photS;
                 //         })
                 //         .attr("x", function(d, i) {
                 //             return x1(d.timeIs); //scale based on d.time
                 //         })
                 //         .attr("y", function(d, i) {
-                //             return 10;
+                //             return 100;
                 //         })
                 //         .attr("width", 100)
                 //         .attr("height", 100);
                 //         overview.exit().remove();
 
                 ///////////////////////////////
+                // var textOver;
+                //     textOver = itemRects.selectAll(".textOv")
+                //         .data(visItems)
+                //         .attr("x", function(d, i) {
+                //             return x1(d.timeIs); //scale based on d.time
+                //         })
+                //     textOver
+                //         .enter()
+                //         .append("text")
+                //         .attr("class", "textOv")
+                //         .attr("x", function(d, i) {
+                //             return x1(d.timeIs); //scale based on d.time
+                //         })
+                //         .attr("y", function(d, i) {
+                //             return 0;
+                //         })
+                //         .text(function(d){
+                //             return parseDate(d.timeIs);
+                //         })
+                //         textOver.exit().remove();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                 // if (i > 0) {
                 //     if (parseDate(entry[i].timeIs).getHours() == parseDate(entry[i - 1].timeIs).getHours()) {
