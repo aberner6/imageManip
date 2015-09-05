@@ -133,7 +133,7 @@ left: 110px;
 //         });
 // })
 var whatsthis = Date.now();
-mindate = +(new Date(whatsthis-5000000));
+mindate = +(new Date(whatsthis-8000000));
 // mindate = 1441440000; //thisDate; //Date.now().getHours()
 maxdate = Date.now();
 
@@ -1260,10 +1260,11 @@ console.log("speci"+d.mod+d.start +"start "+d.end+" end");
                     .append("rect").attr("class", "timeRects")
                         .attr("transform", "translate(" + 0 + "," + -imgHeight*2 + ")")
                     .attr("x", x1(minExtent))
-                    .attr("y", yis(options[0])-2)
+                    .attr("y", yis(options[0])-5)
                     .attr("width", w-x1(minExtent)) //not -timeiwdth
-                    .attr("height", imgHeight/6)//imgHeight/2)
+                    .attr("height", 1)//imgHeight/2)
                     .attr("fill","white")
+                    .attr("stroke-dasharray",dashArray)
                     .attr("opacity",extentsOpacity);
                 ///////////////////////////////
                 rects = itemRects.selectAll(".image-cropper")
@@ -1291,7 +1292,7 @@ console.log("speci"+d.mod+d.start +"start "+d.end+" end");
                             return "thunderWhite.png";
                         } else {}
                     })
-                    .attr("y", 0)
+                    .attr("y", imgHeight*2)
                     .attr("width", imgHeight)
                     .attr("height", imgHeight)
                     .attr("x", function(d) {
@@ -1322,21 +1323,6 @@ console.log("speci"+d.mod+d.start +"start "+d.end+" end");
 //                 sumButs.exit().remove();
 //////////////////////////
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                 // var sup;
                 // sup = main.selectAll(".conn")
                 //     .data(visItems, function(d) {
@@ -1348,15 +1334,17 @@ console.log("speci"+d.mod+d.start +"start "+d.end+" end");
                 //     .attr("x2", function(d) {
                 //         return x(d.timeIs);
                 //     })
-                //     .attr("y1", 50 + imgHeight)
-                //     .attr("y2", mainHeight + m[0] + miniY) //or something
+                //     .attr("y1", imgHeight*2)
+                //     .attr("y2", yis(options[0])-50)
+                //     // .attr("y2", mainHeight + m[0] + miniY) //or something
                 // sup.enter().append("line")
                 //     .attr("class", function(d) {
                 //         d3.select(this).each(moveToFront);
                 //         return "conn";
                 //     })
-                //     .attr("y1", 50 + imgHeight)
-                //     .attr("y2", mainHeight + m[0] + miniY) //or something
+                //     .attr("y1", imgHeight*2)
+                //     .attr("y2",yis(options[0])-50)
+                //     // .attr("y2", mainHeight + m[0] + miniY) //or something
                 //     .attr("stroke", linkColor)
                 //     .attr("x1", function(d) {
                 //         return x1(d.timeIs) + imgHeight / 2;
@@ -1364,6 +1352,7 @@ console.log("speci"+d.mod+d.start +"start "+d.end+" end");
                 //     .attr("x2", function(d) {
                 //         return x(d.timeIs);
                 //     })
+                //     .attr("stroke-width",1)
                 // sup.exit().remove();
                 ///////////////////////////////
 
