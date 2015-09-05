@@ -172,10 +172,10 @@ function startTimer(){
                 prepScales();
                 console.log("prepped")
                 if (prepped && !autoMoving) {
-                            var e = [mindate, maxdate]; //set brush range
+                            // var e = [mindate, maxdate]; //set brush range
                             // var e = [maxdate-timevar*5, maxdate]; //set brush range
-                            brush.extent(e);
-                            mini.call(brush);                             
+                            // brush.extent(e);
+                            // mini.call(brush);                             
                 } else {
                     autoMovement(0, amt, mindate); //not amt*2
                 }
@@ -313,6 +313,7 @@ var whatIs = [];
 var onlyArd;
 var sessionDates = [];
 function prepData() {
+    // https://www.dropbox.com/s/a32v02txwd0bns0/arsdb2?dl=0
                 d3.csv("https://dl.dropboxusercontent.com/s/a32v02txwd0bns0/arsdb2?dl=0", function(error, arData) {
                     onlyArd = arData.filter(function(d){
                         if(d.mod!="UI"){
@@ -330,9 +331,11 @@ function prepData() {
 //     mindate = parseInt(arData[arData.length-1]['timestamp']);
 //     maxdate = Date.now();
 // } 
-var whatsthis = Date.now();
-mindate = +(new Date(whatsthis-5000000));
-// mindate = 1441440000; //thisDate; //Date.now().getHours()
+
+// var thisDate = Date.now();
+// thisDate.getHours();
+
+mindate = 1441440000; //thisDate; //Date.now().getHours()
 maxdate = Date.now();
 
 
@@ -340,7 +343,9 @@ maxdate = Date.now();
 // min time is the one before
 //if the last line is open then that is mindate
 //and max date is now
-                            prepdData = true;
+
+
+
 
                         if (arData[i]['mod'] == "UI"&&arData[i]['sF']=="OPENED") {
                             sessionDates.push({
@@ -355,9 +360,11 @@ maxdate = Date.now();
                             })                            
                         }
 
+
                         if (arData[i]['sF'] == "CLOSED") {
                             //this is also where the mindate is working
                             sessionUI.push(parseInt(arData[i]['timestamp']));
+                            prepdData = true;
                             // console.log(prepdData+"prepData")
                         }
                     }
@@ -366,34 +373,27 @@ maxdate = Date.now();
 
             var i = 0;
             var entry2 = [];
-var buttonData = [];
+
             function updateData() {
                     // mindate = 
                     // parseInt(sessionDates[sessionDates.length-1].startSesh);
                     // maxdate = Date.now();
-                        // https://www.dropbox.com/s/iz6mkdrd5z4wvvc/db2?dl=0
-
-                d3.csv("https://dl.dropboxusercontent.com/s/iz6mkdrd5z4wvvc/db2?dl=0", function(error, data) {
-                    // console.log("buttondata")
-                        // buttonData.push(data);
-
+                d3.csv("https://dl.dropboxusercontent.com/s/a32v02txwd0bns0/arsdb2?dl=0", function(error, data) {
                     for (var i = 0; i < data.length; i++) {
-                        // console.log(data[i][0])
-                        // if (data[i]['Device'] == "400025000c47343432313031") {
+                        if (data[i]['Device'] == "400025000c47343432313031") {
                             entry2.push({
                                 "buttonIs": data[i]['button'],
                                 "timeIs": parseDate(data[i]['Timestamp']),
                                 "photO": data[i]['overview'],
                                 "photS": data[i]['screenshot']
                             })
-                        // }
+                        }
                     }
                     // uniques1 = ["0","0"]
                     uniques1 = unique(entry2);
                 })
                 // d3.csv("https://dl.dropboxusercontent.com/s/gucv71ip6w71mib/testarsdb2?dl=0", function(error, arData) {
                     //call one and then the other and then the other
-                    //FOR ARDUINO DATA
                     for (var i = 0; i < onlyArd.length-1; i++) {
                         var blah = [];
 
@@ -413,15 +413,15 @@ var buttonData = [];
                                 "id": parseInt(onlyArd[i]['id']),
                                 "mod": onlyArd[i]['mod'],
                                 "start": parseInt(onlyArd[i]['timestamp']),
-                                "fk": sessionUI.filter(function(d) { 
-                                    if(d > parseInt(onlyArd[i]['timestamp'])){
-                                        // console.log(d[0]);
-                                        blah.push(d);
-                                        return 0;
-                                        // return 0;
-                                    }
-                                }),
-                                "end": blah[0],
+"fk": sessionUI.filter(function(d) { 
+    if(d > parseInt(onlyArd[i]['timestamp'])){
+        // console.log(d[0]);
+        blah.push(d);
+        return 0;
+        // return 0;
+    }
+}),
+"end": blah[0],
                                 "from": (onlyArd[i]['fromType']),
                                 "sF": (onlyArd[i]['sF'])
                             })
@@ -445,6 +445,41 @@ var buttonData = [];
                     }
                 // })
 
+
+
+
+                // https://www.dropbox.com/s/sdeu5gp8m10fal4/testsession.json?dl=0
+                // d3.json("https://dl.dropboxusercontent.com/s/hqnajrv8l2odhy9/session.json?dl=0", function(blah, dah){
+                    //SSSSSA DATA
+                // d3.json("https://dl.dropboxusercontent.com/s/sdeu5gp8m10fal4/testsession.json?dl=0", function(blah, dah) {
+                //     var thisData = (dah);
+                //     // console.log(thisData.length+"sssa")
+                //     // console.log(thisData[0]+"sssa")
+                //     // if(thisData.length>0){
+                //     if (typeof(thisData.length) !== "undefined") {
+                //         console.log(dah.length)
+                //         for (var i = 0; i < dah.length - 1; i++) {
+                //             if (dah[i]['user'] == "126") { //SYNC with button press correct table
+                //                 // oneThing.push(dah[0]['end'])
+                //                 if (typeof(dah[i]['end']) !== "undefined") {
+                //                     console.log("yes")
+                //                     sessionData.push({
+                //                         "seshStart": parseSeshDate(dah[i]['start']),
+                //                         "seshEnd": parseSeshDate(dah[i]['end']),
+                //                         "sesh": parseInt(dah[i]['session'])
+                //                     })
+                //                 } else {
+                //                     sessionData.push({
+                //                         "seshStart": parseSeshDate(dah[i]['start']),
+                //                         "seshEnd": Date.now(),
+                //                         "sesh": parseInt(dah[i]['session'])
+                //                     })
+                //                 }
+
+                //             }
+                //         }
+                //     } else {}
+                // })
             }
 
 
@@ -544,13 +579,14 @@ var newItems = [];
 
 
             //hardcode?
-            // maxdate =1441369066161;    //Math.min(sessionUI);
-            // mindate =1441234966973;//1441368912917; 
+            maxdate =1441369066161;    //Math.min(sessionUI);
+            mindate =1441234966973;//1441368912917; 
             // 1441234980307;// Math.max(sessionUI);
              // .Date.now()-6000000; //1440510048225;//
 
                 xAxisScale
-                // .domain([mindate, maxdate])
+                // .domain([mindate,maxdate])
+                // .domain([1441234966973, Date.now()])
                     .domain([mindate - timevar, maxdate + timevar])
 
                 xAxis
@@ -1352,32 +1388,39 @@ console.log("speci"+d.mod+d.start +"start "+d.end+" end");
                 ///////////////////////////////
 
 
-                var overview;
-                    overview = itemRects.selectAll(".screen")
-                        .data(visItems)
-                        .attr("x", function(d, i) {
-                            return x1(d.timeIs); //scale based on d.time
-                        })
-                    overview
-                        .enter()
-                        .append("image")
-                        .attr("class", "screen")
-                        .attr("xlink:href", function(d, i) {
-                            // if(i>0 && visItems[i].timeIs.getMinutes()!=visItems[i-1].timeIs.getMinutes()){
-                            //     console.log(visItems[i].timeIs.getMinutes())
-                            //     return d.photS;
-                            // }else{}
-                            return d.photS;
-                        })
-                        .attr("x", function(d, i) {
-                            return x1(d.timeIs); //scale based on d.time
-                        })
-                        .attr("y", function(d, i) {
-                            return -100;
-                        })
-                        .attr("width", 100)
-                        .attr("height", 100);
-                        overview.exit().remove();
+
+
+                // timeRect.exit.remove();
+                // var overview;
+                //     overview = itemRects.selectAll(".screen")
+                //         .data(visItems)
+                //         .attr("x", function(d, i) {
+                //             return x1(d.timeIs); //scale based on d.time
+                //         })
+                //     overview
+                //         .enter()
+                //         .append("image")
+                //         // .attr("id","screen")
+                //         .attr("class", "screen")
+                //         // function(d,i){
+                //             // return i;
+                //         // })
+                //         .attr("xlink:href", function(d, i) {
+                //             if(i>0 && visItems[i].timeIs.getMinutes()!=visItems[i-1].timeIs.getMinutes()&&d.buttonIs=="button3"){
+                //                 console.log(visItems[i].timeIs.getMinutes())
+                //                 return d.photS;
+                //             }else{}
+                //             // return d.photS;
+                //         })
+                //         .attr("x", function(d, i) {
+                //             return x1(d.timeIs); //scale based on d.time
+                //         })
+                //         .attr("y", function(d, i) {
+                //             return 10;
+                //         })
+                //         .attr("width", 100)
+                //         .attr("height", 100);
+                //         overview.exit().remove();
 
                 ///////////////////////////////
 
