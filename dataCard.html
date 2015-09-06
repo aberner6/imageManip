@@ -8,14 +8,17 @@
     rect.backround {
         display: block;
     }
-    body{
-        /*background-color:black;*/
+    
+    body {
+        font-family: 'Lato', sans-serif;
+        /*background-color: black;*/
     }
+    
     .brush .extent {
         stroke: lightgray;
-        fill:white;
-        /*fill: lightgray;*/
-        fill-opacity:.5;
+        /*fill: white;*/
+        fill: lightgray;
+        fill-opacity: .5;
         /*fill-opacity: .1;*/
         /*.365;*/
         display: block;
@@ -45,460 +48,436 @@
     }
     
     .optionsText {
+        font-family: 'Lato', sans-serif;
         /*font-family: sans-serif;*/
         font-size: 12px;
     }
-
+    
     .wodry1 {
-        /*font-family: sans-serif;*/
-        font-size: 18px;
-    }    
-    .wodry {
+        font-family: 'Lato', sans-serif;
         /*font-family: sans-serif;*/
         font-size: 18px;
     }
+    
+    .wodry {
+        font-family: 'Lato', sans-serif;
+        /*font-family: sans-serif;*/
+        font-size: 18px;
+    }
+    
     .wodry2 {
+        font-family: 'Lato', sans-serif;
         /*font-family: Helvetica Neue;*/
         font-size: 18px;
     }
-    .title{
-        color:lightgray;
-        font-family:"Lato-Light";  
-                font-size: 24px;  
-                margin-left:40px;   
+    
+    .title {
+position: absolute;
+    right: 10px;
+    top: 35px;
+        font-family: 'Lato-Light', sans-serif;
+        color: black;
+        /*font-family: "Lato-Light";*/
+        font-size: 24px;
+        /*margin-left: 40px;*/
     }
-    text{
-        fill:lightgray;
-        font-family:"Lato-Light";
+    
+    text {
+left: 110px;
+    top: 13px;
+    position: absolute;
+
+        fill: black;
+
+        font-family: "Lato-Light";
     }
-    p{
-        color:black;
-         font-family:"Lato-Light";       
+    
+    p {
+        color: black;
+        font-family: "Lato-Light";
     }
-#connections1{
-    top:50%;
-    color:black;
-    border-bottom: 1px solid #777;
-    position:absolute;
-    left:45%;
-    border-radius: 10px;
-    padding: 2px 4px;
-    background-color:white;
-    /*opacity:0;*/
-    display:none;
-}
+    
+    #connections1 {
+        top: 50%;
+        color: black;
+        border-bottom: 1px solid #777;
+        position: absolute;
+        left: 45%;
+        border-radius: 10px;
+        padding: 2px 4px;
+        background-color: white;
+        /*opacity:0;*/
+        display: none;
+    }
+    
+    .logo {
+        width: 100px;
+    }
 </style>
-    <div class="title">LEARNING DASHBOARD</div>
-  <div id = "connections1">Module Connected!</div>
+<!-- <div class="title">LEARNING DASHBOARD: TABLE 1</div> -->
+<!-- <div class="logo">
+    <img src="Pelars_logos.png"></img>
+</div> -->
+
 
 <body>
-    <!-- // <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" charset="utf-8"></script> -->
+<!--     <link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'> -->
+<link href='https://fonts.googleapis.com/css?family=Lato:400,300' rel='stylesheet' type='text/css'>
     <script src="d3.min.js"></script>
-    <script src="jquery.min.js"></script>
-
-    <!-- // <script src="http://cdn.jsdelivr.net/sparkjs/0.4.2/spark.min.js"></script> -->
+    <!-- // <script src="jquery.min.js"></script> -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
 
-    <script type="text/javascript">
-        var items = [{
-            "component": 1,
-            "start": 1439308645000,
-            "end": 1439308645000 + 44762800
-        }, {
-            "component": 2,
-            "start": 1440156273000 - 100000000,
-            "end": 1440156273000
-        }, {
-            "component": 3,
-            "start": 1440156273000 - 80000000,
-            "end": 1440156273000
-        }, ]
+    <!-- // <script src="http://cdn.jsdelivr.net/sparkjs/0.4.2/spark.min.js"></script> -->
+    <!-- // <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script> -->
 
-var labelOpacity = 0;
-var opacity = .8;
-var extentsOpacity = .5;
-var linkColor = "black"; //not black
+    <script type="text/javascript">
+
+//     $(window).load(function() {
+// jQuery.ajax({
+//             timeout : 1000,
+//             type : "GET",
+//             url : "http://pelars.sssup.it:8080/pelars/session",            
+//             success : function(jqXHR, status) {
+//                 console.log(jqXHR);
+//             },
+//             error : function(jqXHR, status) {
+//             }
+//         });
+// })
+// var whatsthis = Date.now();
+// mindate = +(new Date(whatsthis-8000000+4000000-5000000));
+// // new Date(mindate-5000000)
+// // Sat Sep 05 2015 13:33:44 GMT+0200 (CEST)
+// // mindate = 1441440000; //thisDate; //Date.now().getHours()
+// maxdate = Date.now();
+
+
+
+
+
+
+        var labelOpacity = 0;
+        var opacity = .8;
+        var extentsOpacity = .5;
+        var linkColor = "black"; //not black
         var amt = 6;
         var index = 0;
 
-var calledAgain = false;
-var startTime= setInterval(function() {
-            updateData();
-            calledAgain = false;
-            prepped = false;
-			    setTimeout(function() {
-			        if (ardEntry.length > 0 && uniques1.length>0) { 
-			        	// console.log(uniques1)
-			            console.log(uniques1.length+"button");
-			            console.log(ardEntry.length+"ard");
-			            prepScales();
-			            console.log("prepped")
-			            if (prepped && !autoMoving) {
+        var calledAgain = false;
+
+
+
+        var prepdData = false;
+        // var startTime = setTimeout(function() {
+        //     prepData();
+        // }, 10)
+
+
+
+
+var startTime;
+prepData();
+// startTimer();
+// function startTimer(){
+        // var startTime = setTimeout(function() { 
+        startTime = setInterval(function() {
+    console.log("timer")
+
+            if (prepdData) {
+                    console.log("updateData")
+                    updateData();
+                    calledAgain = false;
+                    prepped = false;
+
+                    console.log(uniques1.length + "button");
+                    console.log(ardEntry.length + "ard");
+                // setTimeout(function() {
+                    // if (ardEntry.length > 0 && uniques1.length > 0) {
+                prepScales();
+                console.log("prepped")
+                // if (prepped && !autoMoving) {
                             // var e = [mindate, maxdate]; //set brush range
-
-                            // var e = [maxdate-timevar*5, maxdate]; //set brush range
+                            // // var e = [maxdate-timevar*5, maxdate]; //set brush range
                             // brush.extent(e);
-                            // mini.call(brush);
-                            // display();
-                            // brush.extent()
-			            }
-                        else{ 
-                            autoMovement(0, amt, mindate); //not amt*2
-                        }
-			        }
-			    }, 3000)
+                            // mini.call(brush);                             
+                // } else {
+                    // autoMovement(0, amt, mindate); //not amt*2
+                // }
+                        // }
+                    // }, 3000)
+                // }
+            }
         }, 10000)
-        // Timestamp,Device,button,overview,screenshot
-        var entry1 = [];
-        var prepped = false;
-// "2015/09/02 16:36:38"
-var parseSeshDate = d3.time.format('%Y/%m/%d %H:%M:%S').parse;
-var sessionData = [];
-        // 15:00:07-314093466_12-08-2015
-        var parseDate = d3.time.format('%X_%d-%m-%Y').parse;
-        var mindate;
-        var maxdate; // = "Fri Aug 01 2015 13:24:33 GMT+0200 (CEST)";
-
-        var uniques = [];
-
-        var totalPhotos = [];
-//mine
-        // var w = window.innerWidth - 200;
-        // var h = window.innerHeight - 40;
-
-        // var m = [20, 15, 15, 120], //top right bottom left
-        //     miniHeight = 80,
-        //     mainHeight = 500;
-//mind
-//BUNKAT
-        var m = [20, 15, 15, 120], //top right bottom left
-            w = 700 - m[1]*2 - m[3],
-            h = 500 - m[0] - m[2],
-            miniHeight = 80,//laneLength * 12 + 50,
-            mainHeight = h - miniHeight - 50;
-
-        var chart = d3.select("body")
-                    .append("svg")
-                    .attr("width", w + m[1] + m[3])
-                    .attr("height", h + m[0] + m[2])
-                    .attr("class", "chart");
-        chart.append("defs").append("clipPath")
-            .attr("id", "clip")
-            .append("rect")
-            .attr("width", w)
-            .attr("height", mainHeight);
-
-        var main = chart.append("g")
-                    .attr("transform", "translate(" + m[3] + "," + 0 + ")")
-                    .attr("width", w)
-                    .attr("height", mainHeight)
-                    .attr("class", "main");
-
-        var mini = chart.append("g")
-                    .attr("transform", "translate(" + m[3] + "," + (mainHeight + m[0]) + ")")
-                    .attr("width", w)
-                    .attr("height", miniHeight)
-                    .attr("class", "mini")
-            // .attr("clip-path", "url(#clip)");
-
-
-        // var headline = chart.append("g")
-        //     .attr("transform", "translate(" + m[3] + "," + 0 + ")")
-        //     .attr("width", w)
-        //     .attr("height", 50)
-
-        //scales
-        var x = d3.scale.linear()
-                // .domain([timeBegin, timeEnd])
-                .range([m[1], w]);
-
-        var x1 = d3.scale.linear()
-                .range([m[1]+10, w]);
-        var xAxis = d3.svg.axis();
-        var xAxisScale = d3.time.scale()
-            .range([m[1], w]);
-            // .range([0, w+m[3]*1.1]);
-            // .range([m[3], w]);
-
-        //scales
-        var y = d3.scale.linear()
-            .range([50, h / 2]);
+// }
+                // Timestamp,Device,button,overview,screenshot
+            var entry1 = [];
+            var prepped = false;
+            // "2015/09/02 16:36:38"
 
 
 
-        var ySum = d3.scale.linear()
-            .range([1, 10]);
+// "Sat Sep 05 2015 13:50:28 GMT+0200 (CEST)"
+            // var parseTime = d3.time.format('%a %b %d %Y %H:%M:%S').parse;
 
-        var options = [];
-//ldr is light sensor
-        options.push("BTN", "LED", "POT", "LDR", "TMP", "ACR", "PEZ", "RGB", "COL", "ROT", "IF", "Interval", "Fade", "Swap", "Map", "Counter", "Trigger", "Note", "Random", "PONG", "SimonSays");
 
-        var specialList = [];
+            var parseSeshDate = d3.time.format('%Y/%m/%d %H:%M:%S').parse;
+            var sessionData = [];
+            // 15:00:07-314093466_12-08-2015
+            var parseDate = d3.time.format('%X_%d-%m-%Y').parse;
+            var mindate; // = Date.now()-60000;
+            var maxdate; // = "Fri Aug 01 2015 13:24:33 GMT+0200 (CEST)";
 
-        var yis = d3.scale.ordinal()
-            .domain(options)
-            .rangePoints([100, mainHeight]);
+            var uniques = [];
 
-var miniY = 40;
-        var yOther = d3.scale.ordinal()
-            .domain(options)
-            .rangePoints([miniY, miniHeight]);
+            var totalPhotos = [];
 
-        var xis = d3.scale.ordinal()
-            .domain(options)
-            .rangePoints([m[3], w]);
+            var m = [20, 15, 15, 120], //top right bottom left
+                w = window.innerWidth - m[1] * 2 - m[3],
+                h = window.innerHeight - m[3],//m[0] - m[2],
+                miniHeight = 80, //laneLength * 12 + 50,
+                mainHeight = h - miniHeight - 50;
 
-        var oColor = d3.scale.ordinal()
-            .domain(options)
-            .range(d3.scale.category20c().range());
+            var chart = d3.select("body")
+                .append("svg")
+                .attr("width", w + m[1] + m[3])
+                .attr("height", h + m[0] + m[2])
+                .attr("class", "chart");
+            chart.append("defs").append("clipPath")
+                .attr("id", "clip")
+                .append("rect")
+                .attr("width", w)
+                .attr("height", mainHeight);
 
-        var sumMain = chart.append("g")
-            .attr("transform", "translate(" + m[0] + "," + (mainHeight + m[3] / 2) + ")")
-            .attr("width", w)
-            .attr("height", h / 2)
-            .attr("class", "sum");
+            var main = chart.append("g")
+                .attr("transform", "translate(" + m[3] + "," + 0 + ")")
+                .attr("width", w)
+                .attr("height", mainHeight)
+                .attr("class", "main");
 
-        var itemRectz = main.append("g")
-            .attr("clip-path", "url(#clip)");
+            var mini = chart.append("g")
+                .attr("transform", "translate(" + m[3] + "," + (mainHeight + m[0]-30) + ")")
+                .attr("width", w)
+                .attr("height", miniHeight)
+                .attr("class", "mini")
+                .attr("clip-path", "url(#clip)");
 
-        var itemCircs = main.append("g")
-            .attr("clip-path", "url(#clip)");
+            //scales
+            var x = d3.scale.linear()
+                .domain([mindate, maxdate])
+                .range([-10, w]);
+                // .range([m[1], w]);
 
-        var itemArdz = main.append("g")
-            .attr("clip-path", "url(#clip)");
+            var x1 = d3.scale.linear()
+                .domain([mindate, maxdate])
+                .range([m[1] + 10, w]);
+            var xAxis = d3.svg.axis();
+            var xAxisScale = d3.time.scale()
+                // .range([m[1], w]);
+                .range([-10, w]);
 
-        var sumArdz = sumMain.append("g")
-            .attr("clip-path", "url(#clip)");
 
-        var itemLinks = main.append("g")
-            .attr("clip-path", "url(#clip)");
+            //scales
+            var y = d3.scale.linear()
+                .range([50, h / 2]);
 
-        var itemRects = main.append("g")
-            .attr("clip-path", "url(#clip)");
-        getData();
 
-        var uniques1, uniques2;
-        var ardUniques1;
-        var ardEntry = [];
-        var ardExit = [];
-        var ardAll = [];
-        var ardUni = [];
 
-var oneThing = [];
-        function getData() {
-// d3.json("pelars.sssup.it:8080/pelars/session", function(blah, dah){
-//     console.log(dah);
-// })
-// https://www.dropbox.com/s/hqnajrv8l2odhy9/session.json?dl=0
-d3.json("https://dl.dropboxusercontent.com/s/hqnajrv8l2odhy9/session.json?dl=0", function(blah, dah){
-    console.log(dah)
-                 for (var i = 0; i < dah.length; i++) {
-                    if (dah[i]['user'] == "126") { //SYNC with button press correct table
-                        // oneThing.push(dah[0]['end'])
-                        if(parseSeshDate(dah[i]['end'])!="undefined"){
-                            sessionData.push({
-                                "seshStart": parseSeshDate(dah[i]['start']),
-                                "seshEnd": parseSeshDate(dah[i]['end']), 
-                                "sesh": parseInt(dah[i]['session'])
+            var ySum = d3.scale.linear()
+                .range([1, 10]);
+
+            var options = [];
+            //ldr is light sensor
+            options.push("BTN", "RLY", "LED", "POT", "LDR", "TMP", "ACR", "PEZ", "RGB", "COL", "ROT", "IF", "Interval", "Fade", "Swap", "Map", "Counter", "Trigger", "Note", "Random", "PONG", "SimonSays");
+
+            var specialList = [];
+
+            var yis = d3.scale.ordinal()
+                .domain(options)
+                .rangePoints([100, mainHeight]);
+
+            var miniY = 40;
+            var yOther = d3.scale.ordinal()
+                .domain(options)
+                .rangePoints([miniY, miniHeight]);
+
+            var xis = d3.scale.ordinal()
+                .domain(options)
+                .rangePoints([m[0], w]);
+
+            var oColor = d3.scale.ordinal()
+                .domain(options)
+                .range(d3.scale.category20c().range());
+
+            var sumMain = chart.append("g")
+                .attr("transform", "translate(" + m[0] + "," + (mainHeight + m[3] / 2) + ")")
+                .attr("width", w)
+                .attr("height", h / 2)
+                .attr("class", "sum");
+
+            var itemRectz = main.append("g")
+                .attr("clip-path", "url(#clip)");
+
+            var itemCircs = main.append("g")
+                .attr("clip-path", "url(#clip)");
+
+            var itemArdz = main.append("g")
+                .attr("clip-path", "url(#clip)");
+
+            var sumArdz = sumMain.append("g")
+                .attr("clip-path", "url(#clip)");
+
+            var itemLinks = main.append("g")
+                .attr("clip-path", "url(#clip)");
+
+            var itemRects = main.append("g")
+                .attr("clip-path", "url(#clip)");
+            // getData();
+
+            var uniques1, uniques2;
+            var ardUniques1;
+            var ardEntry = [];
+            var ardExit = [];
+            var ardAll = [];
+            var ardUni = [];
+            var sessionUI = [];
+            var ardMin = [];
+
+            var oneThing = [];
+
+var whatIs = [];
+var onlyArd;
+var sessionDates = [];
+function prepData() {
+                d3.csv("https://dl.dropboxusercontent.com/s/a32v02txwd0bns0/arsdb2?dl=0", function(error, arData) {
+                    onlyArd = arData.filter(function(d){
+                        if(d.mod!="UI"){
+                            return d;
+                        }
+                    })
+                    for (var i = 0; i < arData.length; i++) {
+
+
+if (arData[arData.length-1]['mod'] == "UI" && arData[arData.length-1]['sF']=="CLOSED"){
+    mindate = parseInt(arData[arData.length-2]['timestamp']);
+    maxdate = parseInt(arData[arData.length-1]['timestamp']);
+} 
+if (arData[arData.length-1]['mod'] == "UI" && arData[arData.length-1]['sF']=="OPENED"){
+    mindate = parseInt(arData[arData.length-1]['timestamp']);
+    maxdate = Date.now();
+} 
+
+
+
+////if last line in data set is closed that is max time
+// min time is the one before
+//if the last line is open then that is mindate
+//and max date is now
+                            prepdData = true;
+
+                        if (arData[i]['mod'] == "UI"&&arData[i]['sF']=="OPENED") {
+                            sessionDates.push({
+                                startSesh: arData[i]['timestamp'],
+                                // endSesh: arData[i]['timestamp']
                             })
-                        } else{
-                             sessionData.push({
-                                "seshStart": parseSeshDate(dah[i]['start']),
-                                "seshEnd": Date.now(), 
-                                "sesh": parseInt(dah[i]['session'])
-                            })                           
+                        }
+                        if (arData[i]['mod'] == "UI"&&arData[i]['sF']=="CLOSED") {
+                            sessionDates.push({
+                                endSesh: arData[i]['timestamp'],
+                                // endSesh: arData[i]['timestamp']
+                            })                            
                         }
 
+                        if (arData[i]['sF'] == "CLOSED") {
+                            //this is also where the mindate is working
+                            sessionUI.push(parseInt(arData[i]['timestamp']));
+                            // console.log(prepdData+"prepData")
+                        }
                     }
-                }   
-})
+                })
+            }
 
+            var i = 0;
+            var entry2 = [];
+var buttonData = [];
+            function updateData() {
+                    // mindate = 
+                    // parseInt(sessionDates[sessionDates.length-1].startSesh);
+                    // maxdate = Date.now();
+                        // https://www.dropbox.com/s/iz6mkdrd5z4wvvc/db2?dl=0
 
+                d3.csv("https://dl.dropboxusercontent.com/s/iz6mkdrd5z4wvvc/db2?dl=0", function(error, data) {
+                    // console.log("buttondata")
+                        // buttonData.push(data);
 
-            d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
-                for (var i = 0; i < data.length; i++) {
-                    if (data[i]['Device'] == "420038000547343232363230") {
-                        entry1.push({
-                            "buttonIs": data[i]['button'],
-                            "timeIs": parseDate(data[i]['Timestamp']),
-                            "photO": data[i]['overview'],
-                            "photS": data[i]['screenshot']
-                        })
+                    for (var i = 0; i < data.length; i++) {
+                        // console.log(data[i][0])
+                        // if (data[i]['Device'] == "400025000c47343432313031") {
+                            entry2.push({
+                                "buttonIs": data[i]['button'],
+                                "timeIs": parseDate(data[i]['Timestamp']),
+                                "photO": data[i]['overview'],
+                                "photS": data[i]['screenshot']
+                            })
+                        // }
                     }
-                }
-                // uniques1 = ["0","0"]
-                uniques1 = unique(entry1);
-            })
+                    // uniques1 = ["0","0"]
+                    uniques1 = unique(entry2);
+                })
+                // d3.csv("https://dl.dropboxusercontent.com/s/gucv71ip6w71mib/testarsdb2?dl=0", function(error, arData) {
+                    //call one and then the other and then the other
+                    //FOR ARDUINO DATA
+                    for (var i = 0; i < onlyArd.length-1; i++) {
+                        var blah = [];
 
-            //  function read()
-            // {
-            //      var prearData = new XMLHttpRequest();
-            //      prearData.open("GET", "http://localhost:8000/events1.log", true);
-            //      prearData.onreadystatechange = function () 
-            //      {
-            //      if (prearData.readyState === 4) 
-            //     {  
-            //         // Makes sure the document is ready to parse.
-            //         if (prearData.status === 200) 
-            //         {  
-            //              // Makes sure it's found the file.
-            //              document.getElementById("div").innerHTML = prearData.responseText;  
-            //         }
-            //     }
-            // }
-            // prearData.send(null)
-            // }
-
-
-
-
-            // myurl = 'http://pelars.netne.net/eventsL.log';
-            // $.getJSON( myurl + '&callback=?', function(dataAjax) {
-            // })
-            // console.log(dataAjax)
-
-            // d3.csv("https://dl.dropboxusercontent.com/s/t2vbg2tsdbord9w/events1.log?dl=0", function(ferror,arData){
-            // d3.csv("https://dl.dropboxusercontent.com/s/a6uni0ubw86wwe0/events2.log?dl=0", function(ferror,arData){
-            //function parsingA(prearData) {
-            // fh = fopen(getScriptPath(), 0);
-
-            // var pattern=/(\d+),(L),(\d),(\d+),(\w+),(\d+),(\w+),(\d),(\d)/g;
-
-            // var LvarA=read.replace(pattern,'\1,\2,\3,\8\9-\6\7-\4,\5\n\1,\2,\3,\8\9-\4\5-\6,\7');
-
-            // //function parsingB(LvarA){
-            // var LvarB=LvarA.replace(/(\d+,)B(,\d,)(.*\w[A-Z].*)/g,"\1BM\2\3");
-
-
-            // var LvarC=LvarB.replace(/(\d+,)BM(,\d,)(\d+,IF,*)/g,"\1B\2\3");
-
-
-
-            d3.csv("eventsL.log",function(error,arData){
-            // d3.csv("https://dl.dropboxusercontent.com/s/r6rkot3hhskmf1e/eventsL.log?dl=0", function(error, arData) {
-                //		console.log(arData)
-                for (var i = 0; i < arData.length - 1; i++) {
-                    ardUni.push({
-                        "mod": arData[i]['mod'],
-                        "from": (arData[i]['fromType']),
-                    })
-                    ardAll.push({
-                        "specialID": parseInt(arData[i]['timestamp']) + parseInt(arData[i]['id']),
-                        "id": parseInt(arData[i]['id']),
-                        "mod": arData[i]['mod'],
-                        "start": parseInt(arData[i]['timestamp']),
-                        // "end": Date.now(),//parseInt(arData[i]['timestamp']),
-                        "from": (arData[i]['fromType']),
-                        "sF": parseInt(arData[i]['sF'])
-                    })
-                    if (parseInt(arData[i + 1]['sF']) == 1) {
-                        ardEntry.push({
-                            "specialID": parseInt(arData[i]['timestamp']) + (arData[i]['id']),
-                            "id": parseInt(arData[i]['id']),
-                            "mod": arData[i]['mod'],
-                            "start": parseInt(arData[i]['timestamp']),
-                            "end": Date.now(),
-                            "from": (arData[i]['fromType']),
-                            "sF": parseInt(arData[i]['sF'])
+                        ardUni.push({
+                            "mod": onlyArd[i]['mod'],
+                            "from": (onlyArd[i]['fromType']),
                         })
-                    } else {
-                        ardEntry.push({
-                            "specialID": parseInt(arData[i]['timestamp']) + (arData[i]['id']),
-                            "id": parseInt(arData[i]['id']),
-                            "mod": arData[i]['mod'],
-                            "start": parseInt(arData[i]['timestamp']),
-                            "end": parseInt(arData[i + 1]['timestamp']),
-                            "from": (arData[i]['fromType']),
-                            "sF": parseInt(arData[i]['sF'])
-                        })
+
+
+
+
+
+
+                        if ((onlyArd[i + 1]['sF']) == "1") {
+                            ardEntry.push({
+                                "specialID": parseInt(onlyArd[i]['timestamp']) + (onlyArd[i]['id']),
+                                "id": parseInt(onlyArd[i]['id']),
+                                "mod": onlyArd[i]['mod'],
+                                "start": parseInt(onlyArd[i]['timestamp']),
+                                "fk": sessionUI.filter(function(d) { 
+                                    if(d > parseInt(onlyArd[i]['timestamp'])){
+                                        // console.log(d[0]);
+                                        blah.push(d);
+                                        return 0;
+                                        // return 0;
+                                    }
+                                }),
+                                "end": blah[0],
+                                "from": (onlyArd[i]['fromType']),
+                                "sF": (onlyArd[i]['sF'])
+                            })
+                        } 
+
+
+
+
+
+                        else {
+                            ardEntry.push({
+                                "specialID": parseInt(onlyArd[i]['timestamp']) + (onlyArd[i]['id']),
+                                "id": parseInt(onlyArd[i]['id']),
+                                "mod": onlyArd[i]['mod'],
+                                "start": parseInt(onlyArd[i]['timestamp']),
+                                "end": parseInt(onlyArd[i + 1]['timestamp']),
+                                "from": (onlyArd[i]['fromType']),
+                                "sF": (onlyArd[i]['sF'])
+                            })
+                        }
                     }
-                }
-            })
-            // });
-        }
-        // setTimeout(function() {
-        //     if (ardEntry.length > 0) { //&& uniques1.length>0// && ardEntry.length>0
-        //         // if(uniques1.length>0){ // && ardEntry.length>0
-        //         // console.log(uniques1.length+"button");
-        //         // console.log(ardEntry.length+"ard");
+                // })
 
-        //         prepScales();
-        //         console.log("prepped")
-        //         console.log(mindate+"prepped mindate")
-        //         prepped = true;
-        //         if (prepped) {
-        //             autoMovement(0, amt, mindate);
-        //         }
-        //     }
-        // }, 3000)
-
-
-
-
-
-
-
-
-
-        var i = 0;
-        var entry2 = [];
-
-        function updateData() {
-            d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
-                for (var i = 0; i < data.length; i++) {
-                    if (data[i]['Device'] == "420038000547343232363230") {
-                        entry2.push({
-                            "buttonIs": data[i]['button'],
-                            "timeIs": parseDate(data[i]['Timestamp']),
-                            "photO": data[i]['overview'],
-                            "photS": data[i]['screenshot']
-                        })
-                    }
-                }
-                // uniques1 = ["0","0"]
-                uniques1 = unique(entry2);
-            })
-            d3.csv("eventsL.log", function(error, arData){
-            // d3.csv("https://dl.dropboxusercontent.com/s/r6rkot3hhskmf1e/eventsL.log?dl=0", function(error, arData) {
-                //		console.log(arData)
-                for (var i = 0; i < arData.length - 1; i++) {
-                    ardUni.push({
-                        "mod": arData[i]['mod'],
-                        "from": (arData[i]['fromType']),
-                    })
-                    ardAll.push({
-                        "specialID": parseInt(arData[i]['timestamp']) + parseInt(arData[i]['id']),
-                        "id": parseInt(arData[i]['id']),
-                        "mod": arData[i]['mod'],
-                        "start": parseInt(arData[i]['timestamp']),
-                        // "end": Date.now(),//parseInt(arData[i]['timestamp']),
-                        "from": (arData[i]['fromType']),
-                        "sF": parseInt(arData[i]['sF'])
-                    })
-                    if (parseInt(arData[i + 1]['sF']) == 1) {
-                        ardEntry.push({
-                            "specialID": parseInt(arData[i]['timestamp']) + parseInt(arData[i]['id']),
-                            "id": parseInt(arData[i]['id']),
-                            "mod": arData[i]['mod'],
-                            "start": parseInt(arData[i]['timestamp']),
-                            "end": Date.now(),
-                            "from": (arData[i]['fromType']),
-                            "sF": parseInt(arData[i]['sF'])
-                        })
-                    } else {
-                        ardEntry.push({
-                            "specialID": parseInt(arData[i]['timestamp']) + parseInt(arData[i]['id']),
-                            "id": parseInt(arData[i]['id']),
-                            "mod": arData[i]['mod'],
-                            "start": parseInt(arData[i]['timestamp']),
-                            "end": parseInt(arData[i + 1]['timestamp']),
-                            "from": (arData[i]['fromType']),
-                            "sF": parseInt(arData[i]['sF'])
-                        })
-                    }
-                }
-            })            
-        }
+            }
 
 
 
@@ -516,8 +495,9 @@ d3.json("https://dl.dropboxusercontent.com/s/hqnajrv8l2odhy9/session.json?dl=0",
                 })
                 .attr("width", 20)
                 .attr("height", 20)
+                    // .attr("x", x1(mindate));
                 // .attr("x", m[3] - 40);
-                .attr("x", m[1]+10-20)
+                .attr("x", -45)
 
             var iconText;
             iconText = main.selectAll("optionsText")
@@ -527,7 +507,7 @@ d3.json("https://dl.dropboxusercontent.com/s/hqnajrv8l2odhy9/session.json?dl=0",
                 .attr("y", function(d) {
                     return yis(d);
                 })
-                .attr("x", m[1]+10-20)//m[3] - 50)
+                .attr("x", -55)//m[1] + 10 - 20) //m[3] - 50)
                 .attr("text-anchor", "end")
                 .text(function(d) {
                     return d;
@@ -544,570 +524,571 @@ d3.json("https://dl.dropboxusercontent.com/s/hqnajrv8l2odhy9/session.json?dl=0",
                 .attr("y2", function(d) {
                     return yis(d);
                 })
-                .attr("x1", m[1]+10)
+                .attr("x1", 0)//m[1] + 10)
                 .attr("x2", w) //m[3]) //not w
                 .attr("stroke-dasharray", dashArray)
                 .attr("stroke-width", .5)
                 .attr("stroke", "lightgray")
 
+            var dashArray = "3 3 3 3";
+            var timeFormat = d3.time.format("%a %H:%M");
 
-        $(window).keypress(function(e) {
-            if (e.keyCode === 0 || e.keyCode === 32) {
-                console.log('Space pressed');
-                prepScales();
-            }
-        });
+            var timeFormat2 = d3.time.format("%H:%M");
 
-        var dashArray = "3 3 3 3";
-        var timeFormat = d3.time.format("%a %H:%M");
-
-        var timeFormat2 = d3.time.format("%H:%M");
-
-        var timeFormat1 = d3.time.format("%A");
+            var timeFormat1 = d3.time.format("%A");
 
 
-        var brush = d3.svg.brush()
-        var timevar = 60000;
+            var brush = d3.svg.brush()
+            // var timevar = 60000;
+            var timevar = 0;
 
-        var xAxisCall = mini.append('g');       
-        var brushCall = mini.append("g");
-       function prepScales() {
-            // var timeFormat = d3.time.format("%I:%M %p %a");
-            // find data range
-            var xMin = d3.min(ardEntry, function(d) {
-                return Math.min(d.start);
-            });
-            var xMax = d3.max(ardEntry, function(d) {
-                return Math.max(d.start);
-            });
-            console.log(xMin + "xmin")
-            console.log(xMax + "xmax")
 
-            ardUniques1 = unique(ardUni);
-            // console.log(ardUniques1 + "arduni");
+            var xAxisCall = mini.append('g');
+            var brushCall = mini.append("g");
 
-            console.log("in prep scales")
-                // console.log(uniques1.length)
-                // mindate = uniques1[1].timeIs;
+var newItems = [];
+            function prepScales() {
+                // find data range
+                var xMin = d3.min(ardEntry, function(d) {
+                    return Math.min(d.start);
+                });
+                var xMax = d3.max(ardEntry, function(d) {
+                    return Math.max(d.start);
+                });
+                console.log(xMin + "xmin")
+                console.log(xMax + "xmax")
 
+                console.log("in prep scales")
 
                 //option 1
-            // mindate = xMin; //ardEntry[0].start;
-            // maxdate = xMax;
-            // mindate = +uniques1[0].timeIs;
-            // //ONCE BUTTON IS BACK
-            // if(uniques1[0].timeIs<ardEntry[0].end){
-            //     mindate = +uniques1[0].timeIs;
-            // }else{
-            //     mindate = +ardEntry[0].end; 
-            // }
-            // if(uniques1[uniques1.length - 1].timeIs>ardEntry[ardEntry.length-1].end){
-            // 	maxdate = +uniques1[uniques1.length - 1].timeIs;
-            // }else{
-            // 	maxdate = +ardEntry[ardEntry.length-1].end;	
-            // }
+                // mindate = xMin; //ardEntry[0].start;
+                // maxdate = xMax;
+            
 
-            maxdate = +sessionData[sessionData.length-1].seshEnd;
-            mindate = +sessionData[sessionData.length-1].seshStart;
 
-            // scale using ranges
-            xAxisScale
+            //hardcode?
+            // maxdate =1441369066161;    //Math.min(sessionUI);
+            // mindate =1441234966973;//1441368912917; 
+            // 1441234980307;// Math.max(sessionUI);
+             // .Date.now()-6000000; //1440510048225;//
+
+                xAxisScale
                 // .domain([mindate, maxdate])
-                .domain([mindate - timevar, maxdate + timevar])
+                    .domain([mindate - timevar, maxdate + timevar])
 
-            xAxis
-                .scale(xAxisScale)
-                .orient("bottom")
-                .ticks(15)
-                .tickPadding(5)
-                .tickFormat(timeFormat);
-            xAxisCall.call(xAxis)
-                .attr("class", "axis") //Assign "axis" class
-                .attr('transform', 'translate(0, ' + (10) + ')');
+                xAxis
+                    .scale(xAxisScale)
+                    .orient("bottom")
+                    .ticks(5)
+                    .tickPadding(5)
+                    .tickFormat(timeFormat);
+                xAxisCall.call(xAxis)
+                    .attr("class", "axis") //Assign "axis" class
+                    .attr('transform', 'translate(0, ' + (10) + ')');
 
-            // for (j = 0; j <= 24; j++) {
-            //     totalPhotos[j] = photoConsolidation(j)
-            // }
+                x.domain([mindate, maxdate]);
 
-            // y.domain([0, ardUniques1.length]);
-            console.log(mindate+"mindate"+maxdate+"maxdate")
-            x.domain([mindate - timevar, maxdate + timevar]);
-            // x.domain([mindate, maxdate]);
+                //brush
+                brush
+                    .x(x)
+                    .on("brush", display);
 
 
+                brushCall
+                    .attr("class", "x brush")
+                    .call(brush)
+                    .selectAll("rect")
+                    .attr("y", 40)
+                    .attr("stroke", "lightgrey")
+                    .attr("stroke-width", 1)
+                    .attr("fill", "none")
+                    .style("visibility", "visible")
+                    .attr("height", miniHeight - 1);
 
 
+                //THESE ARE FOR THE BUTTON PRESSES
+                //mini item lines
+                mini.append("g").selectAll(".linie")
+                    .data(uniques1)
+                    .enter().append("line")
+                    .attr("class", "linie")
+                    .attr("x1", function(d) {
+                        return x(d.timeIs);
+                    })
+                    .attr("x2", function(d) {
+                        return x(d.timeIs);
+                    })
+                    .attr("y1", miniY)
+                    .attr("y2", miniY + 10)
+                    .attr("stroke", linkColor)
+                    .attr("opacity", opacity);
 
-
-            //brush
-            brush
-                .x(x)
-                .on("brush", display);
-
-
-            brushCall
-                .attr("class", "x brush")
-                .call(brush)
-                .selectAll("rect")
-                .attr("y", 40)
-                .attr("stroke","lightgrey")
-                .attr("stroke-width",1)
-                .attr("fill","none")
-                .style("visibility", "visible")
-                .attr("height", miniHeight - 1);
-
-
-            //THESE ARE FOR THE BUTTON PRESSES
-            //mini item lines
-            mini.append("g").selectAll(".linie")
-                .data(uniques1)
-                .enter().append("line")
-                .attr("class", "linie")
-                .attr("x1", function(d) {
-                    return x(d.timeIs);
-                })
-                .attr("x2", function(d) {
-                    return x(d.timeIs);
-                })
-                .attr("y1", miniY)
-                .attr("y2", miniY+10)
-                .attr("stroke", linkColor)
-                .attr("opacity", opacity);
-
-// .append("image")
-//                 .attr("class","image-cropper")
-//                     .attr("xlink:href", function(d, i) {
-//                            if (d.buttonIs == "button3") { //1 is bad 3 is good
-//                                return "idea.png";
-//                            }
-//                            if (d.buttonIs == "button1") { //1 is bad 3 is good
-//                                return "thunder.png";
-//                            }
-//                        })
-
-
-
-            ///////////////////
-            mini.append("g").selectAll("rectie")
-                .data(ardEntry, function(d) {
-                        return d.specialID;                        
-                })
-                .enter().append("rect")
-                .attr("class","rectie")
-                .attr("x", function(d) {
-                    if(d.sF ==1){
-                        return x(d.start);
-                    }else{}
-                })
-                .attr("width", function(d, i) {
-                    if(d.sF==1){
-                        return x(d.end) - x(d.start);                        
-                    }else{}
-                })
-                .attr("y", function(d, i) {
-                    return yOther(d.from);
-                })
-                .attr("height", standardRect/2)
-                .attr("fill", function(d) {
-                    if(d.sF ==1){
-                        return oColor(d.from);
-                    }else{}
-                })
-                .attr("stroke", "none")
-                .attr("opacity", opacity);
-
-
-            prepped = true;
-            display();
-        }
-
-        var autoMove;
-var autoMoving = true;
-        function autoMovement(index, amt, mindate) {
-            var interval = ((maxdate) - (mindate)) / amt;
-            // var interval = ((maxdate + timevar) - (mindate)) / amt;
-
-            autoMove = setInterval(function() {
-                //going in little chunks where minimum date increases
-                // var e = [+mindate+ interval / 1.1 * index, +mindate + interval * index];
-                // var e = [+mindate - timevar + interval / 1.1 * index, +mindate + interval * index];
-
-
-                //going from 0 to full max date
-                var e = [mindate, +mindate+interval*index]; //set brush range
-
-                brush.extent(e);
-                mini.call(brush);
+                ///////////////////
+                mini.append("g").selectAll("rectie")
+                    .data(ardEntry, function(d) {
+                        return d.specialID;
+                    })
+                    .enter().append("rect")
+                    .attr("class", function(d){ return "speci"+d.mod+d.start +"start "+d.end+" end"})
+                    .attr("x", function(d) {
+                        if (d.sF == "1") {
+                            return x(d.start);
+                        } else { return 0 }
+                    })
+                    .attr("width", function(d, i) {
+                        if (d.sF == "1") {
+                            if((x(d.end)-x(d.start))>0){
+                                return x(d.end) - x(d.start);
+                            }else{ 
+// console.log("speci"+d.mod+d.start +"start "+d.end+" end");
+                                return 0;
+                            }
+                        } else { return 0 }
+                    })
+                    .attr("y", function(d, i) {
+                        return yOther(d.from);
+                    })
+                    .attr("height", standardRect / 2)
+                    .attr("fill", function(d) {
+                        if (d.sF == "1") {
+                            return oColor(d.from);
+                        } else { return 0 }
+                    })
+                    .attr("stroke", "none")
+                    .attr("opacity", opacity);
+                prepped = true;
                 display();
-                index++;
+            }
 
-                if ((+mindate + interval * (index - 1)) >= maxdate) {
-                // if ((+mindate + interval * (index - 1)) >= maxdate + timevar) {
-                    console.log(index + "index");
-                    autoMoving = false;
-                    clearInterval(autoMove);
+            var autoMove;
+            var autoMoving = true;
+
+            function autoMovement(index, amt, mindate) {
+                var interval = ((maxdate) - (mindate)) / amt;
+                // var interval = ((maxdate + timevar) - (mindate)) / amt;
+
+                autoMove = setInterval(function() {
+                    //going in little chunks where minimum date increases
+                    // var e = [+mindate+ interval / 1.1 * index, +mindate + interval * index];
+                    // var e = [+mindate - timevar + interval / 1.1 * index, +mindate + interval * index];
+
+
+                    //going from 0 to full max date
+                    var e = [mindate, +mindate + interval * index]; //set brush range
+
+                    brush.extent(e);
+                    mini.call(brush);
                     display();
-                    console.log("stopping interval")
+                    index++;
+
+                    if ((+mindate + interval * (index)) >= maxdate) {
+                        // if ((+mindate + interval * (index - 1)) >= maxdate + timevar) {
+                        console.log(index + "index");
+                        autoMoving = false;
+                        clearInterval(autoMove);
+                        // display();
+                        console.log("stopping interval")
+                    }
+
+                }, 1000);
+                console.log(index + "index");
+            }
+
+
+
+
+            var standardRect = 5;
+            var r = 4;
+            var rects;
+
+
+            function display() {
+            var button1 = 0;
+            var button2 = 0;
+                        clearInterval(startTime);
+
+                var circs, rectz, ardRectz,
+                    minExtent = brush.extent()[0],
+                    maxExtent = brush.extent()[1],
+
+                    visItems = uniques1.filter(function(d) {
+                        return d.timeIs < maxExtent && d.timeIs > minExtent;
+                    });
+            //AND THEN EVERY SESSION, THESE GO BACK TO ZERO...
+
+                for (i = 0; i < visItems.length; i++) {
+                    if (visItems[i].buttonIs == "button1") {
+                        button1++;
+                    }
+                    if (visItems[i].buttonIs == "button2") {
+                        button2++;
+                    }
                 }
-
-            }, 1000);
-            console.log(index + "index");
-        }
-
-
-
-
-
-
-
-
-
-        var standardRect = 5;
-        var r = 4;
-        var rects;
-
-        function display() {
-
-            var circs, rectz, ardRectz,
-                minExtent = brush.extent()[0],
-                maxExtent = brush.extent()[1],
-                visItems = uniques1.filter(function(d) {
-                    return d.timeIs < maxExtent && d.timeIs > minExtent;
+                ardItems = ardEntry.filter(function(d) {
+                    return d.start < maxExtent && d.end > minExtent && d.sF == "1" && d.mod == "BM";
                 });
 
-            ardItems = ardEntry.filter(function(d) {
-                return d.start < maxExtent && d.end > minExtent && d.sF == 1 && d.mod == "BM";
-            });
-            ardAllItems = ardEntry.filter(function(d) {
-                return d.start < maxExtent && d.end > minExtent && d.mod == "BM";
-            });
+                ccItems = ardEntry.filter(function(d) {
+                    return d.start < maxExtent && d.sF == "1" && d.mod == "CC";
+                });
 
 
-            mItems = ardEntry.filter(function(d) {
-                return d.start < maxExtent && d.end > minExtent && d.sF == 1 && d.mod == "M";
-            });
-            mAllItems = ardEntry.filter(function(d) {
-                return d.start < maxExtent && d.end > minExtent && d.mod == "M";
-            });
+                //
+                // ardAllItems = ardEntry.filter(function(d) {
+                //     return d.start < maxExtent && d.end > minExtent && d.mod == "BM";
+                // });
 
-
-
-            bItems = ardEntry.filter(function(d) {
-                return d.start < maxExtent && d.end > minExtent && d.sF == 1 && d.mod == "B";
-            });
-            bAllItems = ardEntry.filter(function(d) {
-                return d.start < maxExtent && d.end > minExtent && d.mod == "B";
-            });
-
-            // lItems = ardEntry.filter(function(d) {return d.start < maxExtent && d.end > minExtent && d.sF==1 && d.mod == "L";}); 
-            lineAllItems = ardEntry.filter(function(d) {
-                return d.start < maxExtent && d.end > minExtent && d.mod == "L";
-            });
-// console.log(lineAllItems);
-            // console.log(lItems);
-            d3.selectAll(".wodry1").remove();
-            d3.selectAll(".wodry").remove();
-            d3.selectAll(".wodry2").remove();
-
-            d3.selectAll(".atext").remove();
-            d3.selectAll(".mtext").remove();
-            d3.selectAll(".btext").remove();
-            d3.selectAll(".ltext").remove();
-d3.selectAll(".ldtext").remove();
-
-            d3.selectAll(".timeRects").remove();
-
-// atext
-// mtext
-// btext
-// ltext
+                mItems = ardEntry.filter(function(d) {
+                    return d.start < maxExtent && d.end > minExtent && d.sF == "1" && d.mod == "M";
+                });
+                mAllItems = ardEntry.filter(function(d) {
+                    return d.start < maxExtent && d.end > minExtent && d.mod == "M";
+                });
 
 
 
-            d3.selectAll(".trect").remove();
+                bItems = ardEntry.filter(function(d) {
+                    return d.start < maxExtent && d.end > minExtent && d.sF == "1" && d.mod == "B";
+                });
+                bAllItems = ardEntry.filter(function(d) {
+                    return d.start < maxExtent && d.end > minExtent && d.mod == "B";
+                });
 
-            mini.select(".brush")
-                .call(brush.extent([minExtent, maxExtent]));
+                // lItems = ardEntry.filter(function(d) {return d.start < maxExtent && d.end > minExtent && d.sF==1 && d.mod == "L";}); 
+                lineAllItems = ardEntry.filter(function(d) {
+                    return d.start < maxExtent && d.end > minExtent && d.mod == "L";
+                });
+                // console.log(lineAllItems);
+                // console.log(lItems);
+                d3.selectAll(".wodry1").remove();
+                d3.selectAll(".wodry").remove();
+                d3.selectAll(".wodry2").remove();
 
-            x1.domain([minExtent, maxExtent]);
+                d3.selectAll(".atext").remove();
+                d3.selectAll(".mtext").remove();
+                d3.selectAll(".btext").remove();
+                d3.selectAll(".ltext").remove();
+                d3.selectAll(".ldtext").remove();
 
-            ySum.domain([minExtent, maxExtent]);
 
-            // console.log(minExtent+" min "+timeFormat(new Date(minExtent)));
+                d3.selectAll(".sumText").remove();
 
-            // console.log((maxExtent)-(minExtent));
-            // console.log((+maxExtTime)-(+minExtTime));
 
-            /////////////summary view stuff
-            d3.select("g.sum").attr("opacity", 0)
-            var sumRects;
-            sumRects = sumArdz.selectAll("circle")
-                .data(ardItems, function(d) {
-                    return d.specialID;
-                })
-                .attr("cx", function(d) {
-                    return xis(d.from);
-                })
-                .attr("cy", 100)
-            sumRects.enter().append("circle")
-                .attr("class", function(d) {
-                    return "sumRect" + d.specialID;
-                })
-                .attr("cx", function(d, i) {
-                    return xis(d.from);
-                })
-                .attr("cy", 100) //some height margin
-                .attr("r", function(d) {
-                    return (ySum(d.end) - ySum(d.start));
-                })
-                .attr("fill", function(d) {
-                    return oColor(d.from);
-                })
-                .attr("stroke", "none")
-                .attr("opacity", opacity)
-            sumRects.exit().remove();
+                // d3.selectAll(".timeRects").remove();
 
-//////////////
-            var minExtTime = timeFormat2(new Date(minExtent));
-            var maxExtTime = timeFormat2(new Date(maxExtent));
+                // atext
+                // mtext
+                // btext
+                // ltext
 
-            var minHeadline = timeFormat1(new Date(minExtent));
-// m[3], w
-            var timeText1 = main.selectAll("wodry1")
-                .data(d3.range(1))
-                .enter()
-                .append("text").attr("class", "wodry1")
-                .attr("x", x1(minExtent)-10)
-                .attr("y", yis(options[0])-70)
-                .attr("text-anchor","end")
-                .text(minHeadline);
-            var timeText = main.selectAll("wodry")
-                .data(d3.range(1))
-                .enter()
-                .append("text").attr("class", "wodry")
-                .attr("x", x1(minExtent)-10)
-                .attr("y", yis(options[0])-50)
-                .attr("text-anchor","end")
-                .text("@"+minExtTime+" - ");
 
-            var timeText2;
-            timeText2 = main.selectAll("wodry2")
-                .data(d3.range(1))
-                .attr("x", x1(maxExtent));
+
+                d3.selectAll(".trect").remove();
+
+                mini.select(".brush")
+                    .call(brush.extent([minExtent, maxExtent]));
+
+                x1.domain([minExtent, maxExtent]);
+
+                ySum.domain([minExtent, maxExtent]);
+
+                // console.log(minExtent+" min "+timeFormat(new Date(minExtent)));
+
+                // console.log((maxExtent)-(minExtent));
+                // console.log((+maxExtTime)-(+minExtTime));
+
+                /////////////summary view stuff
+                /////////////summary view stuff
+                // d3.select("g.sum").attr("opacity", 0)
+
+var minStart = ardItems[0].start;
+var maxEnd = ardItems[ardItems.length-1].end;
+var maxTime = maxEnd-minStart;
+                var circScale = d3.scale.linear()
+                    .domain([0, maxTime])
+                    .range([0,15])
+
+
+                var sumRects;
+                sumRects = sumArdz.selectAll("circle")
+                    .data(ardItems, function(d) {
+                        return d.specialID;
+                    })
+                    .attr("cx", function(d) {
+                        return xis(d.from);
+                    })
+                    .attr("cy", 100)
+
+                sumRects.enter().append("circle")
+                    .attr("class", function(d) {
+                        return "sumRect" + d.specialID;
+                    })
+                    .attr("cx", function(d, i) {
+                        return xis(d.from);
+                    })
+                    .attr("cy", 100) //some height margin
+                    .attr("r", function(d) {
+                        if(typeof(d.start)!=="undefined"){
+                        // var thisR = ((d.end - d.start)/1000); //seconds
+                        // return thisR;
+                            return circScale(d.end - d.start);
+                        }else{ return 0; }
+                    })
+                    .attr("fill", function(d) {
+                        return oColor(d.from);
+                    })
+                    .attr("stroke", "none")
+                    .attr("opacity", opacity)
+                sumRects.exit().remove();
+
+
+
+
+                var sumTexts;
+                sumTexts = sumArdz.selectAll(".sumText")
+                    .data(ardItems, function(d) {
+                        return d.specialID;
+                    })
+                    .attr("x", function(d) {
+                        return xis(d.from);
+                    })
+                    .attr("y", 100)
+                sumTexts.enter().append("text")
+                    .attr("class", "sumText")
+                    .attr("x", function(d, i) {
+                        return xis(d.from);
+                    })
+                    .attr("y", 100) //some height margin
+                    .text(function(d) {
+                        var thisNum = ((d.end - d.start)/1000); //seconds
+                        if(thisNum>60){
+                            var minuteNum = ((d.end - d.start)/600000); //seconds
+                            return minuteNum.toFixed(0)+"mins "+d.from;                            
+                        }else{
+                            return thisNum.toFixed(0)+"secs "+d.from;
+                        }
+                        // if(thisNum<1&&thisNum>0){
+                        //     // return d.total.toFixed(0)+"m "+d.from;
+                        // }
+                        // if(thisNum==0){
+                        //     return d.total.toFixed(0);
+                        // }
+                        // return (thisNum.toFixed(1)) + "h "+d.from;
+                        // return (d.end - d.start)+" "+d.from;
+                    })
+                    // .attr("fill", function(d) {
+                    //     return oColor(d.from);
+                    // })
+                    // .attr("stroke", "none")
+                    .attr("opacity", opacity)
+                sumTexts.exit().remove();
+
+
+
+
+
+
+
+
+
+
+
+
+                //////////////
+                var minExtTime = timeFormat2(new Date(minExtent));
+                var maxExtTime = timeFormat2(new Date(maxExtent));
+var maxText = timeFormat2(new Date(maxdate));
+                var minHeadline = timeFormat1(new Date(minExtent));
+                // m[3], w
+                var timeText1 = main.selectAll("wodry1")
+                    .data(d3.range(1))
+                    .enter()
+                    .append("text").attr("class", "wodry1")
+                    .attr("x", 0)//x1(minExtent) - 10)
+                    .attr("y", yis(options[0]) - 67)
+                    .attr("text-anchor", "end")
+                    .text(minHeadline);
+                var timeText = main.selectAll("wodry")
+                    .data(d3.range(1))
+                    .enter()
+                    .append("text").attr("class", "wodry")
+                    .attr("x", 0)//-45//x1(minExtent) - 10)
+                    .attr("y", yis(options[0]) - 50)
+                    .attr("text-anchor", "end")
+                    .text("@" + minExtTime);
+
+                var timeText2;
+                timeText2 = main.selectAll("wodry2")
+                    .data(d3.range(1))
+                    .attr("x", x1(maxExtent));
                 timeText2.enter().append("text")
-                .attr("class","wodry2")
-                .attr("x", x1(maxExtent))
-                .attr("y", yis(options[0])-50)
-                .attr("text-anchor","end")
-                .attr("opacity",function(d){
-                    if(x1(maxExtent)>x1(minExtent)){ 
-                        return 1; 
-                    }
-                    else{ 
-                        return 0; 
-                    }
-                })
-                .text(" - "+maxExtTime);
-
-
-
-            // var timeText2 = main.selectAll("wodry2")
-            //     .data(d3.range(1))
-            //     .enter()
-            //     .append("text").attr("class", "wodry2")
-            //     .attr("x", x1(maxExtent))
-            //     .attr("y", yis(options[0])-20)
-            //     .attr("text-anchor","end")
-            //     .attr("opacity",function(d){
-            //         if(x1(maxExtent)>x1(minExtent)){ 
-            //             return 1; 
-            //         }
-            //         else{ 
-            //             return 0; 
-            //         }
-            //     })
-            //     .text(" - "+maxExtTime);
-
-
-
-
-
-            // var line1 = main.selectAll("lineTime")
-            //     .data(d3.range(1))
-            //     .enter().append("line")
-            //     .attr("class", "lineTime")
-            //     .attr("x1", x1(minExtent)+50)
-            //     .attr("x2", x1(maxExtent)-40)
-            //     .attr("y1", yis(options[0])-10)
-            //     .attr("y2", yis(options[0])-10)
-            //     .attr("stroke","black")        
-
-
-            ///////////////////
-            ardRectz = itemArdz.selectAll("rect")
-                .data(ardItems, function(d) {
-                    return d.specialID;
-                })
-                .attr("x", function(d) {
-                    return x1(d.start);
-                })
-                .attr("width", function(d, i) {
-                    return x1(d.end) - x1(d.start);
-                })
-            ardRectz.enter().append("rect")
-                .attr("class", function(d) {
-                    return "miniItemz" + d.specialID;
-                })
-                .attr("x", function(d) {
-                    return x1(d.start);
-                })
-                .attr("y", function(d, i) {
-                    return yis(d.from);
-                })
-                .attr("width", function(d) {
-                    return x1(d.end) - x1(d.start);
-                })
-                .attr("height", standardRect)
-                .attr("fill", function(d) {
-                    return oColor(d.from);
-                })
-                .attr("stroke", "none")
-                .attr("opacity", opacity)
-            ardRectz.exit().remove();
+                    .attr("class", "wodry2")
+                    .attr("x", x1(maxExtent))
+                    .attr("y", yis(options[0]) - 50)
+                    .attr("text-anchor", "end")
+                    .attr("opacity", function(d) {
+                        if (x1(maxExtent) > x1(minExtent)) {
+                            return 1;
+                        } else {
+                            return 0;
+                        }
+                    })
+                    .text(maxText);
+                ///////////////////
+                /////////WHAT IS WRONG
+                ardRectz = itemArdz.selectAll("rect")
+                    .data(ardItems, function(d) {
+                        return d.specialID;
+                    })
+                    .attr("x", function(d) {
+                        return x1(d.start);
+                    })
+                    .attr("width", function(d, i) {
+                        return x1(d.end) - x1(d.start);
+                    })
+                ardRectz.enter().append("rect")
+                    .attr("class", function(d) {
+                        return "miniItemz" + d.from;
+                    })
+                    .attr("x", function(d) {
+                        return x1(d.start);
+                    })
+                    .attr("y", function(d, i) {
+                        return yis(d.from);
+                    })
+                    .attr("width", function(d) {
+                        return x1(d.end) - x1(d.start);
+                    })
+                    .attr("height", standardRect)
+                    .attr("fill", function(d) {
+                        return oColor(d.from);
+                    })
+                    .attr("stroke", "none")
+                    .attr("opacity", opacity / 6)
+                ardRectz.exit().remove();
 
 
 
 
-var ardRectText;
-            ardRectText = itemArdz.selectAll("atext")
-                .data(ardItems, function(d) {
-                    return ardItems[0].specialID;
-                })
-                .attr("x", function(d) {
-                    return x1(d.start);
-                });
-            ardRectText.enter().append("text")
-                .attr("class", function(d) {
-                                d3.select(this).each(moveToFront);
-                    return "atext";
-                })
-                .attr("x", function(d) {
-                    return x1(d.start);
-                })
-                .attr("y", function(d, i) {
-                    return yis(d.from);
-                })
-                .attr("opacity",labelOpacity)
-                .attr("font-size",12)
-                .text("Software Module Connected!")
-                // .transition()
-                // .duration(1000)
-                // .attr("font-size",18)
-                // .each("end", function(){
-                //     ardRectText
-                //         .transition()
-                //         .attr("opacity",0)
-                //         .attr("font-size",12)
-                // })
-            // ardRectText.exit().remove();
-// var textRect;
-// var thisWidth = $("text.textz").width();
-// var thisHeight = $("text.textz").height();
+                // var ardRectText;
+                //             ardRectText = itemArdz.selectAll("atext")
+                //                 .data(ardItems, function(d) {
+                //                     return ardItems[0].specialID;
+                //                 })
+                //                 .attr("x", function(d) {
+                //                     return x1(d.start);
+                //                 });
+                //             ardRectText.enter().append("text")
+                //                 .attr("class", function(d) {
+                //                                 d3.select(this).each(moveToFront);
+                //                     return "atext";
+                //                 })
+                //                 .attr("x", function(d) {
+                //                     return x1(d.start);
+                //                 })
+                //                 .attr("y", function(d, i) {
+                //                     return yis(d.from);
+                //                 })
+                //                 .attr("opacity",labelOpacity)
+                //                 .attr("font-size",12)
+                //                 .text("Software Module Connected!")
 
-//             textRect = itemArdz.selectAll("textzRect")
-//                 .data(ardItems, function(d) {
-//                     return ardItems[0].specialID;
-//                 })
-//                 .attr("x", function(d) {
-//                     return x1(d.start);
-//                 })
-//                 .attr("width", thisWidth)
-
-//             textRect.enter().append("rect")
-//                 .attr("class", "textzRect")
-//                    d3.select("text.textz").each(moveToFront);
-//                    // return "textzRect";
-//                 // })
-//                 .attr("x", function(d) {
-//                     return x1(d.start);
-//                 })
-//                 .attr("y", function(d, i) {
-//                     return yis(d.from)-thisHeight;
-//                 })
-//                 .attr("width", thisWidth)
-//                 .attr("height",thisHeight)
-//                 .attr("opacity",1)
-//                 .attr("fill","white")
-//                 .transition()
-//                 .duration(1000)
-//                 .attr("width", thisWidth*2)
-//                 .attr("height", thisHeight*2)
-//                 .each("end", function(){
-//                     textRect
-//                         .transition()
-//                         .attr("fill","none")
-//                         .attr("opacity",0)
-//                         .attr("width",thisWidth)
-//                         .attr("height",thisHeight)
-//                 })
-//             textRect.exit().remove();
-            //////////////////////////////////
-            var mRectz;
-            mRectz = itemArdz.selectAll("mrect")
-                .data(mItems, function(d) {
-                    return d.specialID;
-                })
-                .attr("x", function(d) {
-                    return x1(d.start);
-                })
-                .attr("width", function(d, i) {
-                    return x1(d.end) - x1(d.start);
-                });
-            mRectz.enter().append("rect")
-                .attr("class", "mrect")
-                .attr("x", function(d) {
-                    return x1(d.start);
-                })
-                .attr("y", function(d, i) {
-                    return yis(d.from);
-                })
-                .attr("width", function(d) {
-                    return x1(d.end) - x1(d.start);
-                })
-                .attr("height", 1)
-                .attr("fill", function(d) {
-                    return oColor(d.from);
-                })
-                .attr("stroke", "none")
-                .attr("opacity", 1)
-            mRectz.exit().remove();
+                //////////////////////////////////
+                            var mRectz;
+                            mRectz = itemArdz.selectAll("mrect")
+                                .data(mItems, function(d) {
+                                    return d.specialID;
+                                })
+                                .attr("x", function(d) {
+                                    return x1(d.start);
+                                })
+                                .attr("width", function(d, i) {
+                                    return x1(d.end) - x1(d.start);
+                                });
+                            mRectz.enter().append("rect")
+                                .attr("class", "mrect")
+                                .attr("x", function(d) {
+                                    return x1(d.start);
+                                })
+                                .attr("y", function(d, i) {
+                                    return yis(d.from);
+                                })
+                                .attr("width", function(d) {
+                                    return x1(d.end) - x1(d.start);
+                                })
+                                .attr("height", 1)
+                                .attr("fill", function(d) {
+                                    return oColor(d.from);
+                                })
+                                .attr("stroke", "none")
+                                .attr("opacity", 1)
+                            mRectz.exit().remove();
 
 
 
 
 
-var mRectText;
-            mRectText = itemArdz.selectAll("mtext")
-                .data(mItems, function(d) {
-                    return mItems[0].specialID;
-                })
-                .attr("x", function(d) {
-                    return x1(d.start);
-                });
-            mRectText.enter().append("text")
-                .attr("class", function(d) {
-                    d3.select(this).each(moveToFront);
-                    return "mtext";
-                })
-                .attr("x", function(d) {
-                    return x1(d.start);
-                })
-                .attr("y", function(d, i) {
-                    return yis(d.from);
-                })
-                .attr("opacity",labelOpacity)
-                .attr("font-size",12)
-                .text("Hardware Module Connected!")
+
+                            // var ccLinez;
+                            // ccLinez = itemArdz.selectAll("ccline")
+                            //     .data(ccItems, function(d) {
+                            //         return d.specialID;
+                            //     })
+                            //     .attr("x1", function(d) {
+                            //         return x1(d.start);
+                            //     })
+                            //     .attr("x2", function(d) {
+                            //         return x1(d.start);
+                            //     })
+                            // ccLinez.enter().append("line")
+                            //     .attr("class", "ccline")
+                            //     .attr("x1", function(d) {
+                            //         return x1(d.start);
+                            //     })
+                            //     .attr("x2", function(d) {
+                            //         return x1(d.start);
+                            //     })
+                            //     .attr("y1", function(d, i) {
+                            //         return yis(d.from);
+                            //     })
+                            //     .attr("y2", function(d, i) {
+                            //         return yis(d.from)+10;
+                            //     })
+                            //     .attr("fill", function(d) {
+                            //         return oColor(d.from);
+                            //     })
+                            //     .attr("stroke", function(d) {
+                            //         return oColor(d.from);
+                            //     })
+                            //     .attr("stroke-width",2)
+                            //     .attr("opacity", 1)
+                            // ccLinez.exit().remove();
+
+
+
+
+                // var mRectText;
+                //             mRectText = itemArdz.selectAll("mtext")
+                //                 .data(mItems, function(d) {
+                //                     return mItems[0].specialID;
+                //                 })
+                //                 .attr("x", function(d) {
+                //                     return x1(d.start);
+                //                 });
+                //             mRectText.enter().append("text")
+                //                 .attr("class", function(d) {
+                //                     d3.select(this).each(moveToFront);
+                //                     return "mtext";
+                //                 })
+                //                 .attr("x", function(d) {
+                //                     return x1(d.start);
+                //                 })
+                //                 .attr("y", function(d, i) {
+                //                     return yis(d.from);
+                //                 })
+                //                 .attr("opacity",labelOpacity)
+                //                 .attr("font-size",12)
+                //                 .text("Hardware Module Connected!")
                 // .transition()
                 // .duration(1000)
                 // .attr("font-size",18)
@@ -1117,63 +1098,63 @@ var mRectText;
                 //         .attr("opacity",0)
                 //         .attr("font-size",12)
                 // })
-            // mRectText.exit().remove();
+                // mRectText.exit().remove();
 
-            /////////////////////////////////
-            var bRectz;
-            bRectz = itemArdz.selectAll("brect")
-                .data(bItems, function(d) {
-                    return d.specialID;
-                })
-                .attr("x", function(d) {
-                    return x1(d.start);
-                })
-                .attr("width", function(d, i) {
-                    return x1(d.end) - x1(d.start);
-                });
-            bRectz.enter().append("rect")
-                .attr("class", "brect")
-                .attr("x", function(d) {
-                    return x1(d.start);
-                })
-                .attr("y", function(d, i) {
-                    return yis(d.from);
-                })
-                .attr("width", function(d) {
-                    return x1(d.end) - x1(d.start);
-                })
-                .attr("height", standardRect)
-                .attr("fill", function(d) {
-                    return oColor(d.from);
-                })
-                .attr("stroke", "none")
-                .attr("opacity", 1)
-            bRectz.exit().remove();
+                /////////////////////////////////
+                            var bRectz;
+                            bRectz = itemArdz.selectAll("brect")
+                                .data(bItems, function(d) {
+                                    return d.specialID;
+                                })
+                                .attr("x", function(d) {
+                                    return x1(d.start);
+                                })
+                                .attr("width", function(d, i) {
+                                    return x1(d.end) - x1(d.start);
+                                });
+                            bRectz.enter().append("rect")
+                                .attr("class", "brect")
+                                .attr("x", function(d) {
+                                    return x1(d.start);
+                                })
+                                .attr("y", function(d, i) {
+                                    return yis(d.from);
+                                })
+                                .attr("width", function(d) {
+                                    return x1(d.end) - x1(d.start);
+                                })
+                                .attr("height", standardRect)
+                                .attr("fill", function(d) {
+                                    return oColor(d.from);
+                                })
+                                .attr("stroke", "none")
+                                .attr("opacity", 1)
+                            bRectz.exit().remove();
 
 
 
-var bRectText;
-            bRectText = itemArdz.selectAll("btext")
-                .data(bItems, function(d) {
-                    return bItems[0].specialID;
-                })
-                .attr("x", function(d) {
-                    return x1(d.start);
-                });
-            bRectText.enter().append("text")
-                .attr("class", function(d) {
-                    d3.select(this).each(moveToFront);
-                    return "btext";
-                })
-                .attr("x", function(d) {
-                    return x1(d.start);
-                })
-                .attr("y", function(d, i) {
-                    return yis(d.from);
-                })
-                .attr("opacity",labelOpacity)
-                .attr("font-size",12)
-                .text("S/M Connected!")
+                // var bRectText;
+                //             bRectText = itemArdz.selectAll("btext")
+                //                 .data(bItems, function(d) {
+                //                     return bItems[0].specialID;
+                //                 })
+                //                 .attr("x", function(d) {
+                //                     return x1(d.start);
+                //                 });
+                //             bRectText.enter().append("text")
+                //                 .attr("class", function(d) {
+                //                     d3.select(this).each(moveToFront);
+                //                     return "btext";
+                //                 })
+                //                 .attr("x", function(d) {
+                //                     return x1(d.start);
+                //                 })
+                //                 .attr("y", function(d, i) {
+                //                     return yis(d.from);
+                //                 })
+                //                 .attr("opacity",labelOpacity)
+                //                 .attr("font-size",12)
+                //                 .text("S/M Connected!")
                 // .transition()
                 // .duration(1000)
                 // .attr("font-size",18)
@@ -1183,316 +1164,304 @@ var bRectText;
                 //         .attr("opacity",0)
                 //         .attr("font-size",12)
                 // })
-            // bRectText.exit().remove();
+                // bRectText.exit().remove();
 
 
 
 
-            // ///////////////////////////////
-            circs = itemCircs.selectAll("circle")
-                .data(lineAllItems, function(d,i) {
-                    // console.log(d.specialID)
-                    return d.specialID;
-                })
-                .attr("cx", function(d) {
-                    return x1(d.start);
-                })
-            circs.enter().append("circle")
-                .attr("class", function(d) {
-                    return "circs" + d.from + d.start;
-                })
-                .attr("r", r)
-                .attr("cx", function(d) {
-                    if (d.sF == 1) {
+                // ///////////////////////////////
+                circs = itemCircs.selectAll("circle")
+                    .data(lineAllItems, function(d,i) {
+                        // console.log(d.specialID)
+                        return d.specialID;
+                    })
+                    .attr("cx", function(d) {
                         return x1(d.start);
-                    } else {
-                        return x1(d.end);
-                    }
-                })
-                .attr("cy", function(d, i) {
-                    return yis(d.from) + r + standardRect;
-                })
-                .attr("fill", function(d) {
-                    if (d.sF == 1) {
-                        return linkColor;
-                            // return oColor(d.from);
-                    } else {
-                        return "none";
-                    }
-                })
-                .attr("opacity", opacity)
-            circs.exit().remove();
+                    })
+                circs.enter().append("circle")
+                    .attr("class", function(d) {
+                        return "circs" + d.from + d.start;
+                    })
+                    .attr("r", r)
+                    .attr("cx", function(d) {
+                        if (d.sF == 1) {
+                            return x1(d.start);
+                        } else {
+                            return x1(d.end);
+                        }
+                    })
+                    .attr("cy", function(d, i) {
+                        return yis(d.from) + r + standardRect;
+                    })
+                    .attr("fill", function(d) {
+                        if (d.sF == 1) {
+                            // return linkColor;
+                                return oColor(d.from);
+                        } else {
+                            return "none";
+                        }
+                    })
+                    .attr("opacity", opacity)
+                circs.exit().remove();
 
-            // ///////////////////////////////
-            var circR;
-            circR = itemCircs.selectAll("rect")
-                .data(lineAllItems, function(d) {
-                    return d.specialID;
-                })
+                // // ///////////////////////////////
+                var circR;
+                circR = itemCircs.selectAll("rect")
+                    .data(lineAllItems, function(d) {
+                        return d.specialID;
+                    })
+                    .attr("x", function(d) {
+                        return x1(d.start);
+                    })
+                circR.enter().append("rect")
+                    .attr("class", function(d) {
+                        return "circR" + d.from + d.start;
+                    })
+                    .attr("width", 7)
+                    .attr("height", 7)
+                    .attr("x", function(d) {
+                        if (d.sF == 1) {
+                            return x1(d.start);
+                        } else {
+                            return x1(d.end);
+                        }
+                    })
+                    .attr("y", function(d, i) {
+                        return yis(d.from)+standardRect;
+                    })
+                    .attr("fill", "none")
+                    .attr("stroke", function(d) {
+                        if (d.sF == 1) {
+                            return "none";
+                        } else {
+                            // return linkColor;
+                                return oColor(d.from);
+                        }
+                    })
+                    .attr("opacity", 1)
+                circR.exit().remove();
+
+                ///////////////////////////////
+                // var linkL;
+                // linkL = itemCircs.selectAll("line")
+                //     .data(lineAllItems, function(d) {
+                //         return d.specialID;
+                //     })
+                //     .attr("x1", function(d) {
+                //         return x1(d.start);
+                //     })
+                //     .attr("x2", function(d) {
+                //         return x1(d.start);
+                //     })
+                //     .attr("fill", "none")
+                //     .attr("stroke", function(d) {
+                //         return oColor(d.from);
+                //     })
+                // linkL.enter().append("line")
+                //     .attr("class", function(d) {
+                //         return "linkL" + d.from + d.start;
+                //     })
+                //     .attr("x1", function(d) {
+                //         if (d.sF == "1") {
+                //             return x1(d.start);
+                //         } else {
+                //             return x1(d.end);
+                //         }
+                //     })
+                //     .attr("x2", function(d) {
+                //         if (d.sF == "1") {
+                //             return x1(d.start);
+                //         } else {
+                //             return x1(d.end);
+                //         }
+                //     })
+                //     .attr("y1", function(d, i) {
+                //         if (typeof(d.from) !== "undefined") {
+                //             return yis(d.from);
+                //         } else {
+                //             return 0
+                //         }
+                //     })
+                //     .attr("y2", function(d, i) {
+                //         if (typeof(d.from) !== "undefined") {
+                //             return yis(d.from) + standardRect * 2;
+                //         } else {
+                //             return 0
+                //         }
+                //     })
+                //     .attr("stroke", function(d) {
+                //         if (typeof(d.from) !== "undefined") {
+                //             return oColor(d.from);
+                //         } else {
+                //             return "none";
+                //         }
+                //     })
+                //     .attr("opacity", 1)
+                // linkL.exit().remove();
+
+
+                var linkI;
+                var linkD;
+                var linkText;
+                linkText = itemArdz.selectAll("ltext")
+                    .data(lineAllItems, function(d, i) {
+                        return lineAllItems[0].specialID;
+                    })
+                    .attr("x", function(d) {
+                        if (d.sF == "1") {
+                            return x1(d.start);
+                        } else {
+                            return x1(d.end);
+                        }
+                    });
+                linkText.enter().append("text")
+                    .attr("class", function(d) {
+                        d3.select(this).each(moveToFront);
+                        return "ltext";
+                    })
+                    .attr("x", function(d) {
+                        if (d.sF == "1") {
+                            return x1(d.start);
+                        } else {
+                            return x1(d.end);
+                        }
+                    })
+                    .attr("y", function(d, i) {
+                        return yis(d.from);
+                    })
+                    .attr("opacity", labelOpacity)
+                    // function(d) {
+                    //     if (d.sF == 1) {
+                    //         return 1;
+                    //     } else {
+                    //         return 0;
+                    //     }
+                    // })
+                    .attr("font-size", 12)
+                    .text(function(d) {
+                        if (d.sF == "1") {
+                            // linkI = i;
+                            return "Link Made!"
+                        } else {
+                            return "Link Disconnected"
+                        }
+                    })
+                    // .transition()
+                    // .duration(1000)
+                    // .attr("font-size",18)
+                    // .each("end", function(){
+                    //     linkText
+                    //         .transition()
+                    //         .attr("opacity",0)
+                    //         .attr("font-size",12)
+                    // })
+                    // linkText.exit().remove();
+                    // bbox = d3.select(".ltext").getBBox();
+                    // rectB = svg.insert('rect', 'text')
+                    // .attr('x', bbox.x)
+                    // .attr('y', bbox.y)
+                    // .attr('width', bbox.width)
+                    // .attr('height', bbox.height);
+
+                var imgHeight = 20;
+                var timeRect;
+                var timeWidth = $(".wodry2").width();
+                timeRect = itemRects.selectAll("timeRects")
+                    .data(d3.range(1))
+                    .attr("x", x1(minExtent))
+
+                    timeRect.enter()
+                    .append("rect").attr("class", "timeRects")
+                        .attr("transform", "translate(" + 0 + "," + -imgHeight*2.5 + ")")
+                    .attr("x", -10)//x1(minExtent))
+                    .attr("y", yis(options[0])-5)
+                    .attr("width", w-timeWidth) //not -timeiwdth
+                    .attr("height", 1)//imgHeight/2)
+                    .attr("fill","black")
+                    .attr("stroke-dasharray",dashArray)
+                    .attr("opacity",extentsOpacity);
+                ///////////////////////////////
+                rects = itemRects.selectAll(".image-cropper")
+                    .data(visItems, function(d) {
+                        return d.timeIs;
+                    })
+
                 .attr("x", function(d) {
-                    return x1(d.start);
-                })
-            circR.enter().append("rect")
-                .attr("class", function(d) {
-                    return "circR" + d.from + d.start;
-                })
-                .attr("width", 7)
-                .attr("height", 7)
-                .attr("x", function(d) {
-                    if (d.sF == 1) {
-                        return x1(d.start);
-                    } else {
-                        return x1(d.end);
-                    }
-                })
-                .attr("y", function(d, i) {
-                    return yis(d.from)+standardRect;
-                })
-                .attr("fill", "none")
-                .attr("stroke", function(d) {
-                    if (d.sF == 1) {
-                        return "none";
-                    } else {
-                        return linkColor;
-                            // return oColor(d.from);
-                    }
-                })
-                .attr("opacity", 1)
-            circR.exit().remove();
-
-            ///////////////////////////////
-            var linkL;
-            linkL = itemCircs.selectAll("line")
-                .data(lineAllItems, function(d) {
-                    return d.specialID;
-                })
-                .attr("x1", function(d) {
-                    return x1(d.start);
-                })
-                .attr("x2", function(d) {
-                    return x1(d.start);
-                })
-                .attr("fill", "none")
-                .attr("stroke", function(d) {
-                    return oColor(d.from);
-                })
-            linkL.enter().append("line")
-                .attr("class", function(d) {
-                    return "linkL" + d.from + d.start;
-                })
-                .attr("x1", function(d) {
-                    if (d.sF == 1) {
-                        return x1(d.start);
-                    } else {
-                        return x1(d.end);
-                    }
-                })
-                .attr("x2", function(d) {
-                    if (d.sF == 1) {
-                        return x1(d.start);
-                    } else {
-                        return x1(d.end);
-                    }
-                })
-                .attr("y1", function(d, i) {
-                    return yis(d.from);
-                })
-                .attr("y2", function(d, i) {
-                    return yis(d.from) + standardRect*2;
-                })
-                .attr("stroke", function(d) {
-                    return oColor(d.from);
-                })
-                .attr("opacity", 1)
-            linkL.exit().remove();
-
-
-var linkI;
-var linkD;
-var linkText;
-            linkText = itemArdz.selectAll("ltext")
-                .data(lineAllItems, function(d,i) {
-                    return lineAllItems[0].specialID;
-                })
-                .attr("x", function(d) {
-                    if (d.sF == 1) {
-                        return x1(d.start);
-                    } else {
-                        return x1(d.end);
-                    }                
-                });
-            linkText.enter().append("text")
-                .attr("class", function(d) {
-                    d3.select(this).each(moveToFront);
-                    return "ltext";
-                })
-                .attr("x", function(d) {
-                    if (d.sF == 1) {
-                        return x1(d.start);
-                    } else {
-                        return x1(d.end);
-                    }
-                })
-                .attr("y", function(d, i) {
-                    return yis(d.from);
-                })
-                .attr("opacity", labelOpacity)
-                // function(d) {
-                //     if (d.sF == 1) {
-                //         return 1;
-                //     } else {
-                //         return 0;
-                //     }
-                // })
-                .attr("font-size",12)
-                .text(function(d){
-                    if (d.sF==1){
-                        // linkI = i;
-                        return "Link Made!"
-                    } else{
-                        return "Link Disconnected"
-                    }
-                })
-                // .transition()
-                // .duration(1000)
-                // .attr("font-size",18)
-                // .each("end", function(){
-                //     linkText
-                //         .transition()
-                //         .attr("opacity",0)
-                //         .attr("font-size",12)
-                // })
-            // linkText.exit().remove();
-  // bbox = d3.select(".ltext").getBBox();
-  // rectB = svg.insert('rect', 'text')
-  // .attr('x', bbox.x)
-  // .attr('y', bbox.y)
-  // .attr('width', bbox.width)
-  // .attr('height', bbox.height);
-
-var imgHeight = 20;
- var timeRect;
- var timeWidth = $(".wodry2").width();
-            timeRect = itemRects.selectAll("timeRects")
-                .data(d3.range(1))
-                .attr("x", x1(minExtent))
-                                
-                timeRect.enter()
-                .append("rect").attr("class", "timeRects")
-                    .attr("transform", "translate(" + 0 + "," + -imgHeight*2 + ")")
-                .attr("x", x1(minExtent))
-                .attr("y", yis(options[0])-2)
-                .attr("width", w-x1(minExtent)) //not -timeiwdth
-                .attr("height", imgHeight/4)//imgHeight/2)
-                .attr("fill","white")
-                .attr("opacity",extentsOpacity);
-            ///////////////////////////////
-            rects = itemRects.selectAll(".image-cropper")
-                .data(visItems, function(d) {
-                    return d.timeIs;
-                })
-
-                .attr("x", function(d) {return x1(d.timeIs);})
-                .attr("width", 20);
-            rects.enter().append("image")
-                .attr("class",function(d){
-                                d3.select(this).each(moveToFront);
-                    return "image-cropper"
-                })
+                        return x1(d.timeIs);
+                    })
+                    .attr("width", 20);
+                rects.enter().append("image")
+                    .attr("class", function(d) {
+                        d3.select(this).each(moveToFront);
+                        return "image-cropper"
+                    })
                     .attr("xlink:href", function(d, i) {
-                       // d3.select(this).each(moveToFront)();
-                           if (d.buttonIs == "button3") { //1 is bad 3 is good
-                               return "idea.png";
-                               // return "ideaWhite.png";
-                           }
-                           if (d.buttonIs == "button1") { //1 is bad 3 is good
-                               return "thunder.png";
-                               // return "thunderWhite.png";
-                           } else{}
-                       })
-                .attr("y", 50)
-                .attr("width", imgHeight)
-                .attr("height", imgHeight)
-                .attr("x", function(d) {
-                    return x1(d.timeIs);
-                })
-            rects.exit().remove();
-            ///////////////////////////////
-var sup;
-          sup = main.selectAll(".conn")
-                .data(visItems, function(d) {
-                    return d.timeIs;
-                })
-                .attr("x1", function(d) {return x1(d.timeIs)+imgHeight/2;})
-                 .attr("x2", function(d) {
-                    return x(d.timeIs);
-                })
-                .attr("y1", 50+imgHeight)
-                .attr("y2", mainHeight+m[0]+miniY) //or something
-            sup.enter().append("line")
-                .attr("class",function(d){
-                   d3.select(this).each(moveToFront);
-                    return "conn";
-                })
-                .attr("y1", 50+imgHeight)
-                .attr("y2", mainHeight+m[0]+miniY) //or something
-                .attr("stroke",linkColor)
-                .attr("x1", function(d) {
-                    return x1(d.timeIs)+imgHeight/2;
-                })
-                 .attr("x2", function(d) {
-                    return x(d.timeIs);
-                })
-            sup.exit().remove();
-            ///////////////////////////////
+                        // d3.select(this).each(moveToFront)();
+                        if (d.buttonIs == "button2") { //1 is bad 3 is good
+                            return "idea.png";
+                            // return "ideaWhite.png";
+                        }
+                        if (d.buttonIs == "button1") { //1 is bad 3 is good
+                            return "thunder.png";
+                            // return "thunderWhite.png";
+                        } else {}
+                    })
+                    .attr("y", imgHeight)
+                    .attr("width", imgHeight)
+                    .attr("height", imgHeight)
+                    .attr("x", function(d) {
+                        return x1(d.timeIs);
+                    })
+                rects.exit().remove();
+                ///////////////////////////////
+                ///////////////////////////////
+//                 var sumButs;
+// var sumXScale = d3.scale.linear()
+//     .domain([0, button2])
+//     .range([w/2, w])
+//                 sumButs = main.selectAll(".sumButs")
+//                     .data(button2)
+//                     .attr("x", function(d) {
+//                             return sumXScale(d);
+//                         })
+//                 .attr("width", 20);
+//                 sumButs.enter().append("image")
+//                     .attr("class","sumButs")
+//                     .attr("xlink:href", "idea.png")
+//                     .attr("y", 50)
+//                     .attr("width", imgHeight)
+//                     .attr("height", imgHeight)
+//                     .attr("x", function(d) {
+//                         return sumXScale(d);
+//                     })
+//                 sumButs.exit().remove();
 
 
 
 
-                // timeRect.exit.remove();
-// var overview;
-//     overview = itemRects.selectAll(".screen")
-//         .data(visItems)
-//         .attr("x", function(d, i) {
-//             return x1(d.timeIs); //scale based on d.time
-//         })
-//     overview
-//         .enter()
-//         .append("image")
-//         // .attr("id","screen")
-//         .attr("class", "screen")
-//         // function(d,i){
-//             // return i;
-//         // })
-//         .attr("xlink:href", function(d, i) {
-//             if(i>0 && visItems[i].timeIs.getMinutes()!=visItems[i-1].timeIs.getMinutes()&&d.buttonIs=="button3"){
-//                 console.log(visItems[i].timeIs.getMinutes())
-//                 return d.photS;
-//             }else{}
-//             // return d.photS;
-//         })
-//         .attr("x", function(d, i) {
-//             return x1(d.timeIs); //scale based on d.time
-//         })
-//         .attr("y", function(d, i) {
-//             return 10;
-//         })
-//         .attr("width", 100)
-//         .attr("height", 100);
-//         overview.exit().remove();
+// var sumXScale = d3.scale.linear()
+//     .domain([0, button2])
+//     .range([w/2, w])
+//                 sumButs = main.selectAll(".sumButs")
+//                     .data(button2)
+//                     .attr("cx", function(d) {
+//                             return sumXScale(d);
+//                         })
+//                 .attr("width", 20);
+//                 sumButs.enter().append("circle")
+//                     .attr("class","sumButs")
+//                     .attr("cy", 50)
+//                     .attr("r", 20)
+//                     .attr("cx", function(d) {
+//                         return sumXScale(d);
+//                     })
+//                 sumButs.exit().remove();
 
-            ///////////////////////////////
 
-                            // if (i > 0) {
-                            //     if (parseDate(entry[i].timeIs).getHours() == parseDate(entry[i - 1].timeIs).getHours()) {
-                            //         return centerline + totalPhotos[parseDate(entry[i].timeIs).getHours()] * 45;
-                            //         // return scaleIt(parseDate(thisTime[i]).getHours());     
-                            //     } else {
-                            //         return centerline + 45;
-                            //     }
-                            // } else {
-                            //     return centerline + 45;
-                            // } 
+
+
+
+//////////////////////////
 
 
 
@@ -1501,66 +1470,177 @@ var sup;
 
 
 
-    if(autoMoving==false && calledAgain == false){
-        console.log("HEY down here")
-        // callNewInterval();
-    }
-}
+                // var sup;
+                // sup = main.selectAll(".conn")
+                //     .data(visItems, function(d) {
+                //         return d.timeIs;
+                //     })
+                //     .attr("x1", function(d) {
+                //         return x1(d.timeIs) + imgHeight / 2;
+                //     })
+                //     .attr("x2", function(d) {
+                //         return x(d.timeIs);
+                //     })
+                //     .attr("y1", imgHeight*2)
+                //     .attr("y2", yis(options[0])-50)
+                //     // .attr("y2", mainHeight + m[0] + miniY) //or something
+                // sup.enter().append("line")
+                //     .attr("class", function(d) {
+                //         d3.select(this).each(moveToFront);
+                //         return "conn";
+                //     })
+                //     .attr("y1", imgHeight*2)
+                //     .attr("y2",yis(options[0])-50)
+                //     // .attr("y2", mainHeight + m[0] + miniY) //or something
+                //     .attr("stroke", linkColor)
+                //     .attr("x1", function(d) {
+                //         return x1(d.timeIs) + imgHeight / 2;
+                //     })
+                //     .attr("x2", function(d) {
+                //         return x(d.timeIs);
+                //     })
+                //     .attr("stroke-width",1)
+                // sup.exit().remove();
+                ///////////////////////////////
+
+
+                // var overview;
+                //     overview = itemRects.selectAll(".screen")
+                //         .data(visItems)
+                //         .attr("x", function(d, i) {
+                //             return x1(d.timeIs); //scale based on d.time
+                //         })
+                //     overview
+                //         .enter()
+                //         .append("image")
+                //         .attr("class", "screen")
+                //         .attr("xlink:href", function(d, i) {
+                //             // if(i>0 && visItems[i].timeIs.getMinutes()!=visItems[i-1].timeIs.getMinutes()){
+                //             //     console.log(visItems[i].timeIs.getMinutes())
+                //             //     return d.photS;
+                //             // }else{}
+                //             return d.photS;
+                //         })
+                //         .attr("x", function(d, i) {
+                //             return x1(d.timeIs); //scale based on d.time
+                //         })
+                //         .attr("y", function(d, i) {
+                //             return 100;
+                //         })
+                //         .attr("width", 100)
+                //         .attr("height", 100);
+                //         overview.exit().remove();
+
+                ///////////////////////////////
+                // var textOver;
+                //     textOver = itemRects.selectAll(".textOv")
+                //         .data(visItems)
+                //         .attr("x", function(d, i) {
+                //             return x1(d.timeIs); //scale based on d.time
+                //         })
+                //     textOver
+                //         .enter()
+                //         .append("text")
+                //         .attr("class", "textOv")
+                //         .attr("x", function(d, i) {
+                //             return x1(d.timeIs); //scale based on d.time
+                //         })
+                //         .attr("y", function(d, i) {
+                //             return 0;
+                //         })
+                //         .text(function(d){
+                //             return parseDate(d.timeIs);
+                //         })
+                //         textOver.exit().remove();
 
 
 
-        function getUnique(inputArray) {
-            var outputArray = [];
-            for (var i = 0; i < inputArray.length; i++) {
-                if (jQuery.inArray(inputArray[i], outputArray) == -1) {
-                    outputArray.push(inputArray[i]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                // if (i > 0) {
+                //     if (parseDate(entry[i].timeIs).getHours() == parseDate(entry[i - 1].timeIs).getHours()) {
+                //         return centerline + totalPhotos[parseDate(entry[i].timeIs).getHours()] * 45;
+                //         // return scaleIt(parseDate(thisTime[i]).getHours());     
+                //     } else {
+                //         return centerline + 45;
+                //     }
+                // } else {
+                //     return centerline + 45;
+                // } 
+
+
+
+
+                if (autoMoving == false && calledAgain == false) {
+                    console.log("HEY down here")
+                        // callNewInterval();
                 }
             }
-            return outputArray;
-        }
 
 
-        function unique(obj) {
-            var uniques = [];
-            var stringify = {};
-            for (var i = 0; i < obj.length; i++) {
-                var keys = Object.keys(obj[i]);
-                keys.sort(function(a, b) {
-                    return a - b
-                });
-                var str = '';
-                for (var j = 0; j < keys.length; j++) {
-                    str += JSON.stringify(keys[j]);
-                    str += JSON.stringify(obj[i][keys[j]]);
+
+            function getUnique(inputArray) {
+                var outputArray = [];
+                for (var i = 0; i < inputArray.length; i++) {
+                    if (jQuery.inArray(inputArray[i], outputArray) == -1) {
+                        outputArray.push(inputArray[i]);
+                    }
                 }
-                if (!stringify.hasOwnProperty(str)) {
-                    uniques.push(obj[i]);
-                    stringify[str] = true;
+                return outputArray;
+            }
+
+
+            function unique(obj) {
+                var uniques = [];
+                var stringify = {};
+                for (var i = 0; i < obj.length; i++) {
+                    var keys = Object.keys(obj[i]);
+                    keys.sort(function(a, b) {
+                        return a - b
+                    });
+                    var str = '';
+                    for (var j = 0; j < keys.length; j++) {
+                        str += JSON.stringify(keys[j]);
+                        str += JSON.stringify(obj[i][keys[j]]);
+                    }
+                    if (!stringify.hasOwnProperty(str)) {
+                        uniques.push(obj[i]);
+                        stringify[str] = true;
+                    }
                 }
+                return uniques;
             }
-            return uniques;
-        }
 
-        function photoConsolidation(index) {
-            var total = 0;
-            for (i = 0; i < uniques.length; i++) {
-                if (uniques[i].timeIs.getHours() == index) {
-                    total++;
-                } else {}
+            function photoConsolidation(index) {
+                var total = 0;
+                for (i = 0; i < uniques1.length; i++) {
+                    if (uniques1[i].timeIs.getHours() == index) {
+                        total++;
+                    } else {}
+                }
+                return total;
             }
-            return total;
-        }
 
 
-//Move SVG elements to the end of their container,
-//so they appear "on top".
-var moveToFront = function() { 
-    this.parentNode.appendChild(this); 
-}
-
-
-
-
+            //Move SVG elements to the end of their container,
+            //so they appear "on top".
+            var moveToFront = function() {
+                this.parentNode.appendChild(this);
+            }
     </script>
     <!-- <div id="click">up</div> -->
 

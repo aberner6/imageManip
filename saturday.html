@@ -73,7 +73,7 @@
     
     .title {
 position: absolute;
-    right: 50px;
+    right: 10px;
     top: 35px;
         font-family: 'Lato-Light', sans-serif;
         color: white;
@@ -145,11 +145,14 @@ left: 110px;
 //         });
 // })
 var whatsthis = Date.now();
-mindate = +(new Date(whatsthis-8000000+4000000-5000000));
+mindate = 1441440014000;//1441442725000;
+maxdate = (1441558800000);
+//+(new Date(whatsthis-8000000+4000000-5000000));
+
 // new Date(mindate-5000000)
 // Sat Sep 05 2015 13:33:44 GMT+0200 (CEST)
 // mindate = 1441440000; //thisDate; //Date.now().getHours()
-maxdate = Date.now();
+// maxdate = Date.now();
 
 
 
@@ -180,8 +183,8 @@ prepData();
 startTimer();
 function startTimer(){
     console.log("timer")
-        // var startTime = setTimeout(function() { 
-        startTime = setInterval(function() {
+        var startTime = setTimeout(function() { 
+        // startTime = setInterval(function() {
             if (prepdData) {
                     console.log("updateData")
                     updateData();
@@ -195,10 +198,10 @@ function startTimer(){
                 prepScales();
                 console.log("prepped")
                 if (prepped && !autoMoving) {
-                            var e = [mindate, maxdate]; //set brush range
+                            // var e = [mindate, maxdate]; //set brush range
                             // // var e = [maxdate-timevar*5, maxdate]; //set brush range
-                            brush.extent(e);
-                            mini.call(brush);                             
+                            // brush.extent(e);
+                            // mini.call(brush);                             
                 } else {
                     autoMovement(0, amt, mindate); //not amt*2
                 }
