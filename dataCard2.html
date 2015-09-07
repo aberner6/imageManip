@@ -349,9 +349,9 @@ var whatIs = [];
 var onlyArd;
 var sessionDates = [];
 function prepData() {
-                d3.csv("https://dl.dropboxusercontent.com/s/19izw72cww803ll/arsdb?dl=0", function(error, arData) {
+                // d3.csv("https://dl.dropboxusercontent.com/s/19izw72cww803ll/arsdb?dl=0", function(error, arData) {
 
-                // d3.csv("https://dl.dropboxusercontent.com/s/a32v02txwd0bns0/arsdb2?dl=0", function(error, arData) {
+                d3.csv("https://dl.dropboxusercontent.com/s/a32v02txwd0bns0/arsdb2?dl=0", function(error, arData) {
                     onlyArd = arData.filter(function(d){
                         if(d.mod!="UI"){
                             return d;
@@ -409,8 +409,8 @@ var buttonData = [];
                         // https://www.dropbox.com/s/iz6mkdrd5z4wvvc/db2?dl=0
 
 
-// https://www.dropbox.com/s/h1zyddyuicbn134/db?dl=0
-                d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
+                // d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
+                d3.csv("https://dl.dropboxusercontent.com/s/iz6mkdrd5z4wvvc/db2?dl=0", function(error, data) {
                     // console.log("buttondata")
                         // buttonData.push(data);
 

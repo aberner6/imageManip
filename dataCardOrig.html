@@ -158,7 +158,7 @@ left: 110px;
 
 
         var labelOpacity = 0;
-        var opacity = .8;
+        var opacity = .9;
         var extentsOpacity = .5;
         var linkColor = "black"; //not black
         var amt = 6;
@@ -235,7 +235,7 @@ prepData();
             var m = [20, 15, 15, 120], //top right bottom left
                 w = window.innerWidth - m[1] * 2 - m[3],
                 h = window.innerHeight, //- m[3],//m[0] - m[2],
-                miniHeight = 80, //laneLength * 12 + 50,
+                miniHeight = 50, //laneLength * 12 + 50,
                 mainHeight = h - miniHeight - 50;
 
             var chart = d3.select("body")
@@ -812,7 +812,7 @@ var newItems = [];
                 /////////////summary view stuff
                 /////////////summary view stuff
                 // d3.select("g.sum").attr("opacity", 0)
-
+var sessionTimes = [];
 var minStart = ardItems[0].start;
 var maxEnd = ardItems[ardItems.length-1].end;
 var maxTime = maxEnd-minStart;
@@ -821,7 +821,49 @@ var maxTime = maxEnd-minStart;
                     .range([0,15])
 
 
-                // var sumRects;
+                var sumRects;
+                var wtf;
+                for(i=0; i<ardItems.length; i++){
+                    if(typeof(ardItems[i].start)!=="undefined"){
+                        sessionTimes.push([(ardItems[i].end-ardItems[i].start)]);
+                        wtf = Math.max(ardItems[i].end-ardItems[i].start);
+                        wtfType = ardItems[i]['mod']
+                    }
+                }
+                console.log(wtf);
+                console.log(wtfType);
+                
+                sumRects = sumArdz.selectAll("circle")
+                    .data(ardItems, function(d) {
+                        return d.specialID;
+                    })
+                    .attr("cx", function(d) {
+                        return m[0];
+                    })
+                    .attr("cy", 100)
+
+                sumRects.enter().append("circle")
+                    .attr("class", function(d) {
+                        return "sumRect" + d.specialID;
+                    })
+                    .attr("cx", function(d, i) {
+                        return m[0];
+                    })
+                    .attr("cy", 100) //some height margin
+                    .attr("r", function(d) {
+                        // var thisR = ((d.end - d.start)/1000); //seconds
+                        // return thisR;
+                            return circScale(wtf);
+                        // }else{ return 0; }
+                    })
+                    .attr("fill", function(d) {
+                        return oColor(d.from);
+                    })
+                    .attr("stroke", "none")
+                    .attr("opacity", opacity)
+                sumRects.exit().remove();
+                                           
+
                 // sumRects = sumArdz.selectAll("circle")
                 //     .data(ardItems, function(d) {
                 //         return d.specialID;
@@ -840,7 +882,6 @@ var maxTime = maxEnd-minStart;
                 //     })
                 //     .attr("cy", 100) //some height margin
                 //     .attr("r", function(d) {
-                //         if(typeof(d.start)!=="undefined"){
                 //         // var thisR = ((d.end - d.start)/1000); //seconds
                 //         // return thisR;
                 //             return circScale(d.end - d.start);
@@ -856,44 +897,44 @@ var maxTime = maxEnd-minStart;
 
 
 
-                // var sumTexts;
-                // sumTexts = sumArdz.selectAll(".sumText")
-                //     .data(ardItems, function(d) {
-                //         return d.specialID;
-                //     })
-                //     .attr("x", function(d) {
-                //         return xis(d.from);
-                //     })
-                //     .attr("y", 100)
-                // sumTexts.enter().append("text")
-                //     .attr("class", "sumText")
-                //     .attr("x", function(d, i) {
-                //         return xis(d.from);
-                //     })
-                //     .attr("y", 100) //some height margin
-                //     .text(function(d) {
-                //         var thisNum = ((d.end - d.start)/1000); //seconds
-                //         if(thisNum>60){
-                //             var minuteNum = ((d.end - d.start)/600000); //seconds
-                //             return minuteNum.toFixed(0)+"mins "+d.from;                            
-                //         }else{
-                //             return thisNum.toFixed(0)+"secs "+d.from;
-                //         }
-                //         // if(thisNum<1&&thisNum>0){
-                //         //     // return d.total.toFixed(0)+"m "+d.from;
-                //         // }
-                //         // if(thisNum==0){
-                //         //     return d.total.toFixed(0);
-                //         // }
-                //         // return (thisNum.toFixed(1)) + "h "+d.from;
-                //         // return (d.end - d.start)+" "+d.from;
-                //     })
-                //     // .attr("fill", function(d) {
-                //     //     return oColor(d.from);
-                //     // })
-                //     // .attr("stroke", "none")
-                //     .attr("opacity", opacity)
-                // sumTexts.exit().remove();
+                var sumTexts;
+                sumTexts = sumArdz.selectAll(".sumText")
+                    .data(ardItems, function(d) {
+                        return d.specialID;
+                    })
+                    .attr("x", function(d) {
+                        return xis(d.from);
+                    })
+                    .attr("y", 100)
+                sumTexts.enter().append("text")
+                    .attr("class", "sumText")
+                    .attr("x", function(d, i) {
+                        return xis(d.from);
+                    })
+                    .attr("y", 100) //some height margin
+                    .text(function(d) {
+                        var thisNum = ((d.end - d.start)/1000); //seconds
+                        if(thisNum>60){
+                            var minuteNum = ((d.end - d.start)/600000); //seconds
+                            return minuteNum.toFixed(0)+"mins "+d.from;                            
+                        }else{
+                            return thisNum.toFixed(0)+"secs "+d.from;
+                        }
+                        // if(thisNum<1&&thisNum>0){
+                        //     // return d.total.toFixed(0)+"m "+d.from;
+                        // }
+                        // if(thisNum==0){
+                        //     return d.total.toFixed(0);
+                        // }
+                        // return (thisNum.toFixed(1)) + "h "+d.from;
+                        // return (d.end - d.start)+" "+d.from;
+                    })
+                    // .attr("fill", function(d) {
+                    //     return oColor(d.from);
+                    // })
+                    // .attr("stroke", "none")
+                    .attr("opacity", opacity)
+                sumTexts.exit().remove();
 
 
 
@@ -1388,43 +1429,43 @@ var maxText = timeFormat2(new Date(maxdate));
                     .attr("x", -10)//x1(minExtent))
                     .attr("y", yis(options[0])-5)
                     .attr("width", w-timeWidth) //not -timeiwdth
-                    .attr("height", 1)//imgHeight/2)
+                    .attr("height", .5)//imgHeight/2)
                     .attr("fill","black")
                     .attr("stroke-dasharray",dashArray)
                     .attr("opacity",extentsOpacity);
                 ///////////////////////////////
-                rects = itemRects.selectAll(".image-cropper")
-                    .data(visItems, function(d) {
-                        return d.timeIs;
-                    })
+                // rects = itemRects.selectAll(".image-cropper")
+                //     .data(visItems, function(d) {
+                //         return d.timeIs;
+                //     })
 
-                .attr("x", function(d) {
-                        return x1(d.timeIs);
-                    })
-                    .attr("width", 20);
-                rects.enter().append("image")
-                    .attr("class", function(d) {
-                        d3.select(this).each(moveToFront);
-                        return "image-cropper"
-                    })
-                    .attr("xlink:href", function(d, i) {
-                        // d3.select(this).each(moveToFront)();
-                        if (d.buttonIs == "button2") { //1 is bad 3 is good
-                            return "idea.png";
-                            // return "ideaWhite.png";
-                        }
-                        if (d.buttonIs == "button1") { //1 is bad 3 is good
-                            return "thunder.png";
-                            // return "thunderWhite.png";
-                        } else {}
-                    })
-                    .attr("y", imgHeight)
-                    .attr("width", imgHeight)
-                    .attr("height", imgHeight)
-                    .attr("x", function(d) {
-                        return x1(d.timeIs);
-                    })
-                rects.exit().remove();
+                // .attr("x", function(d) {
+                //         return x1(d.timeIs);
+                //     })
+                //     .attr("width", 20);
+                // rects.enter().append("image")
+                //     .attr("class", function(d) {
+                //         d3.select(this).each(moveToFront);
+                //         return "image-cropper"
+                //     })
+                //     .attr("xlink:href", function(d, i) {
+                //         // d3.select(this).each(moveToFront)();
+                //         if (d.buttonIs == "button2") { //1 is bad 3 is good
+                //             return "idea.png";
+                //             // return "ideaWhite.png";
+                //         }
+                //         if (d.buttonIs == "button1") { //1 is bad 3 is good
+                //             return "thunder.png";
+                //             // return "thunderWhite.png";
+                //         } else {}
+                //     })
+                //     .attr("y", 0)
+                //     .attr("width", imgHeight)
+                //     .attr("height", imgHeight)
+                //     .attr("x", function(d) {
+                //         return x1(d.timeIs);
+                //     })
+                // rects.exit().remove();
                 ///////////////////////////////
                 ///////////////////////////////
 //                 var sumButs;
@@ -1516,32 +1557,32 @@ var maxText = timeFormat2(new Date(maxdate));
                 ///////////////////////////////
 
 
-                // var overview;
-                //     overview = itemRects.selectAll(".screen")
-                //         .data(visItems)
-                //         .attr("x", function(d, i) {
-                //             return x1(d.timeIs); //scale based on d.time
-                //         })
-                //     overview
-                //         .enter()
-                //         .append("image")
-                //         .attr("class", "screen")
-                //         .attr("xlink:href", function(d, i) {
-                //             // if(i>0 && visItems[i].timeIs.getMinutes()!=visItems[i-1].timeIs.getMinutes()){
-                //             //     console.log(visItems[i].timeIs.getMinutes())
-                //             //     return d.photS;
-                //             // }else{}
-                //             return d.photS;
-                //         })
-                //         .attr("x", function(d, i) {
-                //             return x1(d.timeIs); //scale based on d.time
-                //         })
-                //         .attr("y", function(d, i) {
-                //             return 100;
-                //         })
-                //         .attr("width", 100)
-                //         .attr("height", 100);
-                //         overview.exit().remove();
+                var overview;
+                    overview = itemRects.selectAll(".screen")
+                        .data(visItems)
+                        .attr("x", function(d, i) {
+                            return x1(d.timeIs); //scale based on d.time
+                        })
+                    overview
+                        .enter()
+                        .append("image")
+                        .attr("class", "screen")
+                        .attr("xlink:href", function(d, i) {
+                            // if(i>0 && visItems[i].timeIs.getMinutes()!=visItems[i-1].timeIs.getMinutes()){
+                            //     console.log(visItems[i].timeIs.getMinutes())
+                            //     return d.photS;
+                            // }else{}
+                            return d.photS;
+                        })
+                        .attr("x", function(d, i) {
+                            return x1(d.timeIs); //scale based on d.time
+                        })
+                        .attr("y", function(d, i) {
+                            return 0;
+                        })
+                        .attr("width", 100)
+                        .attr("height", 100);
+                        overview.exit().remove();
 
                 ///////////////////////////////
                 // var textOver;
