@@ -153,12 +153,13 @@ left: 110px;
 // maxdate = Date.now();
 
 
+                var imgHeight = 20;
 
 
 
 
         var labelOpacity = 0;
-        var opacity = .8;
+        var opacity = .9;
         var extentsOpacity = .5;
         var linkColor = "black"; //not black
         var amt = 6;
@@ -190,15 +191,28 @@ prepData();
                     calledAgain = false;
                     prepped = false;
 
+
                     console.log(uniques1.length + "button");
                     console.log(ardEntry.length + "ard");
                 // setTimeout(function() {
                     // if (ardEntry.length > 0 && uniques1.length > 0) {
                 prepScales();
-                console.log("prepped")
+
+                             // var e = [mindate, maxdate]; //set brush range
+                            // brush.extent(e);
+                            // mini.call(brush);
+
+
+
+
+
+
+
+
+
+                            console.log("prepped")
                 // if (prepped && !autoMoving) {
                             // var e = [mindate, maxdate]; //set brush range
-                            // // var e = [maxdate-timevar*5, maxdate]; //set brush range
                             // brush.extent(e);
                             // mini.call(brush);                             
                 // } else {
@@ -235,7 +249,7 @@ prepData();
             var m = [20, 15, 15, 120], //top right bottom left
                 w = window.innerWidth - m[1] * 2 - m[3],
                 h = window.innerHeight, //- m[3],//m[0] - m[2],
-                miniHeight = 80, //laneLength * 12 + 50,
+                miniHeight = 35, //laneLength * 12 + 50,
                 mainHeight = h - miniHeight - 50;
 
             var chart = d3.select("body")
@@ -262,8 +276,10 @@ prepData();
                 .attr("class", "mini")
                 .attr("clip-path", "url(#clip)");
 
+var startArs = "Thu Sep 03 2015 10:16:11 GMT+0200 (CEST)";
             //scales
             var x = d3.scale.linear()
+                // .domain([startArs, Date.now])
                 .domain([mindate, maxdate])
                 .range([-10, w]);
                 // .range([m[1], w]);
@@ -292,17 +308,18 @@ prepData();
 
             var specialList = [];
 
+var yRange = mainHeight-10;
             var yis = d3.scale.ordinal()
-                .domain(options)
-                .rangePoints([100, mainHeight]);
+                .rangePoints([100, mainHeight-100]);
 
             var miniY = 40;
             var yOther = d3.scale.ordinal()
-                .domain(options)
-                .rangePoints([miniY, miniHeight]);
+                .rangePoints([miniY+30, miniHeight])
+                .domain(options);
+
 
             var xis = d3.scale.ordinal()
-                .domain(options)
+                // .domain(options)
                 .rangePoints([m[0], w]);
 
             var oColor = d3.scale.ordinal()
@@ -359,15 +376,22 @@ function prepData() {
                     })
                     for (var i = 0; i < arData.length; i++) {
 
-
-if (arData[arData.length-1]['mod'] == "UI" && arData[arData.length-1]['sF']=="CLOSED"){
-    mindate = parseInt(arData[arData.length-2]['timestamp']);
+if (arData[arData.length-2]['mod'] == "UI" && arData[arData.length-2]['sF']=="CLOSED"){
+    mindate = parseInt(arData[arData.length-3]['timestamp']);
     maxdate = parseInt(arData[arData.length-1]['timestamp']);
 } 
-if (arData[arData.length-1]['mod'] == "UI" && arData[arData.length-1]['sF']=="OPENED"){
-    mindate = parseInt(arData[arData.length-1]['timestamp']);
+if (arData[arData.length-2]['mod'] == "UI" && arData[arData.length-2]['sF']=="OPENED"){
+    mindate = parseInt(arData[arData.length-2]['timestamp']);
     maxdate = Date.now();
-} 
+}
+// if (arData[arData.length-1]['mod'] == "UI" && arData[arData.length-1]['sF']=="CLOSED"){
+//     mindate = parseInt(arData[arData.length-2]['timestamp']);
+//     maxdate = parseInt(arData[arData.length-1]['timestamp']);
+// } 
+// if (arData[arData.length-1]['mod'] == "UI" && arData[arData.length-1]['sF']=="OPENED"){
+//     mindate = parseInt(arData[arData.length-1]['timestamp']);
+//     maxdate = Date.now();
+// } 
 
 
 
@@ -409,8 +433,10 @@ var buttonData = [];
                         // https://www.dropbox.com/s/iz6mkdrd5z4wvvc/db2?dl=0
 
 
+// https://www.dropbox.com/s/h1zyddyuicbn134/db?dl=0
                 // d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
                 d3.csv("https://dl.dropboxusercontent.com/s/iz6mkdrd5z4wvvc/db2?dl=0", function(error, data) {
+
                     // console.log("buttondata")
                         // buttonData.push(data);
 
@@ -428,17 +454,15 @@ var buttonData = [];
                     // uniques1 = ["0","0"]
                     uniques1 = unique(entry2);
                 })
+
                 // d3.csv("https://dl.dropboxusercontent.com/s/gucv71ip6w71mib/testarsdb2?dl=0", function(error, arData) {
                     //call one and then the other and then the other
                     //FOR ARDUINO DATA
                     for (var i = 0; i < onlyArd.length-1; i++) {
                         var blah = [];
-
-                        ardUni.push({
-                            "mod": onlyArd[i]['mod'],
-                            "from": (onlyArd[i]['fromType']),
-                        })
-
+if(onlyArd[i]['timestamp']<maxdate && onlyArd[i]['timestamp']>mindate){
+                        ardUni.push(onlyArd[i]['fromType']);
+}
 
 
 
@@ -488,53 +512,7 @@ var buttonData = [];
 
 
 
-            var icons = main.selectAll("icons");
-            icons = main.selectAll("icons")
-                .data(options)
-                .enter().append("image")
-                .attr("class", "icons")
-                .attr("xlink:href", function(d, i) {
-                    return d.toLowerCase() + ".png";
-                })
-                .attr("y", function(d) {
-                    return yis(d) - 12;
-                })
-                .attr("width", 20)
-                .attr("height", 20)
-                    // .attr("x", x1(mindate));
-                // .attr("x", m[3] - 40);
-                .attr("x", -45)
-
-            var iconText;
-            iconText = main.selectAll("optionsText")
-                .data(options)
-                .enter().append("text")
-                .attr("class", "optionsText")
-                .attr("y", function(d) {
-                    return yis(d);
-                })
-                .attr("x", -55)//m[1] + 10 - 20) //m[3] - 50)
-                .attr("text-anchor", "end")
-                .text(function(d) {
-                    return d;
-                })
-
-            var iconDelin;
-            iconDelin = main.selectAll("optionsDelin")
-                .data(options)
-                .enter().append("line")
-                .attr("class", "xDelin")
-                .attr("y1", function(d) {
-                    return yis(d);
-                })
-                .attr("y2", function(d) {
-                    return yis(d);
-                })
-                .attr("x1", 0)//m[1] + 10)
-                .attr("x2", w) //m[3]) //not w
-                .attr("stroke-dasharray", dashArray)
-                .attr("stroke-width", .5)
-                .attr("stroke", "lightgray")
+  
 
             var dashArray = "3 3 3 3";
             var timeFormat = d3.time.format("%a %H:%M");
@@ -580,7 +558,7 @@ var newItems = [];
 
                 xAxisScale
                 // .domain([mindate, maxdate])
-                    .domain([mindate - timevar, maxdate + timevar])
+                    .domain([mindate, maxdate])
 
                 xAxis
                     .scale(xAxisScale)
@@ -629,6 +607,9 @@ var newItems = [];
                     .attr("stroke", linkColor)
                     .attr("opacity", opacity);
 
+
+
+var miniRHeight = 5;
                 ///////////////////
                 mini.append("g").selectAll("rectie")
                     .data(ardEntry, function(d) {
@@ -654,7 +635,7 @@ var newItems = [];
                     .attr("y", function(d, i) {
                         return yOther(d.from);
                     })
-                    .attr("height", standardRect / 2)
+                    .attr("height", miniRHeight)
                     .attr("fill", function(d) {
                         if (d.sF == "1") {
                             return oColor(d.from);
@@ -703,12 +684,88 @@ var newItems = [];
 
 
 
-            var standardRect = 5;
             var r = 4;
             var rects;
 
 
-            function display() {
+function display() {
+
+        ardUniques1 = unique(ardUni);
+        console.log(ardUniques1+"arduni");
+        yis.domain(ardUniques1)
+        xis.domain(ardUniques1)
+
+        var standardRect = (yRange/ardUniques1.length)-26;
+// yRange
+
+
+          var icons;
+            icons = main.selectAll(".icons")
+                .data(ardUniques1)
+                .attr("xlink:href", function(d, i) {
+                    return d.toLowerCase() + ".png";
+                })
+                .attr("y", function(d) {
+                    return yis(d) - 12;
+                });
+            icons.enter().append("image")
+                .attr("class", "icons")
+                .attr("xlink:href", function(d, i) {
+                    return d.toLowerCase() + ".png";
+                })
+                .attr("y", function(d) {
+                    return yis(d) - 12;
+                })
+                .attr("width", 20)
+                .attr("height", 20)
+                .attr("x", -45)
+                icons.exit().remove();
+
+            var iconText;
+            iconText = main.selectAll(".optionsText")
+                .data(ardUniques1)
+                .attr("y", function(d) {
+                    return yis(d);
+                })
+            iconText
+                .enter().append("text")
+                .attr("class", "optionsText")
+                .attr("y", function(d) {
+                    return yis(d);
+                })
+                .attr("x", -55)//m[1] + 10 - 20) //m[3] - 50)
+                .attr("text-anchor", "end")
+                .text(function(d) {
+                    return d;
+                })
+                iconText.exit().remove();
+
+            var iconDelin;
+            iconDelin = main.selectAll(".xDelin")
+                .data(ardUniques1)
+                .attr("y1", function(d) {
+                    return yis(d);
+                })
+                .attr("y2", function(d) {
+                    return yis(d);
+                })
+            iconDelin
+                .enter().append("line")
+                .attr("class", "xDelin")
+                .attr("y1", function(d) {
+                    return yis(d);
+                })
+                .attr("y2", function(d) {
+                    return yis(d);
+                })
+                .attr("x1", 0)//m[1] + 10)
+                .attr("x2", w) //m[3]) //not w
+                .attr("stroke-dasharray", dashArray)
+                .attr("stroke-width", .5)
+                .attr("stroke", "lightgray")
+                iconDelin.exit().remove();
+
+
             var button1 = 0;
             var button2 = 0;
                         clearInterval(startTime);
@@ -744,7 +801,6 @@ var newItems = [];
                     return d.start < maxExtent && d.sF == "1" && d.mod == "CC";
                 });
 
-
                 //
                 // ardAllItems = ardEntry.filter(function(d) {
                 //     return d.start < maxExtent && d.end > minExtent && d.mod == "BM";
@@ -776,29 +832,21 @@ var newItems = [];
                 d3.selectAll(".wodry").remove();
                 d3.selectAll(".wodry2").remove();
 
-                d3.selectAll(".atext").remove();
-                d3.selectAll(".mtext").remove();
-                d3.selectAll(".btext").remove();
-                d3.selectAll(".ltext").remove();
-                d3.selectAll(".ldtext").remove();
+                // d3.selectAll(".atext").remove();
+                // d3.selectAll(".mtext").remove();
+                // d3.selectAll(".btext").remove();
+                // d3.selectAll(".ltext").remove();
+                // d3.selectAll(".ldtext").remove();
 
 
                 d3.selectAll(".sumText").remove();
 
 
                 // d3.selectAll(".timeRects").remove();
-
-                // atext
-                // mtext
-                // btext
-                // ltext
-
-
-
                 d3.selectAll(".trect").remove();
 
-                mini.select(".brush")
-                    .call(brush.extent([minExtent, maxExtent]));
+                // mini.select(".brush")
+                    // .call(brush.extent([minExtent, maxExtent]));
 
                 x1.domain([minExtent, maxExtent]);
 
@@ -809,91 +857,6 @@ var newItems = [];
                 // console.log((maxExtent)-(minExtent));
                 // console.log((+maxExtTime)-(+minExtTime));
 
-                /////////////summary view stuff
-                /////////////summary view stuff
-                // d3.select("g.sum").attr("opacity", 0)
-
-var minStart = ardItems[0].start;
-var maxEnd = ardItems[ardItems.length-1].end;
-var maxTime = maxEnd-minStart;
-                var circScale = d3.scale.linear()
-                    .domain([0, maxTime])
-                    .range([0,15])
-
-
-                // var sumRects;
-                // sumRects = sumArdz.selectAll("circle")
-                //     .data(ardItems, function(d) {
-                //         return d.specialID;
-                //     })
-                //     .attr("cx", function(d) {
-                //         return xis(d.from);
-                //     })
-                //     .attr("cy", 100)
-
-                // sumRects.enter().append("circle")
-                //     .attr("class", function(d) {
-                //         return "sumRect" + d.specialID;
-                //     })
-                //     .attr("cx", function(d, i) {
-                //         return xis(d.from);
-                //     })
-                //     .attr("cy", 100) //some height margin
-                //     .attr("r", function(d) {
-                //         if(typeof(d.start)!=="undefined"){
-                //         // var thisR = ((d.end - d.start)/1000); //seconds
-                //         // return thisR;
-                //             return circScale(d.end - d.start);
-                //         }else{ return 0; }
-                //     })
-                //     .attr("fill", function(d) {
-                //         return oColor(d.from);
-                //     })
-                //     .attr("stroke", "none")
-                //     .attr("opacity", opacity)
-                // sumRects.exit().remove();
-
-
-
-
-                // var sumTexts;
-                // sumTexts = sumArdz.selectAll(".sumText")
-                //     .data(ardItems, function(d) {
-                //         return d.specialID;
-                //     })
-                //     .attr("x", function(d) {
-                //         return xis(d.from);
-                //     })
-                //     .attr("y", 100)
-                // sumTexts.enter().append("text")
-                //     .attr("class", "sumText")
-                //     .attr("x", function(d, i) {
-                //         return xis(d.from);
-                //     })
-                //     .attr("y", 100) //some height margin
-                //     .text(function(d) {
-                //         var thisNum = ((d.end - d.start)/1000); //seconds
-                //         if(thisNum>60){
-                //             var minuteNum = ((d.end - d.start)/600000); //seconds
-                //             return minuteNum.toFixed(0)+"mins "+d.from;                            
-                //         }else{
-                //             return thisNum.toFixed(0)+"secs "+d.from;
-                //         }
-                //         // if(thisNum<1&&thisNum>0){
-                //         //     // return d.total.toFixed(0)+"m "+d.from;
-                //         // }
-                //         // if(thisNum==0){
-                //         //     return d.total.toFixed(0);
-                //         // }
-                //         // return (thisNum.toFixed(1)) + "h "+d.from;
-                //         // return (d.end - d.start)+" "+d.from;
-                //     })
-                //     // .attr("fill", function(d) {
-                //     //     return oColor(d.from);
-                //     // })
-                //     // .attr("stroke", "none")
-                //     .attr("opacity", opacity)
-                // sumTexts.exit().remove();
 
 
 
@@ -903,8 +866,7 @@ var maxTime = maxEnd-minStart;
 
 
 
-
-
+var yHeight = 50;
 
                 //////////////
                 var minExtTime = timeFormat2(new Date(minExtent));
@@ -917,7 +879,7 @@ var maxText = timeFormat2(new Date(maxdate));
                     .enter()
                     .append("text").attr("class", "wodry1")
                     .attr("x", 0)//x1(minExtent) - 10)
-                    .attr("y", yis(options[0]) - 67)
+                    .attr("y", yHeight-20)
                     .attr("text-anchor", "end")
                     .text(minHeadline);
                 var timeText = main.selectAll("wodry")
@@ -925,7 +887,7 @@ var maxText = timeFormat2(new Date(maxdate));
                     .enter()
                     .append("text").attr("class", "wodry")
                     .attr("x", 0)//-45//x1(minExtent) - 10)
-                    .attr("y", yis(options[0]) - 50)
+                    .attr("y", yHeight)
                     .attr("text-anchor", "end")
                     .text("@" + minExtTime);
 
@@ -936,17 +898,133 @@ var maxText = timeFormat2(new Date(maxdate));
                 timeText2.enter().append("text")
                     .attr("class", "wodry2")
                     .attr("x", x1(maxExtent))
-                    .attr("y", yis(options[0]) - 50)
+                    .attr("y", yHeight)
                     .attr("text-anchor", "end")
                     .attr("opacity", function(d) {
+                // timeWidth = $(".wodry2").width();
+
                         if (x1(maxExtent) > x1(minExtent)) {
                             return 1;
                         } else {
                             return 0;
                         }
                     })
-                    .text(maxText);
+                    .text(maxExtTime);
                 ///////////////////
+
+var ccCirclez;
+var ccR = 15;
+                ccCirclez = itemArdz.selectAll(".ccCirc")
+                    .data(ccItems, function(d) {
+                        return d.specialID;
+                    })
+                    .attr("x1", function(d) {
+                        return x1(d.start);//xis(d.from);
+                    })
+                    .attr("x2", function(d) {
+                        return x1(d.start);//xis(d.from);
+                    })
+                ccCirclez.enter().append("line")
+                    .attr("class", "ccCirc")
+                    .attr("x1", function(d) {
+                        return x1(d.start);//xis(d.from);
+                    })
+                    .attr("x2", function(d) {
+                        return x1(d.start);//xis(d.from);
+                    })
+                    .attr("y1", function(d){
+                        return yis(d.from);
+                    })
+                    .attr("y2", function(d){
+                        return yis(d.from)+10;
+                    })
+                    // .attr("r",ccR)
+                    .attr("fill", function(d) {
+                        return oColor(d.from);
+                    })
+                    .attr("stroke", function(d) {
+                        return oColor(d.from);
+                    })
+                    .attr("stroke-width", 5)
+                    .style("stroke-dasharray",dashArray)
+                    // .attr("stroke", "none")
+                    .attr("opacity", 1)
+                ccCirclez.exit().remove();
+
+var summaryCC = ccConsolidation(ccItems);
+// for (i=0; i<ccItems.length; i++){
+//     for(j=0; j<ardUniques1.length; j++){
+//         if(ccItems[i].from==ardUniques1[j]){
+
+//         }        
+//     }
+// }
+console.log(summaryCC);
+// var ccCircText;
+//                 ccCircText = itemArdz.selectAll(".ccText")
+//                     .data(ccItems, function(d) {
+//                         return d.specialID;
+//                     })
+//                     .attr("x", function(d) {
+//                         return x1(d.start)-ccR/2;
+//                     })
+//                 ccCircText.enter().append("text")
+//                     .attr("class", "ccText")
+//                     .attr("x", function(d) {
+//                         return x1(d.start)-ccR/2;
+//                     })
+//                     .attr("y", function(d){
+//                         return yis(d.from)
+//                     })
+//                     .style("font-size","8px")
+//                     .attr("fill", function(d) {
+//                         return oColor(d.from);
+//                     })
+//                     .text(function(d){
+//                         return d.from;
+//                     })
+//                 ccCircText.exit().remove();
+
+
+
+//////////////////////
+               ///////////////////////////////
+                rects = itemRects.selectAll(".image-cropper")
+                    .data(visItems, function(d) {
+                        return d.timeIs;
+                    })
+
+                .attr("x", function(d) {
+                        return x1(d.timeIs);
+                    })
+                    .attr("width", 20)
+                    .attr("y", imgHeight)
+
+                rects.enter().append("image")
+                    .attr("class", function(d) {
+                        d3.select(this).each(moveToFront);
+                        return "image-cropper"
+                    })
+                    .attr("xlink:href", function(d, i) {
+                        // d3.select(this).each(moveToFront)();
+                        if (d.buttonIs == "button2") { //1 is bad 3 is good
+                            return "idea.png";
+                            // return "ideaWhite.png";
+                        }
+                        if (d.buttonIs == "button1") { //1 is bad 3 is good
+                            return "thunder.png";
+                            // return "thunderWhite.png";
+                        } else {}
+                    })
+                    .attr("y", imgHeight)
+                    .attr("width", imgHeight)
+                    .attr("height", imgHeight)
+                    .attr("x", function(d) {
+                        return x1(d.timeIs);
+                    })
+                rects.exit().remove();
+                ///////////////////////////////
+
                 /////////WHAT IS WRONG
                 ardRectz = itemArdz.selectAll("rect")
                     .data(ardItems, function(d) {
@@ -958,6 +1036,9 @@ var maxText = timeFormat2(new Date(maxdate));
                     .attr("width", function(d, i) {
                         return x1(d.end) - x1(d.start);
                     })
+                    .attr("y", function(d, i) {
+                        return yis(d.from)+10;
+                    })
                 ardRectz.enter().append("rect")
                     .attr("class", function(d) {
                         return "miniItemz" + d.from;
@@ -966,12 +1047,12 @@ var maxText = timeFormat2(new Date(maxdate));
                         return x1(d.start);
                     })
                     .attr("y", function(d, i) {
-                        return yis(d.from);
+                        return yis(d.from)+10;
                     })
                     .attr("width", function(d) {
                         return x1(d.end) - x1(d.start);
                     })
-                    .attr("height", standardRect)
+                    .attr("height", standardRect-10)
                     .attr("fill", function(d) {
                         return oColor(d.from);
                     })
@@ -982,29 +1063,29 @@ var maxText = timeFormat2(new Date(maxdate));
 
 
 
-                // var ardRectText;
-                //             ardRectText = itemArdz.selectAll("atext")
-                //                 .data(ardItems, function(d) {
-                //                     return ardItems[0].specialID;
-                //                 })
-                //                 .attr("x", function(d) {
-                //                     return x1(d.start);
-                //                 });
-                //             ardRectText.enter().append("text")
-                //                 .attr("class", function(d) {
-                //                                 d3.select(this).each(moveToFront);
-                //                     return "atext";
-                //                 })
-                //                 .attr("x", function(d) {
-                //                     return x1(d.start);
-                //                 })
-                //                 .attr("y", function(d, i) {
-                //                     return yis(d.from);
-                //                 })
-                //                 .attr("opacity",labelOpacity)
-                //                 .attr("font-size",12)
-                //                 .text("Software Module Connected!")
-
+                var ardRectText;
+                            ardRectText = itemArdz.selectAll(".atext")
+                                .data(ardItems, function(d) {
+                                    return ardItems[0].specialID;
+                                })
+                                .attr("x", function(d) {
+                                    return x1(d.start);
+                                });
+                            ardRectText.enter().append("text")
+                                .attr("class", function(d) {
+                                                d3.select(this).each(moveToFront);
+                                    return "atext";
+                                })
+                                .attr("x", function(d) {
+                                    return x1(d.start);
+                                })
+                                .attr("y", function(d, i) {
+                                    return yis(d.from);
+                                })
+                                .attr("opacity",labelOpacity)
+                                .attr("font-size",12)
+                                .text("Software Module Connected!")
+                                ardRectText.exit().remove();
                 //////////////////////////////////
                             var mRectz;
                             mRectz = itemArdz.selectAll("mrect")
@@ -1039,82 +1120,33 @@ var maxText = timeFormat2(new Date(maxdate));
 
 
 
-
-
-                            // var ccLinez;
-                            // ccLinez = itemArdz.selectAll("ccline")
-                            //     .data(ccItems, function(d) {
-                            //         return d.specialID;
-                            //     })
-                            //     .attr("x1", function(d) {
-                            //         return x1(d.start);
-                            //     })
-                            //     .attr("x2", function(d) {
-                            //         return x1(d.start);
-                            //     })
-                            // ccLinez.enter().append("line")
-                            //     .attr("class", "ccline")
-                            //     .attr("x1", function(d) {
-                            //         return x1(d.start);
-                            //     })
-                            //     .attr("x2", function(d) {
-                            //         return x1(d.start);
-                            //     })
-                            //     .attr("y1", function(d, i) {
-                            //         return yis(d.from);
-                            //     })
-                            //     .attr("y2", function(d, i) {
-                            //         return yis(d.from)+10;
-                            //     })
-                            //     .attr("fill", function(d) {
-                            //         return oColor(d.from);
-                            //     })
-                            //     .attr("stroke", function(d) {
-                            //         return oColor(d.from);
-                            //     })
-                            //     .attr("stroke-width",2)
-                            //     .attr("opacity", 1)
-                            // ccLinez.exit().remove();
-
-
-
-
-                // var mRectText;
-                //             mRectText = itemArdz.selectAll("mtext")
-                //                 .data(mItems, function(d) {
-                //                     return mItems[0].specialID;
-                //                 })
-                //                 .attr("x", function(d) {
-                //                     return x1(d.start);
-                //                 });
-                //             mRectText.enter().append("text")
-                //                 .attr("class", function(d) {
-                //                     d3.select(this).each(moveToFront);
-                //                     return "mtext";
-                //                 })
-                //                 .attr("x", function(d) {
-                //                     return x1(d.start);
-                //                 })
-                //                 .attr("y", function(d, i) {
-                //                     return yis(d.from);
-                //                 })
-                //                 .attr("opacity",labelOpacity)
-                //                 .attr("font-size",12)
-                //                 .text("Hardware Module Connected!")
-                // .transition()
-                // .duration(1000)
-                // .attr("font-size",18)
-                // .each("end", function(){
-                //     mRectText
-                //         .transition()
-                //         .attr("opacity",0)
-                //         .attr("font-size",12)
-                // })
-                // mRectText.exit().remove();
+                var mRectText;
+                            mRectText = itemArdz.selectAll(".mtext")
+                                .data(mItems, function(d) {
+                                    return mItems[0].specialID;
+                                })
+                                .attr("x", function(d) {
+                                    return x1(d.start);
+                                });
+                            mRectText.enter().append("text")
+                                .attr("class", function(d) {
+                                    d3.select(this).each(moveToFront);
+                                    return "mtext";
+                                })
+                                .attr("x", function(d) {
+                                    return x1(d.start);
+                                })
+                                .attr("y", function(d, i) {
+                                    return yis(d.from);
+                                })
+                                .attr("opacity",labelOpacity)
+                                .attr("font-size",12)
+                                .text("Hardware Module Connected!")
+                mRectText.exit().remove();
 
                 /////////////////////////////////
                             var bRectz;
-                            bRectz = itemArdz.selectAll("brect")
+                            bRectz = itemArdz.selectAll(".brect")
                                 .data(bItems, function(d) {
                                     return d.specialID;
                                 })
@@ -1129,13 +1161,18 @@ var maxText = timeFormat2(new Date(maxdate));
                                 .attr("x", function(d) {
                                     return x1(d.start);
                                 })
-                                .attr("y", function(d, i) {
-                                    return yis(d.from);
-                                })
-                                .attr("width", function(d) {
-                                    return x1(d.end) - x1(d.start);
-                                })
-                                .attr("height", standardRect)
+
+                    .attr("y", function(d, i) {
+                        return yis(d.from)+10;
+                    })
+                    .attr("width", function(d) {
+                        return x1(d.end) - x1(d.start);
+                    })
+                    .attr("height", standardRect-10)
+
+
+
+                                // .attr("height", standardRect)
                                 .attr("fill", function(d) {
                                     return oColor(d.from);
                                 })
@@ -1145,177 +1182,42 @@ var maxText = timeFormat2(new Date(maxdate));
 
 
 
-                // var bRectText;
-                //             bRectText = itemArdz.selectAll("btext")
-                //                 .data(bItems, function(d) {
-                //                     return bItems[0].specialID;
-                //                 })
-                //                 .attr("x", function(d) {
-                //                     return x1(d.start);
-                //                 });
-                //             bRectText.enter().append("text")
-                //                 .attr("class", function(d) {
-                //                     d3.select(this).each(moveToFront);
-                //                     return "btext";
-                //                 })
-                //                 .attr("x", function(d) {
-                //                     return x1(d.start);
-                //                 })
-                //                 .attr("y", function(d, i) {
-                //                     return yis(d.from);
-                //                 })
-                //                 .attr("opacity",labelOpacity)
-                //                 .attr("font-size",12)
-                //                 .text("S/M Connected!")
-                // .transition()
-                // .duration(1000)
-                // .attr("font-size",18)
-                // .each("end", function(){
-                //     bRectText
-                //         .transition()
-                //         .attr("opacity",0)
-                //         .attr("font-size",12)
-                // })
-                // bRectText.exit().remove();
+                var bRectText;
+                            bRectText = itemArdz.selectAll(".btext")
+                                .data(bItems, function(d) {
+                                    return bItems[0].specialID;
+                                })
+                                .attr("x", function(d) {
+                                    return x1(d.start);
+                                });
+                            bRectText.enter().append("text")
+                                .attr("class", function(d) {
+                                    d3.select(this).each(moveToFront);
+                                    return "btext";
+                                })
+                                .attr("x", function(d) {
+                                    return x1(d.start);
+                                })
+                                .attr("y", function(d, i) {
+                                    return yis(d.from);
+                                })
+                                .attr("opacity",labelOpacity)
+                                .attr("font-size",12)
+                                .text("S/M Connected!")
+                bRectText.exit().remove();
 
 
 
 
-                // ///////////////////////////////
-                circs = itemCircs.selectAll("circle")
-                    .data(lineAllItems, function(d,i) {
-                        // console.log(d.specialID)
-                        return d.specialID;
-                    })
-                    .attr("cx", function(d) {
-                        return x1(d.start);
-                    })
-                circs.enter().append("circle")
-                    .attr("class", function(d) {
-                        return "circs" + d.from + d.start;
-                    })
-                    .attr("r", r)
-                    .attr("cx", function(d) {
-                        if (d.sF == 1) {
-                            return x1(d.start);
-                        } else {
-                            return x1(d.end);
-                        }
-                    })
-                    .attr("cy", function(d, i) {
-                        return yis(d.from) + r + standardRect;
-                    })
-                    .attr("fill", function(d) {
-                        if (d.sF == 1) {
-                            // return linkColor;
-                                return oColor(d.from);
-                        } else {
-                            return "none";
-                        }
-                    })
-                    .attr("opacity", opacity)
-                circs.exit().remove();
+ /////////////////////////////
 
-                // // ///////////////////////////////
-                var circR;
-                circR = itemCircs.selectAll("rect")
-                    .data(lineAllItems, function(d) {
-                        return d.specialID;
-                    })
-                    .attr("x", function(d) {
-                        return x1(d.start);
-                    })
-                circR.enter().append("rect")
-                    .attr("class", function(d) {
-                        return "circR" + d.from + d.start;
-                    })
-                    .attr("width", 7)
-                    .attr("height", 7)
-                    .attr("x", function(d) {
-                        if (d.sF == 1) {
-                            return x1(d.start);
-                        } else {
-                            return x1(d.end);
-                        }
-                    })
-                    .attr("y", function(d, i) {
-                        return yis(d.from)+standardRect;
-                    })
-                    .attr("fill", "none")
-                    .attr("stroke", function(d) {
-                        if (d.sF == 1) {
-                            return "none";
-                        } else {
-                            // return linkColor;
-                                return oColor(d.from);
-                        }
-                    })
-                    .attr("opacity", 1)
-                circR.exit().remove();
 
-                ///////////////////////////////
-                // var linkL;
-                // linkL = itemCircs.selectAll("line")
-                //     .data(lineAllItems, function(d) {
-                //         return d.specialID;
-                //     })
-                //     .attr("x1", function(d) {
-                //         return x1(d.start);
-                //     })
-                //     .attr("x2", function(d) {
-                //         return x1(d.start);
-                //     })
-                //     .attr("fill", "none")
-                //     .attr("stroke", function(d) {
-                //         return oColor(d.from);
-                //     })
-                // linkL.enter().append("line")
-                //     .attr("class", function(d) {
-                //         return "linkL" + d.from + d.start;
-                //     })
-                //     .attr("x1", function(d) {
-                //         if (d.sF == "1") {
-                //             return x1(d.start);
-                //         } else {
-                //             return x1(d.end);
-                //         }
-                //     })
-                //     .attr("x2", function(d) {
-                //         if (d.sF == "1") {
-                //             return x1(d.start);
-                //         } else {
-                //             return x1(d.end);
-                //         }
-                //     })
-                //     .attr("y1", function(d, i) {
-                //         if (typeof(d.from) !== "undefined") {
-                //             return yis(d.from);
-                //         } else {
-                //             return 0
-                //         }
-                //     })
-                //     .attr("y2", function(d, i) {
-                //         if (typeof(d.from) !== "undefined") {
-                //             return yis(d.from) + standardRect * 2;
-                //         } else {
-                //             return 0
-                //         }
-                //     })
-                //     .attr("stroke", function(d) {
-                //         if (typeof(d.from) !== "undefined") {
-                //             return oColor(d.from);
-                //         } else {
-                //             return "none";
-                //         }
-                //     })
-                //     .attr("opacity", 1)
-                // linkL.exit().remove();
 
 
                 var linkI;
                 var linkD;
                 var linkText;
-                linkText = itemArdz.selectAll("ltext")
+                linkText = itemArdz.selectAll(".ltext")
                     .data(lineAllItems, function(d, i) {
                         return lineAllItems[0].specialID;
                     })
@@ -1342,13 +1244,6 @@ var maxText = timeFormat2(new Date(maxdate));
                         return yis(d.from);
                     })
                     .attr("opacity", labelOpacity)
-                    // function(d) {
-                    //     if (d.sF == 1) {
-                    //         return 1;
-                    //     } else {
-                    //         return 0;
-                    //     }
-                    // })
                     .attr("font-size", 12)
                     .text(function(d) {
                         if (d.sF == "1") {
@@ -1358,229 +1253,34 @@ var maxText = timeFormat2(new Date(maxdate));
                             return "Link Disconnected"
                         }
                     })
-                    // .transition()
-                    // .duration(1000)
-                    // .attr("font-size",18)
-                    // .each("end", function(){
-                    //     linkText
-                    //         .transition()
-                    //         .attr("opacity",0)
-                    //         .attr("font-size",12)
-                    // })
-                    // linkText.exit().remove();
-                    // bbox = d3.select(".ltext").getBBox();
-                    // rectB = svg.insert('rect', 'text')
-                    // .attr('x', bbox.x)
-                    // .attr('y', bbox.y)
-                    // .attr('width', bbox.width)
-                    // .attr('height', bbox.height);
+                    linkText.exit().remove();
 
-                var imgHeight = 20;
                 var timeRect;
-                var timeWidth = $(".wodry2").width();
-                timeRect = itemRects.selectAll("timeRects")
-                    .data(d3.range(1))
-                    .attr("x", x1(minExtent))
+                var timeWidth; //= $(".wodry2").width();
+                // timeRect = itemRects.selectAll("timeRects")
+                //     .data(d3.range(1))
+                //     .attr("x", x1(minExtent))
 
-                    timeRect.enter()
-                    .append("rect").attr("class", "timeRects")
-                        .attr("transform", "translate(" + 0 + "," + -imgHeight*2.5 + ")")
-                    .attr("x", -10)//x1(minExtent))
-                    .attr("y", yis(options[0])-5)
-                    .attr("width", w-timeWidth) //not -timeiwdth
-                    .attr("height", 1)//imgHeight/2)
-                    .attr("fill","black")
-                    .attr("stroke-dasharray",dashArray)
-                    .attr("opacity",extentsOpacity);
+                //     timeRect.enter()
+                //     .append("rect").attr("class", "timeRects")
+                //         .attr("transform", "translate(" + 0 + "," + -imgHeight*2.5 + ")")
+                //     .attr("x", -10)//x1(minExtent))
+                //     .attr("y", yis(options[0])-5)
+                //     .attr("width", w-timeWidth) //not -timeiwdth
+                //     .attr("height", .5)//imgHeight/2)
+                //     .attr("fill","black")
+                //     .attr("stroke-dasharray",dashArray)
+                //     .attr("opacity",extentsOpacity);
+ 
                 ///////////////////////////////
-                rects = itemRects.selectAll(".image-cropper")
-                    .data(visItems, function(d) {
-                        return d.timeIs;
-                    })
-
-                .attr("x", function(d) {
-                        return x1(d.timeIs);
-                    })
-                    .attr("width", 20);
-                rects.enter().append("image")
-                    .attr("class", function(d) {
-                        d3.select(this).each(moveToFront);
-                        return "image-cropper"
-                    })
-                    .attr("xlink:href", function(d, i) {
-                        // d3.select(this).each(moveToFront)();
-                        if (d.buttonIs == "button2") { //1 is bad 3 is good
-                            return "idea.png";
-                            // return "ideaWhite.png";
-                        }
-                        if (d.buttonIs == "button1") { //1 is bad 3 is good
-                            return "thunder.png";
-                            // return "thunderWhite.png";
-                        } else {}
-                    })
-                    .attr("y", imgHeight)
-                    .attr("width", imgHeight)
-                    .attr("height", imgHeight)
-                    .attr("x", function(d) {
-                        return x1(d.timeIs);
-                    })
-                rects.exit().remove();
-                ///////////////////////////////
-                ///////////////////////////////
-//                 var sumButs;
-// var sumXScale = d3.scale.linear()
-//     .domain([0, button2])
-//     .range([w/2, w])
-//                 sumButs = main.selectAll(".sumButs")
-//                     .data(button2)
-//                     .attr("x", function(d) {
-//                             return sumXScale(d);
-//                         })
-//                 .attr("width", 20);
-//                 sumButs.enter().append("image")
-//                     .attr("class","sumButs")
-//                     .attr("xlink:href", "idea.png")
-//                     .attr("y", 50)
-//                     .attr("width", imgHeight)
-//                     .attr("height", imgHeight)
-//                     .attr("x", function(d) {
-//                         return sumXScale(d);
-//                     })
-//                 sumButs.exit().remove();
-
-
-
-
-// var sumXScale = d3.scale.linear()
-//     .domain([0, button2])
-//     .range([w/2, w])
-//                 sumButs = main.selectAll(".sumButs")
-//                     .data(button2)
-//                     .attr("cx", function(d) {
-//                             return sumXScale(d);
-//                         })
-//                 .attr("width", 20);
-//                 sumButs.enter().append("circle")
-//                     .attr("class","sumButs")
-//                     .attr("cy", 50)
-//                     .attr("r", 20)
-//                     .attr("cx", function(d) {
-//                         return sumXScale(d);
-//                     })
-//                 sumButs.exit().remove();
-
+var sumXScale = d3.scale.linear()
+    .domain([0, button2])
+    .range([w/2, w])
 
 
 
 
 //////////////////////////
-
-
-
-
-
-
-
-
-                // var sup;
-                // sup = main.selectAll(".conn")
-                //     .data(visItems, function(d) {
-                //         return d.timeIs;
-                //     })
-                //     .attr("x1", function(d) {
-                //         return x1(d.timeIs) + imgHeight / 2;
-                //     })
-                //     .attr("x2", function(d) {
-                //         return x(d.timeIs);
-                //     })
-                //     .attr("y1", imgHeight*2)
-                //     .attr("y2", yis(options[0])-50)
-                //     // .attr("y2", mainHeight + m[0] + miniY) //or something
-                // sup.enter().append("line")
-                //     .attr("class", function(d) {
-                //         d3.select(this).each(moveToFront);
-                //         return "conn";
-                //     })
-                //     .attr("y1", imgHeight*2)
-                //     .attr("y2",yis(options[0])-50)
-                //     // .attr("y2", mainHeight + m[0] + miniY) //or something
-                //     .attr("stroke", linkColor)
-                //     .attr("x1", function(d) {
-                //         return x1(d.timeIs) + imgHeight / 2;
-                //     })
-                //     .attr("x2", function(d) {
-                //         return x(d.timeIs);
-                //     })
-                //     .attr("stroke-width",1)
-                // sup.exit().remove();
-                ///////////////////////////////
-
-
-                // var overview;
-                //     overview = itemRects.selectAll(".screen")
-                //         .data(visItems)
-                //         .attr("x", function(d, i) {
-                //             return x1(d.timeIs); //scale based on d.time
-                //         })
-                //     overview
-                //         .enter()
-                //         .append("image")
-                //         .attr("class", "screen")
-                //         .attr("xlink:href", function(d, i) {
-                //             // if(i>0 && visItems[i].timeIs.getMinutes()!=visItems[i-1].timeIs.getMinutes()){
-                //             //     console.log(visItems[i].timeIs.getMinutes())
-                //             //     return d.photS;
-                //             // }else{}
-                //             return d.photS;
-                //         })
-                //         .attr("x", function(d, i) {
-                //             return x1(d.timeIs); //scale based on d.time
-                //         })
-                //         .attr("y", function(d, i) {
-                //             return 100;
-                //         })
-                //         .attr("width", 100)
-                //         .attr("height", 100);
-                //         overview.exit().remove();
-
-                ///////////////////////////////
-                // var textOver;
-                //     textOver = itemRects.selectAll(".textOv")
-                //         .data(visItems)
-                //         .attr("x", function(d, i) {
-                //             return x1(d.timeIs); //scale based on d.time
-                //         })
-                //     textOver
-                //         .enter()
-                //         .append("text")
-                //         .attr("class", "textOv")
-                //         .attr("x", function(d, i) {
-                //             return x1(d.timeIs); //scale based on d.time
-                //         })
-                //         .attr("y", function(d, i) {
-                //             return 0;
-                //         })
-                //         .text(function(d){
-                //             return parseDate(d.timeIs);
-                //         })
-                //         textOver.exit().remove();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
                 // if (i > 0) {
@@ -1595,7 +1295,90 @@ var maxText = timeFormat2(new Date(maxdate));
                 // } 
 
 
+               // ///////////////////////////////
+                circs = itemCircs.selectAll("circle")
+                    .data(lineAllItems, function(d,i) {
+                        // console.log(d.specialID)
+                        return d.specialID;
+                    })
+                    .attr("cx", function(d) {
+                        return x1(d.start);
+                    })
+                circs.enter().append("circle")
+                    .attr("class", function(d) {
+                        d3.select(this).each(moveToFront);
+                        return "circs" + d.from + d.start;
+                    })
+                    .attr("r", r)
+                    .attr("cx", function(d) {
+                        d3.select(this).each(moveToFront);
+                        if (d.sF == 1) {
+                            return x1(d.start);
+                        } else {
+                            return x1(d.end);
+                        }
+                    })
+                    .attr("cy", function(d, i) {
+                        return yis(d.from)+r;
+                    })
+                    .attr("stroke",function(d) {
+                        if (d.sF == 1) {
+                            // return linkColor;
+                                return oColor(d.from);
+                        } else {
+                            return "none";
+                        }
+                    })
+                    .attr("fill","none")
+                    // .attr("fill", function(d) {
+                    //     if (d.sF == 1) {
+                    //         // return linkColor;
+                    //             return oColor(d.from);
+                    //     } else {
+                    //         return "none";
+                    //     }
+                    // })
+                    .attr("opacity", opacity)
+                circs.exit().remove();
 
+                // // ///////////////////////////////
+                var circR;
+                circR = itemCircs.selectAll("rect")
+                    .data(lineAllItems, function(d) {
+                        return d.specialID;
+                    })
+                    .attr("x", function(d) {
+                        return x1(d.start);
+                    })
+                circR.enter().append("rect")
+                    .attr("class", function(d) {
+                        return "circR" + d.from + d.start;
+                    })
+                    .attr("width", 7)
+                    .attr("height", 7)
+                    .attr("x", function(d) {
+                        if (d.sF == 1) {
+                            return x1(d.start);
+                        } else {
+                            return x1(d.end);
+                        }
+                    })
+                    .attr("y", function(d, i) {
+                        return yis(d.from);
+                    })
+                    .attr("fill", "none")
+                    .attr("stroke", function(d) {
+                        if (d.sF == 1) {
+                            return "none";
+                        } else {
+                            // return linkColor;
+                                return oColor(d.from);
+                        }
+                    })
+                    .attr("opacity", 1)
+                circR.exit().remove();
+
+                ///////////////////////////////
 
                 if (autoMoving == false && calledAgain == false) {
                     console.log("HEY down here")
@@ -1646,7 +1429,15 @@ var maxText = timeFormat2(new Date(maxdate));
                 }
                 return total;
             }
-
+            function ccConsolidation(index) {
+                var total = 0;
+                for (i = 0; i < ardUniques1.length; i++) {
+                    if (ardUniques1[i].from == index) {
+                        total++;
+                    } else {}
+                }
+                return total;
+            }
 
             //Move SVG elements to the end of their container,
             //so they appear "on top".

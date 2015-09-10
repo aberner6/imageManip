@@ -1,8 +1,11 @@
 
+
+
+
 <html>
 
 <head>
-    <title>Prep</title>
+    <title>Pelars @ Ars</title>
 </head>
 <style>
     rect.backround {
@@ -10,7 +13,15 @@
     }
     
     body {
-        font-family: 'Lato', sans-serif;
+ 	font-family: 'Lato', sans-serif;
+	font-weight: 300;
+	text-decoration: none;
+	-webkit-font-smoothing: antialiased;	
+	text-rendering: optimizeLegibility;
+	margin: 0;
+	padding: 0;
+	color: #000000;
+	letter-spacing: .5pt;
         /*background-color: black;*/
     }
     
@@ -110,28 +121,156 @@ left: 110px;
         /*opacity:0;*/
         display: none;
     }
-    
+ #modeMoved {
+	font-family: 'Lato', sans-serif;
+	font-weight: 300;
+	text-decoration: none;
+	-webkit-font-smoothing: antialiased;	
+	text-rendering: optimizeLegibility;
+	margin: 0;
+	padding: 0;
+	color: #000000;
+	letter-spacing: 1pt;
+	font-size: 8pt;
+/*visibility: hidden;*/
+width: 220px;
+height: 800px;
+padding: 8px;
+/*background: rgba(0,0,0,.4);*/
+-webkit-border-radius: 0px;
+-moz-border-radius: 0px;
+border-radius: 0px;
+position: absolute !important;
+top: 7% !important;
+left: 1% !important;
+margin-top: -0px !important;
+margin-left: -0px !important;
+z-index: 101;
+/*color: #F0F0F0;*/
+}
+   
     .logo {
-        width: 100px;
+        width: 50px;
+        /*display:none;*/
     }
+#modal {
+visibility: hidden;
+width: 500px;
+/*height: 189px;*/
+padding: 36px;
+/*background: rgba(0,0,0,.4);
+*/
+background:black;
+-webkit-border-radius: 8px;
+-moz-border-radius: 8px;
+border-radius: 8px;
+position: absolute !important;
+top: 50% !important;
+left: 50% !important;
+margin-top: -256px !important;
+margin-left: -246px !important;
+z-index: 101;
+color: #F0F0F0;
+font-family: "Lato-Regular";
+}
+.reveal-modal-bg { 
+	position: fixed; 
+	height: 100%;
+	width: 100%;
+	background: #000;
+	background: white;
+	z-index: 100;
+	display: none;
+	background-image: url("niceshot.jpg");
+	top: 0;
+	left: 0; 
+	}
 </style>
+
 <!-- <div class="title">TABLE 1 Session</div> -->
-<!-- <div class="logo">
+
+
+<!-- <center> -->
+<div id="modal">
+<div class="logo">
     <img src="Pelars_logos.png"></img>
-</div> -->
+</div>
+<br>
+This visualization displays what learners are doing while at Ars Electronica in terms of their Arduino kit usage, as well as how they feel about what they are doing through their input to the feedback box where they can input a general positive or negative moment in their session.<br> 
+<br>
+Select a slice of the timeline at the bottom to see that session "writ large" in the main window.
+<br>
+Mouse over any visual element for a key of its meaning in the Arduino kit: hardware module, software module, link or manipulation.
+<br>
 
-
+<!-- ARDUINO KIT<br>
+Hardware Block Connected: Thin line for duration of usage<br>
+Software Block Connected: Thick line<br>
+Links between Components: circle @ start of link, square @ disconnection.<br>
+Manipulation: Dashed line at that moment of manipulation.<br>
+<br>
+FEEDBACK BOX<br>
+The feedback button box has two buttons - one for "success" and "frustration". When either button is pressed, it shows up as a lightbulb or a thundercloud on the timeline. This is accompanied by an overview shot of the table at that moment and a screenshot of the screen at that moment. -->
+<!-- </span> -->
+<!-- <br><br> -->
+</div>
+<!-- </center> -->
 <body>
 <!--     <link href='http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css'> -->
+<link href="tipsy.css" rel="stylesheet" type="text/css" /> 
 <link href='https://fonts.googleapis.com/css?family=Lato:400,300' rel='stylesheet' type='text/css'>
+<script type="text/javascript" src="jquery-1.7.2.min.js"></script> 
+
+
+
+<script type="text/javascript" src="jquery.tipsy.js"></script>
+<!-- <script type="text/javascript" src="jquery.hoverIntent.js"></script> -->
+<script src="jquery.reveal.js"></script>
     <script src="d3.min.js"></script>
+
     <!-- // <script src="jquery.min.js"></script> -->
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+    <!-- // <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script> -->
 
     <!-- // <script src="http://cdn.jsdelivr.net/sparkjs/0.4.2/spark.min.js"></script> -->
     <!-- // <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script> -->
-
     <script type="text/javascript">
+$(document).ready(function() {
+      // $('#button').click(function(e) { // Button which will activate our modal
+          $('#modal').reveal({ // The item which will be opened with reveal
+            animation: 'fade',                   // fade, fadeAndPop, none
+          animationspeed: 600,                       // how fast animtions are
+          closeonbackgroundclick: true,              // if you click background will modal close?
+          dismissmodalclass: 'close'    // the class of a button or element that will close an open modal
+        });
+      return false;
+      // });
+    });
+</script>
+
+
+
+
+
+    
+    <script type="text/javascript">
+// $(document).ready(function() {
+//       // $('#button').click(function(e) { // Button which will activate our modal
+//           $('#modal').reveal({ // The item which will be opened with reveal
+//             animation: 'fade',                   // fade, fadeAndPop, none
+//           animationspeed: 600,                       // how fast animtions are
+//           closeonbackgroundclick: true,              // if you click background will modal close?
+//           dismissmodalclass: 'close'    // the class of a button or element that will close an open modal
+//         });
+//       return false;
+//       // });
+//     });
+
+
+
+
+
+
+
 
 //     $(window).load(function() {
 // jQuery.ajax({
@@ -222,7 +361,7 @@ prepData();
                     // }, 3000)
                 // }
             }
-        }, 10000)
+        }, 2000) //not 10000
 // }
                 // Timestamp,Device,button,overview,screenshot
             var entry1 = [];
@@ -239,6 +378,11 @@ prepData();
             var sessionData = [];
             // 15:00:07-314093466_12-08-2015
             var parseDate = d3.time.format('%X_%d-%m-%Y').parse;
+
+var weirdFormat = d3.time.format("%H/%M/%S_%d-%m-%Y")
+// var weirdFormat = d3.time.format("11/31/00_06-09-2015")
+
+
             var mindate; // = Date.now()-60000;
             var maxdate; // = "Fri Aug 01 2015 13:24:33 GMT+0200 (CEST)";
 
@@ -249,7 +393,7 @@ prepData();
             var m = [20, 15, 15, 120], //top right bottom left
                 w = window.innerWidth - m[1] * 2 - m[3],
                 h = window.innerHeight, //- m[3],//m[0] - m[2],
-                miniHeight = 35, //laneLength * 12 + 50,
+                miniHeight = 40, //laneLength * 12 + 50,
                 mainHeight = h - miniHeight - 50;
 
             var chart = d3.select("body")
@@ -264,13 +408,14 @@ prepData();
                 .attr("height", mainHeight);
 
             var main = chart.append("g")
-                .attr("transform", "translate(" + m[3] + "," + 0 + ")")
+                .attr("transform", "translate(" + m[3] + "," + m[0] + ")")
                 .attr("width", w)
                 .attr("height", mainHeight)
                 .attr("class", "main");
 
             var mini = chart.append("g")
-                .attr("transform", "translate(" + m[3] + "," + (mainHeight + m[0]-30) + ")")
+                .attr("transform", "translate(" + m[3] + "," + (mainHeight - 10) + ")")
+                // .attr("transform", "translate(" + m[3] + "," + (mainHeight + m[0]-30) + ")")
                 .attr("width", w)
                 .attr("height", miniHeight)
                 .attr("class", "mini")
@@ -314,6 +459,7 @@ var yRange = mainHeight-10;
 
             var miniY = 40;
             var yOther = d3.scale.ordinal()
+                // .rangePoints([0, miniHeight])
                 .rangePoints([miniY+30, miniHeight])
                 .domain(options);
 
@@ -366,9 +512,10 @@ var whatIs = [];
 var onlyArd;
 var sessionDates = [];
 function prepData() {
-                d3.csv("https://dl.dropboxusercontent.com/s/19izw72cww803ll/arsdb?dl=0", function(error, arData) {
+                d3.csv("arsdb2.txt", function(error, arData) {
 
-                // d3.csv("https://dl.dropboxusercontent.com/s/a32v02txwd0bns0/arsdb2?dl=0", function(error, arData) {
+                // d3.csv("https://dl.dropboxusercontent.com/s/19izw72cww803ll/arsdb?dl=0", function(error, arData) {
+
                     onlyArd = arData.filter(function(d){
                         if(d.mod!="UI"){
                             return d;
@@ -376,14 +523,21 @@ function prepData() {
                     })
                     for (var i = 0; i < arData.length; i++) {
 
-if (arData[arData.length-1]['mod'] == "UI" && arData[arData.length-1]['sF']=="CLOSED"){
-    mindate = parseInt(arData[arData.length-2]['timestamp']);
-    maxdate = parseInt(arData[arData.length-1]['timestamp']);
-} 
-if (arData[arData.length-1]['mod'] == "UI" && arData[arData.length-1]['sF']=="OPENED"){
-    mindate = parseInt(arData[arData.length-1]['timestamp']);
-    maxdate = Date.now();
-}
+// if (arData[arData.length-1]['mod'] == "UI" && arData[arData.length-1]['sF']=="CLOSED"){
+//     mindate = parseInt(arData[arData.length-2]['timestamp']);
+//     maxdate = parseInt(arData[arData.length-1]['timestamp']);
+// } 
+// if (arData[arData.length-1]['mod'] == "UI" && arData[arData.length-1]['sF']=="OPENED"){
+//     mindate = parseInt(arData[arData.length-1]['timestamp']);
+//     maxdate = Date.now();
+// }
+
+mindate = 1441440014000;//1441442725000;
+maxdate = (1441558800000);
+
+
+
+
 // if (arData[arData.length-1]['mod'] == "UI" && arData[arData.length-1]['sF']=="CLOSED"){
 //     mindate = parseInt(arData[arData.length-2]['timestamp']);
 //     maxdate = parseInt(arData[arData.length-1]['timestamp']);
@@ -433,10 +587,10 @@ var buttonData = [];
                         // https://www.dropbox.com/s/iz6mkdrd5z4wvvc/db2?dl=0
 
 
-// https://www.dropbox.com/s/h1zyddyuicbn134/db?dl=0
-                d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
+                // d3.csv("https://dl.dropboxusercontent.com/s/h1zyddyuicbn134/db?dl=0", function(error, data) {
                     // console.log("buttondata")
                         // buttonData.push(data);
+                d3.csv("db2.txt", function(error, data) {
 
                     for (var i = 0; i < data.length; i++) {
                         // console.log(data[i][0])
@@ -693,7 +847,7 @@ function display() {
         yis.domain(ardUniques1)
         xis.domain(ardUniques1)
 
-        var standardRect = (yRange/ardUniques1.length)-26;
+        var standardRect = (yRange/ardUniques1.length)/2;
 // yRange
 
 
@@ -907,7 +1061,7 @@ var maxText = timeFormat2(new Date(maxdate));
                             return 0;
                         }
                     })
-                    .text(maxText);
+                    .text(maxExtTime);
                 ///////////////////
 var ccCirclez;
 var ccR = 15;
@@ -1019,7 +1173,7 @@ console.log(summaryCC);
                         return x1(d.timeIs);
                     })
                     .attr("width", 20)
-                    .attr("y", imgHeight)
+                    .attr("y", 0)//imgHeight/2)
 
                 rects.enter().append("image")
                     .attr("class", function(d) {
@@ -1037,7 +1191,7 @@ console.log(summaryCC);
                             // return "thunderWhite.png";
                         } else {}
                     })
-                    .attr("y", imgHeight)
+                    .attr("y", 0)//imgHeight/2)
                     .attr("width", imgHeight)
                     .attr("height", imgHeight)
                     .attr("x", function(d) {
@@ -1045,6 +1199,42 @@ console.log(summaryCC);
                     })
                 rects.exit().remove();
                 ///////////////////////////////
+
+
+
+                var overview;
+                    overview = itemRects.selectAll(".screen")
+                        .data(visItems)
+                        .attr("x", function(d, i) {
+                            return x1(d.timeIs); //scale based on d.time
+                        })
+                    overview
+                        .enter()
+                        .append("image")
+                        .attr("class", "screen")
+                        .attr("xlink:href", function(d, i) {
+                            // if(i>0 && visItems[i].timeIs.getMinutes()!=visItems[i-1].timeIs.getMinutes()){
+                            //     console.log(visItems[i].timeIs.getMinutes())
+                            //     return d.photS;
+                            // }else{}
+                    // http://pelars.netne.net/images/420038000547343232363230.button1.overview.11:18:39_03-09-2015.jpg
+
+
+
+                            // return "photos/400025000c47343432313031."+d.buttonIs+"."+"overview."+weirdFormat(d.timeIs)+".jpg";
+                            // return d.photS;
+                            return "400025000c47343432313031.button1.overview.14_49_22_07-09-2015.jpg"
+                        })
+                        .attr("x", function(d, i) {
+                            return x1(d.timeIs); //scale based on d.time
+                        })
+                        .attr("y", function(d, i) {
+                            return 0;
+                        })
+                        .attr("width", 100)
+                        .attr("height", 100);
+                        overview.exit().remove();
+
 
                 /////////WHAT IS WRONG
                 ardRectz = itemArdz.selectAll("rect")
@@ -1109,7 +1299,7 @@ console.log(summaryCC);
                                 ardRectText.exit().remove();
                 //////////////////////////////////
                             var mRectz;
-                            mRectz = itemArdz.selectAll("mrect")
+                            mRectz = itemArdz.selectAll(".mrect")
                                 .data(mItems, function(d) {
                                     return d.specialID;
                                 })
@@ -1317,7 +1507,7 @@ var sumXScale = d3.scale.linear()
 
 
                // ///////////////////////////////
-                circs = itemCircs.selectAll("circle")
+                circs = itemCircs.selectAll(".circz")
                     .data(lineAllItems, function(d,i) {
                         // console.log(d.specialID)
                         return d.specialID;
@@ -1326,10 +1516,7 @@ var sumXScale = d3.scale.linear()
                         return x1(d.start);
                     })
                 circs.enter().append("circle")
-                    .attr("class", function(d) {
-                        d3.select(this).each(moveToFront);
-                        return "circs" + d.from + d.start;
-                    })
+                    .attr("class", "circz")
                     .attr("r", r)
                     .attr("cx", function(d) {
                         d3.select(this).each(moveToFront);
@@ -1340,7 +1527,7 @@ var sumXScale = d3.scale.linear()
                         }
                     })
                     .attr("cy", function(d, i) {
-                        return yis(d.from)+r;
+                        return standardRect+yis(d.from)+r;
                     })
                     .attr("stroke",function(d) {
                         if (d.sF == 1) {
@@ -1350,21 +1537,21 @@ var sumXScale = d3.scale.linear()
                             return "none";
                         }
                     })
-                    .attr("fill","none")
-                    // .attr("fill", function(d) {
-                    //     if (d.sF == 1) {
-                    //         // return linkColor;
-                    //             return oColor(d.from);
-                    //     } else {
-                    //         return "none";
-                    //     }
-                    // })
+                    // .attr("fill","white")
+                    .attr("fill", function(d) {
+                        if (d.sF == 1) {
+                            // return linkColor;
+                                return oColor(d.from);
+                        } else {
+                            return "none";
+                        }
+                    })
                     .attr("opacity", opacity)
                 circs.exit().remove();
 
                 // // ///////////////////////////////
                 var circR;
-                circR = itemCircs.selectAll("rect")
+                circR = itemCircs.selectAll(".circR")
                     .data(lineAllItems, function(d) {
                         return d.specialID;
                     })
@@ -1372,9 +1559,7 @@ var sumXScale = d3.scale.linear()
                         return x1(d.start);
                     })
                 circR.enter().append("rect")
-                    .attr("class", function(d) {
-                        return "circR" + d.from + d.start;
-                    })
+                    .attr("class", "circR")
                     .attr("width", 7)
                     .attr("height", 7)
                     .attr("x", function(d) {
@@ -1385,9 +1570,10 @@ var sumXScale = d3.scale.linear()
                         }
                     })
                     .attr("y", function(d, i) {
-                        return yis(d.from);
+                        return standardRect+yis(d.from);
                     })
-                    .attr("fill", "none")
+                    .attr("fill", "white")
+                    .attr("stroke-width",2)
                     .attr("stroke", function(d) {
                         if (d.sF == 1) {
                             return "none";
@@ -1398,6 +1584,47 @@ var sumXScale = d3.scale.linear()
                     })
                     .attr("opacity", 1)
                 circR.exit().remove();
+
+
+
+
+$('.ccCirc').tipsy({
+    gravity: 'nw', 
+    html: true, 
+    title:function(){
+        return "Manipulation"
+    }
+})
+$('.mrect').tipsy({
+    gravity: 'nw', 
+    html: true, 
+    title:function(){
+        return "Hardware Module"
+    }
+})
+$('.brect').tipsy({
+    gravity: 'nw', 
+    html: true, 
+    title:function(){
+        return "Software Module"
+    }
+})
+$('.circR').tipsy({
+    gravity: 'nw', 
+    html: true, 
+    title:function(){
+        return "Link Disconnected"
+    }
+})
+
+$('.circz').tipsy({
+    gravity: 'nw', 
+    html: true, 
+    title:function(){
+        return "Link Made"
+    }
+})
+
 
                 ///////////////////////////////
 
