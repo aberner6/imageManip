@@ -2,6 +2,10 @@
 var uniqB = [];
 var buttonD = [];
 var parseDate = d3.time.format('%X_%d-%m-%Y').parse;
+
+var monthNameFormat = d3.time.format("%b");
+var dayMonthFormat = d3.time.format("%e");
+
 var uniqueComplete = false;
 var ardComplete = false;
 
@@ -21,7 +25,7 @@ games.push("Note", "Random", "PONG", "SimonSays")
 var onlyArd;
 var sessionUI = [];
 var ardEntry = [];
-d3.csv("ardData.txt", function(error, data) {
+d3.csv("tinyArd.txt", function(error, data) {
 	console.log(data.length+"ard")
     onlyArd = data.filter(function(d) {
         if (d.mod != "UI") {
@@ -74,6 +78,7 @@ function prepArduinoData(onlyArd, sessionUI){
 	ardComplete = false;
     for (var i = 0; i < onlyArd.length-1; i++) {	
         var blah = [];
+        console.log(onlyArd[i]);
 	    if ((onlyArd[i + 1]['sF']) == "1") {
 	        ardEntry.push({
 	            "specialID": parseInt(onlyArd[i]['timestamp']) + (onlyArd[i]['id']),
@@ -93,8 +98,8 @@ function prepArduinoData(onlyArd, sessionUI){
 	            "sF": (onlyArd[i]['sF'])
 	        })
 	    } else {
+        // console.log()
 	        ardEntry.push({
-	        	// "sessionID": 
 	            "specialID": parseInt(onlyArd[i]['timestamp']) + (onlyArd[i]['id']),
 	            "id": parseInt(onlyArd[i]['id']),
 	            "mod": onlyArd[i]['mod'],
@@ -154,19 +159,25 @@ var margin = {top: 100, right: 20, bottom: 20, left: 40},
 
 
 
-var m = [20, 15, 15, 120], //top right bottom left
+var m = [15, 20, 15, 120], //top right bottom left
     w = window.innerWidth - m[1] * 2 - m[3],
     h = window.innerHeight, //- m[3],//m[0] - m[2],
     miniHeight = 40, //laneLength * 12 + 50,
     mainHeight = h - miniHeight - 50;
+var spaceFactor = 6;
 
-var y = d3.scale.linear()
-    .range([50, h / 2]);
-var xIn = d3.scale.ordinal()
+var y = d3.scale.ordinal()
+	 .domain(["B","CC","BM","M","L"])
+    .range([m[0]*3, m[3]]);
+var xI = d3.scale.ordinal()
     .domain(inputs)
-    .rangePoints([m[0], m[3]]);
-
-
+    .rangePoints([m[0], m[0]*spaceFactor]);
+var xO = d3.scale.ordinal()
+    .domain(outputs)
+    .rangePoints([m[0], m[0]*spaceFactor]);
+var xP = d3.scale.ordinal()
+    .domain(programming)
+    .rangePoints([m[0], m[0]*spaceFactor]);
 
 //set this up like the NYT
 // var chart = d3.select("body")
@@ -198,34 +209,141 @@ var xOffset = 167.14, // the xoffset for each day
 
 var days;
 var enteringDay;
+var insides;
+var insideDay;
 
 function startTime(){
     // days is our element array of each radial/amoeba combination
     days = svg.selectAll(".day")
       .data(sessionUI); 
+
+    dEntry = ardEntry.filter(function(d) {
+        return d.sF == "1"; //d.start < maxExtent && d.end > minExtent && 
+    });
+    console.log(dEntry)
+
+    insides = svg.selectAll(".inside")
+      .data(dEntry); 
     
     var row = 0; 
+    var interval = 5;
+
     enteringDay = days.enter()
       .append('g')
       .classed('day', true)
       .attr("transform", function(d,i){
       	var interval = 5;
-        // X, Y offset for each day.
         if( i % interval == 0 ){ //7 things a row would be a week 
           row++; 
         }
         return "translate(" + (( i % interval + 1 ) * xOffset - .5 * xOffset) + ", "+(row * yOffset - .5 * yOffset)+")";
-      })
-
+      });
     enteringDay.append('text')
       .text(function(d){ 
-      	return "hey"
-      	// moment(d.date_str).format('MMM DD, YYYY') 
+      	return monthNameFormat(new Date(d))+dayMonthFormat(new Date(d));
       })
       .attr('x', 0)
       .attr('y', -70)
       .attr('text-anchor','middle')
       .style('font-size','10px')
+
+//if the data is in a specific range of date
+//it goes in that area of the page that is the same as where the session UI is
+//so if the end date is same as session UI time
+//then it should go in that area
+//maybe for the softwware connection that should just be a filled in square if it has been established in software
+    insideDay = insides.enter()
+      .append('g')
+      .classed('inside', true)
+      .attr("transform", function(d,i){
+        for (j=0; j<sessionUI.length; j++){
+          if(d.end==sessionUI[j]){
+            console.log(d.end==sessionUI[j])
+            if( j % interval == 0 ){ //7 things a row would be a week 
+              row++; 
+            }
+            return "translate(" + (( j % interval + 1 ) * xOffset - .5 * xOffset) + ", "+(row * yOffset - .5 * yOffset)+")";
+          }
+        }
+      });
+    insideDay.append('circle')
+      .attr("cx",function(d){
+        for(j=0; j<programming.length; j++){
+            if(d.from==programming[j]){
+            return xP(d.from);
+            }
+        }
+        for(j=0; j<inputs.length; j++){
+            if(d.from==inputs[j]){
+            return xI(d.from);
+            }
+        }
+        for(k=0; k<outputs.length; k++){
+            if(d.from==outputs[k]){
+            return xO(d.from);
+            }
+        }
+      })
+      .attr("cy",function(d){
+        return y(d.mod);
+      })
+      .attr("r",function(d){
+        //maybe something about how much time has been spent with it
+        //d.end - d.start
+        //timeRound(d.end - d.start)
+        return 20;
+      })
+      .attr("fill",function(d){
+        if(d.mod=="M"){
+          console.log(d.mod)
+          return "teal"
+        }
+        if(d.mod=="L"){
+          console.log(d.mod)
+          return "cyan"
+        }
+        if(d.mod=="B"){
+          console.log(d.mod)
+          return "magenta"
+        }
+      })
+
+
+// thisOther.selectAll(".session")
+// 	.data(ardEntry)
+// 	.enter()
+// 	.append("circle")
+// 	.attr("class","session")
+// 	.attr("cx",function(d){
+// 		for(j=0; j<programming.length; j++){
+// 		    if(d.from==programming[j]){
+// 				return xP(d.from);
+// 		    }
+// 		}
+// 		for(j=0; j<inputs.length; j++){
+// 		    if(d.from==inputs[j]){
+// 				return xI(d.from);
+// 		    }
+// 		}
+// 		for(k=0; k<outputs.length; k++){
+// 		    if(d.from==outputs[k]){
+// 				return xO(d.from);
+// 		    }
+// 		}
+// 	})
+// 	.attr("cy",function(d){
+// 		// console.log(d);
+// 		return y(d.mod);
+// 	})
+// 	.attr("r",function(d){
+// 		//maybe something about how much time has been spent with it
+// 		//d.end - d.start
+// 		//timeRound(d.end - d.start)
+// 		return 20;
+
+// 	})
+
+
 
     // each day <g> contains several <g> elements that contain all the articles for that section
     // enteringDay.selectAll('.section')
@@ -269,6 +387,21 @@ function startTime(){
 	// bItems = ardEntry.filter(function(d) {
 	//     return d.start < maxExtent && d.end > minExtent && d.sF == "1" && d.mod == "B";
 	// });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -335,18 +468,21 @@ function startTime(){
     var minTotal = d3.min(dataL);
     var maxTotal = d3.max(dataL);
 
-	var rectz;
-    rectz = svg.selectAll(".rectIn")
-    .data(d3.range(1)) //this will be if any occurrences of LED in session
-    .attr("opacity", 1); //this will be how many any occurrences of LED in session
-    rectz.enter().append("rect")
-    .attr("class","rectIn")
-    .attr("x", margin.left) //this will be multiplied by num sessions / floored
-    .attr("y", margin.top) //this will be multiplied by num sessions / floored
-    .attr("width",margin.left) //this will have to be smaller if we are fitting more in etc
-    .attr("height",margin.left)
-    .attr("fill","pink") //according to... ?
+	// var rectz;
+ //    rectz = svg.selectAll(".rectIn")
+ //    .data(d3.range(1)) //this will be if any occurrences of LED in session
+ //    .attr("opacity", 1); //this will be how many any occurrences of LED in session
+ //    rectz.enter().append("rect")
+ //    .attr("class","rectIn")
+ //    .attr("x", margin.left) //this will be multiplied by num sessions / floored
+ //    .attr("y", margin.top) //this will be multiplied by num sessions / floored
+ //    .attr("width",margin.left) //this will have to be smaller if we are fitting more in etc
+ //    .attr("height",margin.left)
+ //    .attr("fill","pink") //according to... ?
 }
+
+
+
 function doPath(){
     x.domain([0, dataL.length-1])
     y.domain([minTotal, maxTotal])
