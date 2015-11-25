@@ -25,7 +25,9 @@ games.push("Note", "Random", "PONG", "SimonSays")
 var onlyArd;
 var sessionUI = [];
 var ardEntry = [];
-d3.csv("tinyArd.txt", function(error, data) {
+var datao = "tinyArd.txt";
+var datat = "ardData.txt"
+d3.csv(datao, function(error, data) {
 	console.log(data.length+"ard")
     onlyArd = data.filter(function(d) {
         if (d.mod != "UI") {
@@ -267,6 +269,7 @@ function startTime(){
         }
       });
     insideDay.append('circle')
+      .attr("opacity",.2)
       .attr("cx",function(d){
         for(j=0; j<programming.length; j++){
             if(d.from==programming[j]){
