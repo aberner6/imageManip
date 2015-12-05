@@ -23,7 +23,9 @@ programming.push("IF", "Interval", "Fade", "Swap", "Map", "Counter", "Trigger")
 games.push("Note", "Random", "PONG", "SimonSays")
 
 var onlyArd;
-var sessionUI = [];
+var sessionCL = [];
+var sessionOP = [];
+
 var ardEntry = [];
 var datao = "tinyArd.txt";
 var datat = "ardData.txt"
@@ -36,11 +38,14 @@ d3.csv(datao, function(error, data) {
     })
     for(i=0; i<data.length; i++){
         if (data[i]['sF'] == "CLOSED") {
-            sessionUI.push(parseInt(data[i]['timestamp']));
+            sessionCL.push(parseInt(data[i]['timestamp']));
+        }
+        if (data[i]['sF'] == "OPENED") {
+            sessionOP.push(parseInt(data[i]['timestamp']));
         }
     }
 	console.log(onlyArd+"not open/close");
-	prepArduinoData(onlyArd, sessionUI)
+	prepArduinoData(onlyArd, sessionCL)
 })
 
 d3.csv("buttonData.txt", function(error, data) {
@@ -75,19 +80,20 @@ d3.csv("buttonData.txt", function(error, data) {
 	}
 })
 
-function prepArduinoData(onlyArd, sessionUI){
-	console.log(sessionUI)
+function prepArduinoData(onlyArd, sessionCL){
+	console.log(sessionCL)
 	ardComplete = false;
     for (var i = 0; i < onlyArd.length-1; i++) {	
         var blah = [];
         console.log(onlyArd[i]);
+      // if (typeof(onlyArd[i])=="object") {
 	    if ((onlyArd[i + 1]['sF']) == "1") {
 	        ardEntry.push({
 	            "specialID": parseInt(onlyArd[i]['timestamp']) + (onlyArd[i]['id']),
 	            "id": parseInt(onlyArd[i]['id']),
 	            "mod": onlyArd[i]['mod'],
 	            "start": parseInt(onlyArd[i]['timestamp']),
-                "fk": sessionUI.filter(function(d) {
+                "fk": sessionCL.filter(function(d) {
                 	// console.log(d);
                     if (d > parseInt(onlyArd[i]['timestamp'])) {
                         // console.log(d[0]);
@@ -99,7 +105,7 @@ function prepArduinoData(onlyArd, sessionUI){
 	            "from": (onlyArd[i]['fromType']),
 	            "sF": (onlyArd[i]['sF'])
 	        })
-	    } else {
+	    } else if ((onlyArd[i]['sF']) == "1") {
         // console.log()
 	        ardEntry.push({
 	            "specialID": parseInt(onlyArd[i]['timestamp']) + (onlyArd[i]['id']),
@@ -161,25 +167,35 @@ var margin = {top: 100, right: 20, bottom: 20, left: 40},
 
 
 
-var m = [15, 20, 15, 120], //top right bottom left
+var m = [15, 20, 40, 120], //top right bottom left
     w = window.innerWidth - m[1] * 2 - m[3],
     h = window.innerHeight, //- m[3],//m[0] - m[2],
     miniHeight = 40, //laneLength * 12 + 50,
     mainHeight = h - miniHeight - 50;
-var spaceFactor = 6;
+var radiusMin = 5;
+var spaceFactor = radiusMin;
+
+var moduleTypes = ["B","CC","BM","M","L"];
+
+var colorScale = d3.scale.ordinal()
+    .domain(moduleTypes)
+    .range(d3.scale.category20c().range());
 
 var y = d3.scale.ordinal()
-	 .domain(["B","CC","BM","M","L"])
-    .range([m[0]*3, m[3]]);
+	 .domain(moduleTypes)
+    .rangePoints([m[2], m[3]]);
+
+var xStart = m[0];
+var xEnd = m[0]*spaceFactor;
 var xI = d3.scale.ordinal()
     .domain(inputs)
-    .rangePoints([m[0], m[0]*spaceFactor]);
+    .rangePoints([xStart, xEnd]);
 var xO = d3.scale.ordinal()
     .domain(outputs)
-    .rangePoints([m[0], m[0]*spaceFactor]);
+    .rangePoints([xStart, xEnd]);
 var xP = d3.scale.ordinal()
     .domain(programming)
-    .rangePoints([m[0], m[0]*spaceFactor]);
+    .rangePoints([xStart, xEnd]);
 
 //set this up like the NYT
 // var chart = d3.select("body")
@@ -217,10 +233,10 @@ var insideDay;
 function startTime(){
     // days is our element array of each radial/amoeba combination
     days = svg.selectAll(".day")
-      .data(sessionUI); 
+      .data(sessionCL); 
 
-    dEntry = ardEntry.filter(function(d) {
-        return d.sF == "1"; //d.start < maxExtent && d.end > minExtent && 
+    dEntry = ardEntry.filter(function(d) { //NEED TO TAKE OUT UI START AND FINIDH
+        return d.sF == "1" && d.mod!="UI"; //d.start < maxExtent && d.end > minExtent && 
     });
     console.log(dEntry)
 
@@ -228,16 +244,19 @@ function startTime(){
       .data(dEntry); 
     
     var row = 0; 
+    var row_two = 0; 
+
     var interval = 5;
 
     enteringDay = days.enter()
       .append('g')
       .classed('day', true)
       .attr("transform", function(d,i){
-      	var interval = 5;
+        console.log(i+"II")
         if( i % interval == 0 ){ //7 things a row would be a week 
           row++; 
         }
+        console.log(row+"row")
         return "translate(" + (( i % interval + 1 ) * xOffset - .5 * xOffset) + ", "+(row * yOffset - .5 * yOffset)+")";
       });
     enteringDay.append('text')
@@ -249,6 +268,9 @@ function startTime(){
       .attr('text-anchor','middle')
       .style('font-size','10px')
 
+// enteringDay.append("line")
+
+
 //if the data is in a specific range of date
 //it goes in that area of the page that is the same as where the session UI is
 //so if the end date is same as session UI time
@@ -257,19 +279,46 @@ function startTime(){
     insideDay = insides.enter()
       .append('g')
       .classed('inside', true)
-      .attr("transform", function(d,i){
-        for (j=0; j<sessionUI.length; j++){
-          if(d.end==sessionUI[j]){
-            console.log(d.end==sessionUI[j])
-            if( j % interval == 0 ){ //7 things a row would be a week 
-              row++; 
+      .attr("transform",function(d,i){
+//!!!attention changed the offset
+        for (j=0; j<sessionCL.length; j++){
+            if(parseInt(d.end)==parseInt(sessionCL[j]) || (d.end<=sessionCL[j]&&d.end>=sessionOP[j])){
+                return "translate(" + (( j % interval + 1 ) * xOffset/1.2 - .5 * xOffset) + ", "+(row * yOffset/2 - .5 * yOffset)+")";
             }
-            return "translate(" + (( j % interval + 1 ) * xOffset - .5 * xOffset) + ", "+(row * yOffset - .5 * yOffset)+")";
+            else{
+            }
           }
-        }
       });
+opacityLine = .2;
+opacityCirc = .6;
+
+insideDay.selectAll(".lineOut")
+  .data(moduleTypes)
+  .enter()
+  .append("line")
+  .classed("lineOut",true)
+      .attr("x1", function(d){
+        console.log(d);
+        return xStart;
+      })
+      .attr("x2", function(d){
+        return xEnd;
+      })
+      .attr("y1", function(d){
+        return y(d);
+      })
+      .attr("y2", function(d){
+        return y(d);
+      })
+      .attr("stroke","grey")
+      .attr("opacity", opacityLine)
+      .attr("stroke-width", .2);
+
     insideDay.append('circle')
-      .attr("opacity",.2)
+      .attr("class",function(d){
+        return d.from;
+      })
+      .attr("opacity",opacityCirc)
       .attr("cx",function(d){
         for(j=0; j<programming.length; j++){
             if(d.from==programming[j]){
@@ -288,27 +337,17 @@ function startTime(){
         }
       })
       .attr("cy",function(d){
+        console.log(d.mod)
         return y(d.mod);
       })
       .attr("r",function(d){
         //maybe something about how much time has been spent with it
         //d.end - d.start
         //timeRound(d.end - d.start)
-        return 20;
+        return radiusMin;
       })
       .attr("fill",function(d){
-        if(d.mod=="M"){
-          console.log(d.mod)
-          return "teal"
-        }
-        if(d.mod=="L"){
-          console.log(d.mod)
-          return "cyan"
-        }
-        if(d.mod=="B"){
-          console.log(d.mod)
-          return "magenta"
-        }
+        return colorScale(d.mod);
       })
 
 
