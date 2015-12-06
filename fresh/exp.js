@@ -1,10 +1,16 @@
-            // d3.csv("arsdb925", function(error, arData) {
+//NEXT STEPS
+//SENTIMENT ASPECT
+//RESIZABLE STUFF FOR THE SVG
+//ZOOM IN ABILITY
+
+
 var uniqB = [];
 var buttonD = [];
 var parseDate = d3.time.format('%X_%d-%m-%Y').parse;
 
 var monthNameFormat = d3.time.format("%b");
 var dayMonthFormat = d3.time.format("%e");
+var hourFormat = d3.time.format("%H");
 
 var uniqueComplete = false;
 var ardComplete = false;
@@ -280,7 +286,8 @@ function startTime(){
     });
   enteringDay.append('text')
     .text(function(d){ 
-    	return monthNameFormat(new Date(d))+dayMonthFormat(new Date(d));
+      var thisDate = new Date(d);
+    	return monthNameFormat(thisDate)+dayMonthFormat(thisDate)+" "+hourFormat(thisDate)+"h";
     })
     .attr('x', 22)
     .attr('y', -radiusMin*2)
