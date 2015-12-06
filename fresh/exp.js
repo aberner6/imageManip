@@ -28,8 +28,9 @@ var sessionOP = [];
 
 var ardEntry = [];
 var datao = "tinyArd.txt";
+var dataF = "ard925.txt";
 var datat = "ardData.txt"
-d3.csv(datao, function(error, data) {
+d3.csv(dataF, function(error, data) {
 	console.log(data.length+"ard")
     onlyArd = data.filter(function(d) {
         if (d.mod != "UI") {
@@ -44,7 +45,7 @@ d3.csv(datao, function(error, data) {
             sessionOP.push(parseInt(data[i]['timestamp']));
         }
     }
-	console.log(onlyArd+"not open/close");
+	// console.log(onlyArd+"not open/close");
 	prepArduinoData(onlyArd, sessionCL)
 })
 
@@ -85,7 +86,7 @@ function prepArduinoData(onlyArd, sessionCL){
 	ardComplete = false;
     for (var i = 0; i < onlyArd.length-1; i++) {	
         var blah = [];
-        console.log(onlyArd[i]);
+        // console.log(onlyArd[i]);
       // if (typeof(onlyArd[i])=="object") {
 	    if ((onlyArd[i + 1]['sF']) == "1") {
 	        ardEntry.push({
@@ -183,7 +184,7 @@ var colorScale = d3.scale.ordinal()
 
 var y = d3.scale.ordinal()
 	 .domain(moduleTypes)
-    .rangePoints([m[2], m[3]]);
+    .rangePoints([0, m[2]]);
 
 var xStart = m[0];
 var xEnd = m[0]*spaceFactor;
@@ -195,6 +196,9 @@ var xO = d3.scale.ordinal()
     .rangePoints([xStart, xEnd]);
 var xP = d3.scale.ordinal()
     .domain(programming)
+    .rangePoints([xStart, xEnd]);
+var xG = d3.scale.ordinal()
+    .domain(games)
     .rangePoints([xStart, xEnd]);
 
 //set this up like the NYT
@@ -223,7 +227,7 @@ var svg = d3.select('body').append('svg')
     .attr('height', height);
 
 var xOffset = 167.14, // the xoffset for each day 
-    yOffset = 167.14; // the yoffset for each day
+    yOffset = 80;//167.14; // the yoffset for each day
 
 var days;
 var enteringDay;
@@ -232,43 +236,75 @@ var insideDay;
 
 function startTime(){
     // days is our element array of each radial/amoeba combination
-    days = svg.selectAll(".day")
-      .data(sessionCL); 
+  days = svg.selectAll(".day")
+    .data(sessionCL); 
 
-    dEntry = ardEntry.filter(function(d) { //NEED TO TAKE OUT UI START AND FINIDH
-        return d.sF == "1" && d.mod!="UI"; //d.start < maxExtent && d.end > minExtent && 
+  dEntry = ardEntry.filter(function(d) { //NEED TO TAKE OUT UI START AND FINIDH
+      return d.sF == "1" && d.mod!="UI"; //d.start < maxExtent && d.end > minExtent && 
+  });
+  var row = 0; 
+  var interval = 5;
+  var this_row = 0;
+  var  opacityLine = .3, opacityCirc = .3;
+
+  //what we are basically saying is:
+  //for whatever day you are part of
+  //place you in the row for that day
+  //if that entry is the right time, then it is that row too...
+  for (var j=0; j<sessionCL.length; j++){
+    if(j % interval == 0 ){ //7 things a row would be a week 
+      this_row++;
+    }
+  // }   
+  for(var i=0; i<dEntry.length; i++){
+    // for (var j=0; j<sessionCL.length; j++){
+      if(dEntry[i].end==sessionCL[j] || (dEntry[i].end<=sessionCL[j]&&dEntry[i].end>=sessionOP[j])){
+        dEntry[i].row = this_row;
+      } else{}
+    }
+  }
+
+  insides = svg.selectAll(".inside")
+    .data(dEntry); 
+
+  enteringDay = days.enter()
+    .append('g')
+    .classed('day', true)
+    .attr("transform", function(d,i){
+      console.log(i+"II")
+      if( i % interval == 0 ){ //7 things a row would be a week 
+        row++; 
+      }
+      console.log(row+"rowuphere")
+      return "translate(" + (( i % interval + 1 ) * xOffset - .5 * xOffset) + ", "+(row * yOffset - .5 * yOffset)+")";
     });
-    console.log(dEntry)
+  enteringDay.append('text')
+    .text(function(d){ 
+    	return monthNameFormat(new Date(d))+dayMonthFormat(new Date(d));
+    })
+    .attr('x', 22)
+    .attr('y', -radiusMin*2)
+    .attr('text-anchor','middle')
+    .style('font-size','10px');
 
-    insides = svg.selectAll(".inside")
-      .data(dEntry); 
-    
-    var row = 0; 
-    var row_two = 0; 
+  enteringDay
+    .selectAll(".lineOut")
+    .data(moduleTypes)
+    .enter()
+    .append("line")
+    .classed("lineOut",true)
+    .attr("x1", xStart)
+    .attr("x2", xEnd)
+    .attr("y1", function(d,i){
+      return y(d);
+    })
+    .attr("y2", function(d,i){
+      return y(d);
+    })
+    .attr("stroke","grey")
+    .attr("opacity", opacityLine)
+    .attr("stroke-width", .2);
 
-    var interval = 5;
-
-    enteringDay = days.enter()
-      .append('g')
-      .classed('day', true)
-      .attr("transform", function(d,i){
-        console.log(i+"II")
-        if( i % interval == 0 ){ //7 things a row would be a week 
-          row++; 
-        }
-        console.log(row+"row")
-        return "translate(" + (( i % interval + 1 ) * xOffset - .5 * xOffset) + ", "+(row * yOffset - .5 * yOffset)+")";
-      });
-    enteringDay.append('text')
-      .text(function(d){ 
-      	return monthNameFormat(new Date(d))+dayMonthFormat(new Date(d));
-      })
-      .attr('x', 0)
-      .attr('y', -70)
-      .attr('text-anchor','middle')
-      .style('font-size','10px')
-
-// enteringDay.append("line")
 
 
 //if the data is in a specific range of date
@@ -276,79 +312,66 @@ function startTime(){
 //so if the end date is same as session UI time
 //then it should go in that area
 //maybe for the softwware connection that should just be a filled in square if it has been established in software
-    insideDay = insides.enter()
-      .append('g')
-      .classed('inside', true)
-      .attr("transform",function(d,i){
-//!!!attention changed the offset
-        for (j=0; j<sessionCL.length; j++){
-            if(parseInt(d.end)==parseInt(sessionCL[j]) || (d.end<=sessionCL[j]&&d.end>=sessionOP[j])){
-                return "translate(" + (( j % interval + 1 ) * xOffset/1.2 - .5 * xOffset) + ", "+(row * yOffset/2 - .5 * yOffset)+")";
-            }
-            else{
-            }
+  insideDay = insides.enter()
+    .append('g')
+    .classed('inside', true)
+    .attr("transform",function(d,i){
+      for (var j=0; j<sessionCL.length; j++){
+          if(d.end==sessionCL[j] || (d.end<=sessionCL[j]&&d.end>=sessionOP[j])){
+            console.log(d.row+"row")
+              return "translate(" + (( j % interval + 1 ) * xOffset - .5 * xOffset) + ", "+(d.row * yOffset - .5 * yOffset)+")";
           }
-      });
-opacityLine = .2;
-opacityCirc = .6;
+          else{
+          }
+        }
+    });
 
-insideDay.selectAll(".lineOut")
-  .data(moduleTypes)
-  .enter()
-  .append("line")
-  .classed("lineOut",true)
-      .attr("x1", function(d){
-        console.log(d);
-        return xStart;
-      })
-      .attr("x2", function(d){
-        return xEnd;
-      })
-      .attr("y1", function(d){
-        return y(d);
-      })
-      .attr("y2", function(d){
-        return y(d);
-      })
-      .attr("stroke","grey")
-      .attr("opacity", opacityLine)
-      .attr("stroke-width", .2);
+  insideDay.append('circle')
+    .attr("class",function(d){
+      return d.end+"end"+d.from+"from"+d.row;
+    })
+    .attr("opacity",opacityCirc)
+    .attr("cx",function(d){
+      for(j=0; j<programming.length; j++){
+          if(d.from==programming[j]){
+          return xP(d.from);
+          }
+      }
+      for(j=0; j<inputs.length; j++){
+          if(d.from==inputs[j]){
+          return xI(d.from);
+          }
+      }
+      for(j=0; j<outputs.length; j++){
+          if(d.from==outputs[j]){
+          return xO(d.from);
+          }
+      }
+      for(j=0; j<games.length; j++){
+          if(d.from==games[j]){
+          return xG(d.from);
+          }
+      }
+    })
+    .attr("cy",function(d){
+      console.log(d.mod)
+      return y(d.mod);
+    })
+    .attr("r",function(d){
+      //maybe something about how much time has been spent with it
+      //d.end - d.start
+      //timeRound(d.end - d.start)
+      return radiusMin;
+    })
+    .attr("fill",function(d){
+      return colorScale(d.mod);
+    })
 
-    insideDay.append('circle')
-      .attr("class",function(d){
-        return d.from;
-      })
-      .attr("opacity",opacityCirc)
-      .attr("cx",function(d){
-        for(j=0; j<programming.length; j++){
-            if(d.from==programming[j]){
-            return xP(d.from);
-            }
-        }
-        for(j=0; j<inputs.length; j++){
-            if(d.from==inputs[j]){
-            return xI(d.from);
-            }
-        }
-        for(k=0; k<outputs.length; k++){
-            if(d.from==outputs[k]){
-            return xO(d.from);
-            }
-        }
-      })
-      .attr("cy",function(d){
-        console.log(d.mod)
-        return y(d.mod);
-      })
-      .attr("r",function(d){
-        //maybe something about how much time has been spent with it
-        //d.end - d.start
-        //timeRound(d.end - d.start)
-        return radiusMin;
-      })
-      .attr("fill",function(d){
-        return colorScale(d.mod);
-      })
+
+
+
+
+
 
 
 // thisOther.selectAll(".session")
