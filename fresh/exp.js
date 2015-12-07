@@ -54,6 +54,7 @@ d3.csv(dataF, function(error, data) {
     }
 	// console.log(onlyArd+"not open/close");
 	prepArduinoData(onlyArd, sessionCL)
+  // prepSVG();
 })
 
 d3.csv("buttonData.txt", function(error, data) {
@@ -85,6 +86,7 @@ d3.csv("buttonData.txt", function(error, data) {
 			dataL.push(uniqB[j].total);
 		}
 		startTime();
+    doPath();
 	}
 })
 
@@ -129,52 +131,6 @@ function prepArduinoData(onlyArd, sessionCL){
 		ardComplete = true;		
 }
 
-
-var margin = {top: 100, right: 20, bottom: 20, left: 40},
-    w = 960 - margin.left - margin.right,
-    h = 500 - margin.top - margin.bottom;
-
-// var svg = d3.select("body").append("svg")
-//     .attr("width", w + margin.left + margin.right)
-//     .attr("height", h + margin.top + margin.bottom)
-//   .append("g")
-//     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-// function prepSVG(){
-	// var index = 0;
-	// var margin = {top: 100, right: 20, bottom: 20, left: 40},
-	//     width = 960 - margin.left - margin.right,
-	//     height = 500 - margin.top - margin.bottom;
-	// var x = d3.scale.linear()
-	//     .range([0, width]);
-	// var y = d3.scale.linear()
-	//     .range([height, 0]);
-	// var line = d3.svg.line()
-	//     .x(function(d, i) { return x(i); })
-	//     .y(function(d, i) { return y(d); });
-	// var svg = d3.select("body").append("svg")
-	//     .attr("width", width + margin.left + margin.right)
-	//     .attr("height", height + margin.top + margin.bottom)
-	//   .append("g")
-	//     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-	// svg.append("defs").append("clipPath")
-	//     .attr("id", "clip")
-	//   .append("rect")
-	//     .attr("width", width)
-	//     .attr("height", height);
-	// svg.append("g")
-	//     .attr("class", "x axis")
-	//     .attr("transform", "translate(0," + y(0)/2 + ")")
-	//     .call(d3.svg.axis().scale(x).orient("bottom"));
-	// svg.append("g")
-	//     .attr("class", "y axis")
-	//     .call(d3.svg.axis().scale(y).orient("left"));	
-	// var path = svg.append("g")
-	// 	.attr("clip-path", "url(#clip)")
-	// 	.append("path")
-// }
-
-
-
 var m = [15, 20, 40, 120], //top right bottom left
     w = window.innerWidth - m[1] * 2 - m[3],
     h = window.innerHeight, //- m[3],//m[0] - m[2],
@@ -190,7 +146,7 @@ var colorScale = d3.scale.ordinal()
     .range(d3.scale.category20c().range());
 
 var y = d3.scale.ordinal()
-	 .domain(moduleTypes)
+	  .domain(moduleTypes)
     .rangePoints([0, m[2]]);
 
 var xStart = m[0];
@@ -209,11 +165,11 @@ var xG = d3.scale.ordinal()
     .rangePoints([xStart, xEnd]);
 
 //set this up like the NYT
-// var chart = d3.select("body")
-//     .append("svg")
-//     .attr("width", w + m[1] + m[3])
-//     .attr("height", h + m[0] + m[2])
-//     .attr("class", "chart");
+var svg = d3.select("body")
+    .append("svg")
+    .attr("width", w + m[1] + m[3])
+    .attr("height", h + m[0] + m[2])
+    .attr("class", "chart");
 // chart.append("defs").append("clipPath")
 //     .attr("id", "clip")
 //     .append("rect")
@@ -227,14 +183,9 @@ var xG = d3.scale.ordinal()
 // var softSpot = main.append("g")
 //     .attr("clip-path", "url(#clip)");
 
-var width = 1170, 
-    height = 900;
-var svg = d3.select('body').append('svg')
-    .attr('width', width)
-    .attr('height', height);
 
 var xOffset = 167.14, // the xoffset for each day 
-    yOffset = 80;//167.14; // the yoffset for each day
+    yOffset = 200;//167.14; // the yoffset for each day
 
 var days;
 var enteringDay;
@@ -401,108 +352,19 @@ function startTime(){
     })
 
 
-
-
-
-
-
-
-// thisOther.selectAll(".session")
-// 	.data(ardEntry)
-// 	.enter()
-// 	.append("circle")
-// 	.attr("class","session")
-// 	.attr("cx",function(d){
-// 		for(j=0; j<programming.length; j++){
-// 		    if(d.from==programming[j]){
-// 				return xP(d.from);
-// 		    }
-// 		}
-// 		for(j=0; j<inputs.length; j++){
-// 		    if(d.from==inputs[j]){
-// 				return xI(d.from);
-// 		    }
-// 		}
-// 		for(k=0; k<outputs.length; k++){
-// 		    if(d.from==outputs[k]){
-// 				return xO(d.from);
-// 		    }
-// 		}
-// 	})
-// 	.attr("cy",function(d){
-// 		// console.log(d);
-// 		return y(d.mod);
-// 	})
-// 	.attr("r",function(d){
-// 		//maybe something about how much time has been spent with it
-// 		//d.end - d.start
-// 		//timeRound(d.end - d.start)
-// 		return 20;
-
-// 	})
-
-
-
-    // each day <g> contains several <g> elements that contain all the articles for that section
-    // enteringDay.selectAll('.section')
-    //   .data(function(day){
-    //     return  d3.nest()
-    //               .key(function(d) { return d.section })
-    //               .entries(day.articles);
-    //   })
-    //     .enter()
-    //       .append('g')
-    //         .selectAll('.article')
-    //         .data(function(section){ return section.values })
-    //         .enter()
-    //           .append('line')
-    //             .classed('article', true)
-    //             .attr('x1',function(d){ return (Math.cos( thetaAxes[ d.date_str ]( d.date ) ) * dayRadii[d.date_str])  })
-    //             .attr('y1',function(d){ return (Math.sin( thetaAxes[ d.date_str ]( d.date ) ) * dayRadii[d.date_str])  })
-    //             .attr("stroke", function(d){ return !d.blog_post ? sectionColors[d.section].color : blogColor })
-    //             .attr('x2',function(d){ return (Math.cos( thetaAxes[ d.date_str ]( d.date ) ) * (articleLengthScale( d.word_count) + dayRadii[d.date_str]))  })
-    //             .attr('y2',function(d){ return (Math.sin( thetaAxes[ d.date_str ]( d.date ) ) * (articleLengthScale( d.word_count) + dayRadii[d.date_str]))  })
-
-
 //eventually needs to be filtered by time
 	var circs, rectz;
 	// minExtent = brush.extent()[0],
 	// maxExtent = brush.extent()[1],
-
 	// visItems = uniqB.filter(function(d) {
 	//     return d.timeIs < maxExtent && d.timeIs > minExtent;
 	// });
-
 	// bmItems = ardEntry.filter(function(d) {
 	//     return d.start < maxExtent && d.end > minExtent && d.sF == "1" && d.mod == "BM";
-	// });
-	// ccItems = ardEntry.filter(function(d) {
-	//     return d.start < maxExtent && d.sF == "1" && d.mod == "CC";
 	// });
 	// mItems = ardEntry.filter(function(d) {
 	//     return d.start < maxExtent && d.end > minExtent && d.sF == "1" && d.mod == "M";
 	// });
-	// bItems = ardEntry.filter(function(d) {
-	//     return d.start < maxExtent && d.end > minExtent && d.sF == "1" && d.mod == "B";
-	// });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //set up the softspot svg
 //set up the x1 placement
@@ -563,52 +425,61 @@ function startTime(){
 	//if it is button 1
 	//total goes down
     // x.domain([0, index+1])
-    var minTotal = d3.min(dataL);
-    var maxTotal = d3.max(dataL);
 
-	// var rectz;
- //    rectz = svg.selectAll(".rectIn")
- //    .data(d3.range(1)) //this will be if any occurrences of LED in session
- //    .attr("opacity", 1); //this will be how many any occurrences of LED in session
- //    rectz.enter().append("rect")
- //    .attr("class","rectIn")
- //    .attr("x", margin.left) //this will be multiplied by num sessions / floored
- //    .attr("y", margin.top) //this will be multiplied by num sessions / floored
- //    .attr("width",margin.left) //this will have to be smaller if we are fitting more in etc
- //    .attr("height",margin.left)
- //    .attr("fill","pink") //according to... ?
+    minTotal = d3.min(dataL);
+    maxTotal = d3.max(dataL);
 }
 
 
 
+
+
+
+
+
+
+
+
+prepSVG();
+var xPath, yPath, minTotal, maxTotal, path, index, line, svgPath;
+function prepSVG(){
+  index = 0;
+  var mini = 4;
+  xPath = d3.scale.linear()
+      .range([0, w]);
+  yPath = d3.scale.linear()
+      .range([yOffset/mini, 0]);
+  line = d3.svg.line()
+      .x(function(d, i) { return xPath(i); })
+      .y(function(d, i) { return yPath(d); })
+      .interpolate("basis");
+
+  svgPath = svg.append("g")
+      .attr("width", w)
+      .attr("height", yOffset/mini);
+
+  // svgPath.append("g")
+  //     .attr("class", "x axis")
+  //     .call(d3.svg.axis().scale(xPath).ticks(d3.time.minute,15).orient("bottom"));
+
+  svgPath.attr("transform", "translate(0," + h/2 + ")");
+
+  // svgPath.append("g")
+  //     .attr("class", "y axis")
+  //     .call(d3.svg.axis().scale(yPath).orient("left"));  
+  path = svgPath
+    .append("path")
+    .attr("class","path");
+}
 function doPath(){
-    x.domain([0, dataL.length-1])
-    y.domain([minTotal, maxTotal])
+
+  xPath.domain([0, uniqB.length])
+  yPath.domain([minTotal, maxTotal])
+
 	path
 		.datum(dataL)
-		.attr("class", "line")
+		// .attr("class", "path")
 		.attr("d", line);
-		tick();	
-}
-function tick() {
-	index++;
-	x.domain([0, index+1])
-  // push a new data point onto the back
-  dataL.push(uniqB[index].total);
-  // console.log(uniqB[index])
-    // push a new data point onto the back
-  // data.push(random());
-  // redraw the line, and slide it to the left
-  path
-      .attr("d", line)
-      .attr("transform", null)
-    .transition()
-      .duration(500)
-      .ease("linear")
-      .attr("transform", "translate(" + x(1) + ",0)")
-      .each("end", tick);
-  // pop the old data point off the front
-  // dataL.shift();
 }
 function unique(obj) {
 	uniqueComplete = false;
@@ -633,19 +504,3 @@ function unique(obj) {
     console.log(uniqueComplete)
     return uniqB;
 }
-
-// for(j=0; j<inputs.length; j++){
-//     if(d.from==inputs[j]){
-//         return "#00A2AF"
-//     }
-// }
-// for(k=0; k<outputs.length; k++){
-//     if(d.from==outputs[k]){
-//         return "red"
-//     }
-// }
-// for(j=0; j<programming.length; j++){
-//     if(d.from==programming[j]){
-//         return "#907c64";
-//     }
-// }
