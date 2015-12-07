@@ -11,6 +11,7 @@ var parseDate = d3.time.format('%X_%d-%m-%Y').parse;
 var monthNameFormat = d3.time.format("%b");
 var dayMonthFormat = d3.time.format("%e");
 var hourFormat = d3.time.format("%H");
+var minuteFormat = d3.time.format("%M");
 
 var uniqueComplete = false;
 var ardComplete = false;
@@ -69,7 +70,7 @@ d3.csv("buttonData.txt", function(error, data) {
 	    	}
         buttonD.push({
             "buttonType": (data[i]['button']),
-            "time": parseDate(data[i]['Timestamp']),
+            "timeIs": parseDate(data[i]['Timestamp']),
             "photO": data[i]['overview'],
             "photS": data[i]['screenshot'],
             "total": totalsArr[i],
@@ -262,14 +263,21 @@ function startTime(){
       this_row++;
     }
   // }   
-  for(var i=0; i<dEntry.length; i++){
-    // for (var j=0; j<sessionCL.length; j++){
-      if(dEntry[i].end==sessionCL[j] || (dEntry[i].end<=sessionCL[j]&&dEntry[i].end>=sessionOP[j])){
-        dEntry[i].row = this_row;
-      } else{}
-    }
+      for(var i=0; i<dEntry.length; i++){
+      // for (var j=0; j<sessionCL.length; j++){
+        if(dEntry[i].end==sessionCL[j] || (dEntry[i].end<=sessionCL[j]&&dEntry[i].end>=sessionOP[j])){
+          dEntry[i].row = this_row;
+        } else{}
+      }
+      for(var i=0; i<uniqB.length; i++){
+        if(j>=0){
+          if(uniqB[i].timeIs.getTime()<=sessionCL[j]&&uniqB[i].timeIs.getTime()>=sessionCL[j-1]){
+            // console.log(uniqB[i].timeIs.getTime()+"WHO")
+            uniqB[i].row = this_row;
+          } else{}
+        } 
+      }
   }
-
   insides = svg.selectAll(".inside")
     .data(dEntry); 
 
@@ -287,7 +295,7 @@ function startTime(){
   enteringDay.append('text')
     .text(function(d){ 
       var thisDate = new Date(d);
-    	return monthNameFormat(thisDate)+dayMonthFormat(thisDate)+" "+hourFormat(thisDate)+"h";
+    	return monthNameFormat(thisDate)+dayMonthFormat(thisDate)+" "+hourFormat(thisDate)+":"+minuteFormat(thisDate);
     })
     .attr('x', 22)
     .attr('y', -radiusMin*2)
@@ -308,9 +316,27 @@ function startTime(){
     .attr("y2", function(d,i){
       return y(d);
     })
-    .attr("stroke","grey")
+    .attr("stroke",function(){
+      return "grey"
+    })
     .attr("opacity", opacityLine)
     .attr("stroke-width", .2);
+
+
+
+  // enteringDay
+  //   .selectAll(".lineEFB")
+  //   .data(uniqB)
+  //   .enter()
+  //   .append("")
+  //       if(j>=0){
+  //         if(uniqB[i].timeIs.getTime()<=sessionCL[j]&&uniqB[i].timeIs.getTime()>=sessionCL[j-1]){
+  //           // console.log(uniqB[i].timeIs.getTime()+"WHO")
+  //           uniqB[i].row = this_row;
+  //         } else{}
+
+
+
 
 
 
@@ -325,7 +351,7 @@ function startTime(){
     .attr("transform",function(d,i){
       for (var j=0; j<sessionCL.length; j++){
           if(d.end==sessionCL[j] || (d.end<=sessionCL[j]&&d.end>=sessionOP[j])){
-            console.log(d.row+"row")
+            // console.log(d.row+"row")
               return "translate(" + (( j % interval + 1 ) * xOffset - .5 * xOffset) + ", "+(d.row * yOffset - .5 * yOffset)+")";
           }
           else{
@@ -361,7 +387,7 @@ function startTime(){
       }
     })
     .attr("cy",function(d){
-      console.log(d.mod)
+      // console.log(d.mod)
       return y(d.mod);
     })
     .attr("r",function(d){
