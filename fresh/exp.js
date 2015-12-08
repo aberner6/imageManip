@@ -36,7 +36,54 @@ var sessionOP = [];
 var ardEntry = [];
 var datao = "tinyArd.txt";
 var dataF = "ard925.txt";
-var datat = "ardData.txt"
+var data_three = "ardData.txt";
+var dataT = [];
+var minDate, maxDate;
+
+var m = [15, 20, 40, 120], //top right bottom left
+    w = window.innerWidth - m[1] * 2 - m[3],
+    h = window.innerHeight, //- m[3],//m[0] - m[2],
+    miniHeight = 40, //laneLength * 12 + 50,
+    mainHeight = h - miniHeight - 50;
+var radiusMin = 5;
+var spaceFactor = radiusMin;
+
+var moduleTypes = ["B","CC","BM","M","L"];
+
+var colorScale = d3.scale.ordinal()
+    .domain(moduleTypes)
+    .range(d3.scale.category20c().range());
+
+var y = d3.scale.ordinal()
+    .domain(moduleTypes)
+    .rangePoints([0, m[2]]);
+
+var xStart = m[0];
+var xEnd = m[0]*spaceFactor;
+var xI = d3.scale.ordinal()
+    .domain(inputs)
+    .rangePoints([xStart, xEnd]);
+var xO = d3.scale.ordinal()
+    .domain(outputs)
+    .rangePoints([xStart, xEnd]);
+var xP = d3.scale.ordinal()
+    .domain(programming)
+    .rangePoints([xStart, xEnd]);
+var xG = d3.scale.ordinal()
+    .domain(games)
+    .rangePoints([xStart, xEnd]);
+
+//set this up like the NYT
+var svg = d3.select("body")
+    .append("svg")
+    .attr("width", w + m[1] + m[3])
+    .attr("height", h + m[0] + m[2])
+    .attr("class", "chart");
+var xOffset = 167.14, // the xoffset for each day 
+    yOffset = 200;//167.14; // the yoffset for each day
+
+
+
 d3.csv(dataF, function(error, data) {
 	console.log(data.length+"ard")
     onlyArd = data.filter(function(d) {
@@ -54,7 +101,6 @@ d3.csv(dataF, function(error, data) {
     }
 	// console.log(onlyArd+"not open/close");
 	prepArduinoData(onlyArd, sessionCL)
-  // prepSVG();
 })
 
 d3.csv("buttonData.txt", function(error, data) {
@@ -83,10 +129,10 @@ d3.csv("buttonData.txt", function(error, data) {
 		console.log(uniqB.length+"button data uniqued");
 		console.log(uniqB[0].total+"button 1 yep");
 		for (var j=0; j<uniqB.length; j++){
+      dataT.push(uniqB[j].timeIs.getTime())
 			dataL.push(uniqB[j].total);
 		}
 		startTime();
-    doPath();
 	}
 })
 
@@ -130,46 +176,6 @@ function prepArduinoData(onlyArd, sessionCL){
 	}
 		ardComplete = true;		
 }
-
-var m = [15, 20, 40, 120], //top right bottom left
-    w = window.innerWidth - m[1] * 2 - m[3],
-    h = window.innerHeight, //- m[3],//m[0] - m[2],
-    miniHeight = 40, //laneLength * 12 + 50,
-    mainHeight = h - miniHeight - 50;
-var radiusMin = 5;
-var spaceFactor = radiusMin;
-
-var moduleTypes = ["B","CC","BM","M","L"];
-
-var colorScale = d3.scale.ordinal()
-    .domain(moduleTypes)
-    .range(d3.scale.category20c().range());
-
-var y = d3.scale.ordinal()
-	  .domain(moduleTypes)
-    .rangePoints([0, m[2]]);
-
-var xStart = m[0];
-var xEnd = m[0]*spaceFactor;
-var xI = d3.scale.ordinal()
-    .domain(inputs)
-    .rangePoints([xStart, xEnd]);
-var xO = d3.scale.ordinal()
-    .domain(outputs)
-    .rangePoints([xStart, xEnd]);
-var xP = d3.scale.ordinal()
-    .domain(programming)
-    .rangePoints([xStart, xEnd]);
-var xG = d3.scale.ordinal()
-    .domain(games)
-    .rangePoints([xStart, xEnd]);
-
-//set this up like the NYT
-var svg = d3.select("body")
-    .append("svg")
-    .attr("width", w + m[1] + m[3])
-    .attr("height", h + m[0] + m[2])
-    .attr("class", "chart");
 // chart.append("defs").append("clipPath")
 //     .attr("id", "clip")
 //     .append("rect")
@@ -183,15 +189,11 @@ var svg = d3.select("body")
 // var softSpot = main.append("g")
 //     .attr("clip-path", "url(#clip)");
 
-
-var xOffset = 167.14, // the xoffset for each day 
-    yOffset = 200;//167.14; // the yoffset for each day
-
 var days;
 var enteringDay;
 var insides;
 var insideDay;
-
+var dataRow = [];
 function startTime(){
     // days is our element array of each radial/amoeba combination
   days = svg.selectAll(".day")
@@ -223,24 +225,22 @@ function startTime(){
       for(var i=0; i<uniqB.length; i++){
         if(j>=0){
           if(uniqB[i].timeIs.getTime()<=sessionCL[j]&&uniqB[i].timeIs.getTime()>=sessionCL[j-1]){
-            // console.log(uniqB[i].timeIs.getTime()+"WHO")
             uniqB[i].row = this_row;
+            dataRow.push(this_row);
           } else{}
         } 
       }
   }
-  insides = svg.selectAll(".inside")
-    .data(dEntry); 
+  // prepSVG();
+
 
   enteringDay = days.enter()
     .append('g')
     .classed('day', true)
     .attr("transform", function(d,i){
-      console.log(i+"II")
       if( i % interval == 0 ){ //7 things a row would be a week 
         row++; 
       }
-      console.log(row+"rowuphere")
       return "translate(" + (( i % interval + 1 ) * xOffset - .5 * xOffset) + ", "+(row * yOffset - .5 * yOffset)+")";
     });
   enteringDay.append('text')
@@ -296,13 +296,15 @@ function startTime(){
 //so if the end date is same as session UI time
 //then it should go in that area
 //maybe for the softwware connection that should just be a filled in square if it has been established in software
+  insides = svg.selectAll(".inside")
+    .data(dEntry); 
+
   insideDay = insides.enter()
     .append('g')
     .classed('inside', true)
     .attr("transform",function(d,i){
       for (var j=0; j<sessionCL.length; j++){
           if(d.end==sessionCL[j] || (d.end<=sessionCL[j]&&d.end>=sessionOP[j])){
-            // console.log(d.row+"row")
               return "translate(" + (( j % interval + 1 ) * xOffset - .5 * xOffset) + ", "+(d.row * yOffset - .5 * yOffset)+")";
           }
           else{
@@ -425,9 +427,11 @@ function startTime(){
 	//if it is button 1
 	//total goes down
     // x.domain([0, index+1])
-
-    minTotal = d3.min(dataL);
-    maxTotal = d3.max(dataL);
+  minDate = d3.min(dataT);
+  maxDate = d3.max(dataT);
+  minTotal = d3.min(dataL);
+  maxTotal = d3.max(dataL);
+  // doPath();
 }
 
 
@@ -436,50 +440,50 @@ function startTime(){
 
 
 
+//continuous line below the boxes of the days
 
 
 
-
-prepSVG();
 var xPath, yPath, minTotal, maxTotal, path, index, line, svgPath;
 function prepSVG(){
   index = 0;
   var mini = 4;
   xPath = d3.scale.linear()
-      .range([0, w]);
+      .range([xOffset/2, w]);
   yPath = d3.scale.linear()
       .range([yOffset/mini, 0]);
   line = d3.svg.line()
-      .x(function(d, i) { return xPath(i); })
-      .y(function(d, i) { return yPath(d); })
-      .interpolate("basis");
+      .x(function(d, i) { return xPath(d.timeIs); })
+      .y(function(d, i) { return yPath(d.total); })
+      .interpolate("linear");
 
-  svgPath = svg.append("g")
-      .attr("width", w)
-      .attr("height", yOffset/mini);
-
+      // .attr("width", w)
+      // .attr("height", yOffset/mini)
+  path = svg.append("g")
+    // .attr("clip-path", "url(#clip)")
+    .append("path")
+    .attr("class","path")
   // svgPath.append("g")
   //     .attr("class", "x axis")
   //     .call(d3.svg.axis().scale(xPath).ticks(d3.time.minute,15).orient("bottom"));
-
-  svgPath.attr("transform", "translate(0," + h/2 + ")");
-
   // svgPath.append("g")
   //     .attr("class", "y axis")
   //     .call(d3.svg.axis().scale(yPath).orient("left"));  
-  path = svgPath
-    .append("path")
-    .attr("class","path");
 }
 function doPath(){
-
-  xPath.domain([0, uniqB.length])
+  xPath.domain([minDate, maxDate]) //should be related to time
   yPath.domain([minTotal, maxTotal])
-
-	path
-		.datum(dataL)
-		// .attr("class", "path")
-		.attr("d", line);
+  // if(uniqB[0].row>=0){
+  	path
+  		.datum(uniqB)
+      .attr("transform", function(d,i){
+        console.log(d[i].row)
+      // return "translate(0," + h/mini + ")";
+      //(d.row * yOffset - .5 * yOffset)
+        return "translate(" + 0 + ", "+(d[i].row*yOffset-yOffset/2)+")";
+      })
+  		.attr("d", line);
+  // }
 }
 function unique(obj) {
 	uniqueComplete = false;
